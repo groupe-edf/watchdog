@@ -1,0 +1,10 @@
+version: "develop"
+hooks:
+  - name: global
+    type: pre-receive
+    rules:
+      - type: file
+        conditions:
+          - type: exist
+            confition: .gitignore
+            rejection_message: "Project must contains a %v file"

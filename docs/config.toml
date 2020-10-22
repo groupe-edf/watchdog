@@ -1,0 +1,61 @@
+# Language settings
+baseURL = "https://groupe-edf.github.io/watchdog/"
+contentDir = "content/en"
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = false
+disableKinds = [""]
+enableGitInfo = true
+# Useful when translating.
+enableMissingTranslationPlaceholders = true
+title = "Watchdog"
+theme = ["docsy"]
+
+[languages]
+[languages.en]
+title = "Watchdog"
+description = "Watchdog custom hooks"
+languageName ="English"
+# Weight used for sorting.
+weight = 1
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+      style = "tango"
+
+[params]
+description = ""
+# Repository configuration (URLs for in-page links to opening issues and suggesting changes)
+github_repo = "https://github.com/groupe-edf/watchdog"
+name = "Watchdog"
+# Enable Lunr.js offline search
+offlineSearch = true
+# A link to latest version of the docs. Used in the "version-banner" partial to
+# point people to the main doc site.
+url_latest_version = "https://groupe-edf.github.io/watchdog"
+
+# User interface configuration
+[params.ui]
+# Enable to show the side bar menu in its compact state.
+sidebar_menu_compact = false
+#  Set to true to disable breadcrumb navigation.
+breadcrumb_disable = false
+#  Set to true to hide the sidebar search box (the top nav search box will still be displayed if search is enabled)
+sidebar_search_disable = false
+#  Set to false if you don't want to display a logo (/assets/icons/logo.svg) in the top nav bar
+navbar_logo = false
+# Set to true to disable the About link in the site footer
+footer_about_disable = false
+
+[params.links]
+# End user relevant links. These will show up on left side of footer and in the community page if you have one.
+[[params.links.developer]]
+	name = "GitHub"
+	url = "https://github.com/groupe-edf/watchdog"
+	icon = "fab fa-github"
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"

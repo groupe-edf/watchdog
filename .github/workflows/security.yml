@@ -1,0 +1,22 @@
+name: security
+
+on: push
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        go-version: [1.15.x]
+        platform: [ubuntu-latest]
+    name: test-${{ matrix.go-version }}
+    runs-on: ${{ matrix.platform }}
+    steps:
+      ## Checks out our code locally so we can work with the files
+      - name: Checkout code
+        uses: actions/checkout@v2
+      ## Run gosec security scanner
+      - name: Static Application Security Tools (SAST)
+        uses: securego/gosec@master
+        with:
+          args: -exclude=G101,G104,G204,G306,G307 -fmt=json -out=gosec.json ./...

@@ -1,0 +1,14 @@
+name: docs
+
+on: push
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      ## Checks out our code locally so we can work with the files
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Deploy documentation
+        run: |
+          echo "Checking out gh-pages branch into public"

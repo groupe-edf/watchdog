@@ -1,0 +1,9 @@
+version: "develop"
+hooks:
+  - name: global
+    rules:
+    - type: branch
+      conditions:
+      - type: protected
+        condition: develop
+        rejection_message: Branch {{ .Branch }} is protected

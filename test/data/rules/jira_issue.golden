@@ -1,0 +1,9 @@
+version: "develop"
+hooks:
+  - name: global
+    rules:
+      - type: jira
+        conditions:
+          - type: "%s"
+            skip: "%s"
+            rejection_message: "%s"

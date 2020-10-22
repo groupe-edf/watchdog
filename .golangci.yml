@@ -1,0 +1,27 @@
+run:
+  tests: false
+
+linters:
+  enable-all: true
+  disable:
+    - wsl
+    - lll
+    - funlen
+    - gci
+    - gochecknoglobals
+    - gochecknoinits
+    - gocognit
+    - godot
+    - godox
+    - goerr113
+    - gofmt
+    - gofumpt
+    - goimports
+    - gomnd
+    - gosec
+    - maligned
+    - nestif
+    - nlreturn
+    - noctx
+    - scopelint
+    - stylecheck

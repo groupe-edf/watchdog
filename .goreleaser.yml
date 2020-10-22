@@ -1,0 +1,42 @@
+before:
+  hooks:
+    - make clean
+
+builds:
+- env:
+    - CGO_ENABLED=0
+  ldflags:
+    - -s -w
+    - -X github.com/groupe-edf/watchdog/internal/version.Version={{.Tag}}
+    - -X github.com/groupe-edf/watchdog/internal/version.BuildDate={{.Date}}
+    - -X github.com/groupe-edf/watchdog/internal/version.Commit={{.FullCommit}}
+    - -X github.com/groupe-edf/watchdog/internal/version.Sha={{.ShortCommit}}
+  goos:
+    - linux
+  goarch:
+    - amd64
+  mod_timestamp: "{{ .CommitTimestamp }}"
+
+changelog:
+  skip: true
+
+checksum:
+  name_template: "{{ .ProjectName }}_checksums.txt"
+
+nfpms:
+  - homepage: https://github.com/groupe-edf/watchdog
+    maintainer: Habib MAALEM <habib.maalem@gmail.com>
+    description: Git server-side Custom Hooks
+    vendor: watchdog
+    license: GPL
+    formats:
+      - apk
+      - deb
+      - rpm
+    empty_folders:
+    - /var/log/watchdog
+
+project_name: watchdog
+
+snapshot:
+  name_template: snapshot_{{ .Commit }}

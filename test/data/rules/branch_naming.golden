@@ -1,0 +1,10 @@
+version: "develop"
+hooks:
+  - name: global
+    type: pre-receive
+    rules:
+      - type: branch
+        conditions:
+          - type: pattern
+            condition: ^(develop|master|revert-[a-z0-9-]+)|(feature|release|hotfix)/[a-z0-9-]+
+            rejection_message: Branch `{{ .Branch }}` must match Gitflow naming convention

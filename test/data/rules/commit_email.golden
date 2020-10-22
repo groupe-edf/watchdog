@@ -1,0 +1,9 @@
+version: "develop"
+hooks:
+  - name: global
+    rules:
+      - type: commit
+        conditions:
+          - type: email
+            condition: "[a-zA-Z]+@acme.com"
+            rejection_message: "Author email '{{ .Commit.Author.Email }}' is not valid email address"

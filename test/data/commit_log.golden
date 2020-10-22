@@ -1,0 +1,18 @@
+{
+    "author": {
+        "name": "Habib MAALEM",
+        "email": "habib.maalem@gmail.com",
+        "date": "2020-06-22T13:54:00+02:00"
+    },
+    "body": "fix and close #16",
+    "commiter": {
+        "name": "Habib MAALEM",
+        "email": "habib.maalem@gmail.com",
+        "date": "2020-06-22T13:54:00+02:00"
+    },
+    "hash": "348d9d0021bd21083db1f1afa81c7c739166f25d",
+    "parent": "aed0733aef36fa514db0d7bc2d84fbcb02d37173",
+    "refs": "HEAD -> feature/18-ignore-security-check-in-some-folder-files",
+    "short_hash": "348d9d00",
+    "subject": "refactor(logs): add logging level as command argument"
+}

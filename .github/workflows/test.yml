@@ -1,0 +1,30 @@
+name: test
+
+on: push
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        go-version: [1.15.x]
+        platform: [ubuntu-latest]
+    name: test-${{ matrix.go-version }}
+    runs-on: ${{ matrix.platform }}
+    steps:
+      ## Sets up go based on the version
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      ## Checks out our code locally so we can work with the files
+      - name: Checkout code
+        uses: actions/checkout@v2
+      ## Run unit tests
+      - name: Unit Test
+        run: make test-unit
+      ## Upload coverage reports to Codecov
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./target/coverage.txt

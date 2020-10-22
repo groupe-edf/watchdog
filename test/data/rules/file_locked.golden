@@ -1,0 +1,10 @@
+version: "develop"
+hooks:
+  - name: global
+    type: pre-receive
+    rules:
+      - type: file
+        conditions:
+          - type: lock
+            condition: Jenkinsfile
+            rejection_message: "%v file is locked by maintainer"

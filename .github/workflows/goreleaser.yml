@@ -1,0 +1,32 @@
+name: goreleaser
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      ## Checks out our code locally so we can work with the files
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      ## Install go based on the latest 1.15 version
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15.x
+      - name: Generate CHANGELOG.md
+        run: |
+          GO111MODULE=off go get -u github.com/git-chglog/git-chglog/cmd/git-chglog
+          git-chglog --config .ci/git-chglog.yml --output=CHANGELOG.md $(git describe --tags $(git rev-list --tags --max-count=1))
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: release --rm-dist --release-notes=CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

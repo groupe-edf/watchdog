@@ -1,0 +1,15 @@
+#!/bin/sh
+export GL_USERNAME=""
+while read -r OldRev NewRev RefName; do
+  %s \
+    --docs-link="https://groupe-edf.github.io/watchdog" \
+    --hook-type="pre-receive" \
+    --hook-input="$OldRev $NewRev $RefName" \
+    --verbose="true" \
+    --logs-path="/var/log/watchdog/watchdog.log" \
+    --logs-level="debug"
+  status=$?
+  if [ $status -eq 1 ]; then
+    exit 1
+  fi
+done

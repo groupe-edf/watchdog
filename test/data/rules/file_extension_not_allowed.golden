@@ -1,0 +1,10 @@
+version: "develop"
+hooks:
+  - name: global
+    type: pre-receive
+    rules:
+      - type: file
+        conditions:
+          - type: extension
+            rejection_message: "'*.{{ .Condition.Condition }}' files are not allowed"
+            condition: exe

@@ -1,0 +1,13 @@
+version: "develop"
+hooks:
+  - name: global
+    rules:
+    - type: branch
+      conditions:
+      - type: pattern
+        condition: (feature|release|hotfix)\/[a-z\d-_.]+|master
+        rejection_message: Branch `{{ .Branch }}` must match Gitflow naming convention
+    - type: tag
+      conditions:
+      - type: semver
+        rejection_message: Tag version `{{ .Tag }}` must respect semantic versionning v2.0.0 https://semver.org/
