@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -29,6 +30,8 @@ type Analyzer struct {
 
 // Analyze execute analysis
 func (analyzer *Analyzer) Analyze(ctx context.Context, commits []*object.Commit) error {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	if len(analyzer.GitHooks.Hooks) > 0 {
 		analyzer.Logger.WithFields(logrus.Fields{
 			"correlation_id": util.GetRequestID(ctx),
@@ -93,12 +96,19 @@ func (analyzer *Analyzer) SetRepository(repository *git.Repository) {
 	analyzer.Repository = repository
 }
 
-func (analyzer *Analyzer) analyze(ctx context.Context, wg *sync.WaitGroup, gitHooks *hook.GitHooks, commit *object.Commit) {
+func (analyzer *Analyzer) analyze(ctx context.Context, wg *sync.WaitGroup, gitHooks *hook.GitHooks, commit *object.Commit) error {
+	scanTimeStart := time.Now()
 	defer wg.Done()
 	issues := make([]issue.Issue, 0)
 	for _, hook := range gitHooks.Hooks {
 		for _, rule := range hook.Rules {
 			for _, handler := range analyzer.Handlers {
+				select {
+				case <-ctx.Done():
+					return ctx.Err()
+				default:
+					// Prevent from blocking.
+				}
 				analyzer.Logger.WithFields(logrus.Fields{
 					"commit":         commit.Hash.String(),
 					"correlation_id": util.GetRequestID(ctx),
@@ -115,7 +125,9 @@ func (analyzer *Analyzer) analyze(ctx context.Context, wg *sync.WaitGroup, gitHo
 	if len(issues) > 0 {
 		statusMessage = util.Colorize(util.Red, config.BallotX)
 	}
-	fmt.Printf("%v · %v · %v\n", commit.Hash.String()[:8], strings.Split(commit.Message, "\n")[0], statusMessage)
+	elapsed := time.Since(scanTimeStart)
+	fmt.Printf("%v · %v · %v (%v)\n", commit.Hash.String()[:8], strings.Split(commit.Message, "\n")[0], statusMessage, elapsed)
+	return ctx.Err()
 }
 
 // NewAnalyzer instantiate new analyzer

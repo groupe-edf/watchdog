@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/signal"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/config"
@@ -47,6 +48,20 @@ var (
 				fmt.Println()
 			}
 			logger := util.GetLogger(options)
+			ctx, cancel := context.WithCancel(ctx)
+			interruption := make(chan os.Signal, 1)
+			signal.Notify(interruption, os.Interrupt)
+			defer func() {
+				signal.Stop(interruption)
+				cancel()
+			}()
+			go func() {
+				select {
+				case <-interruption:
+					cancel()
+				case <-ctx.Done():
+				}
+			}()
 			analyzer, err := core.NewAnalyzer(nil, options)
 			if err != nil {
 				logger.Fatal(err)
