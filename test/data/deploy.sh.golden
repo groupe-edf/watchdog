@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+curl --header 'Authorization: Basic PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==' \
+  --include \
+  $NEXUS/watchdog/$VERSION/watchdog-$VERSION-linux_amd64.bin

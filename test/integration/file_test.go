@@ -23,7 +23,7 @@ func TestFileExist(t *testing.T) {
 func TestFileExtensionNotAllowedRule(t *testing.T) {
 	var files []helpers.File
 	assert := assert.New(t)
-	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/file_extension_not_allowed.golden"))
+	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/file_extension_not_allowed"))
 	gitHooksFile = strings.Replace(gitHooksFile, "develop", Version, -1)
 	files = append(files, helpers.File{
 		FileName:    ".githooks.yml",
@@ -46,7 +46,7 @@ func TestFileExtensionNotAllowedRule(t *testing.T) {
 func TestFileSizeExceededRule(t *testing.T) {
 	assert := assert.New(t)
 	var files []helpers.File
-	goldenFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/file_size_exceeded.golden"))
+	goldenFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/file_size_exceeded"))
 	goldenFile = strings.Replace(goldenFile, "develop", Version, -1)
 	tests := []struct {
 		name             string

@@ -27,7 +27,7 @@ func TestJiraRules(t *testing.T) {
 		{"ValidCommitWithJiraIssue", "Add .githooks.yml file #WAT-1", "issue", "", issue.SeverityLow, ""},
 		{"MissingJiraIssue", " Add .githooks.yml file", "issue", "", issue.SeverityHigh, "Commit message is missing the JIRA Issue 'JIRA-123'"},
 	}
-	goldenFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/jira_issue.golden"))
+	goldenFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/jira_issue"))
 	goldenFile = strings.Replace(goldenFile, "develop", Version, -1)
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {

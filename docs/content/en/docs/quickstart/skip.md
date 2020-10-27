@@ -20,7 +20,7 @@ $ git commit -am "chore: add dummy configuration file [skip hooks.security]"
 $ git commit -am "chore: add dummy configuration file [skip hooks]"
 ```
 
-Or with [Push Options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt) **Under development**
+Or even better with [Push Options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt) to keep git history clean **Under development**
 ```bash
 $ git push -o security.secrets.skip
 $ git push -o hooks.skip="security.secrets,tag.semver" # Comma separated handler.rule

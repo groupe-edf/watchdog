@@ -3,10 +3,15 @@ package util
 import (
 	"context"
 	"fmt"
+	"html/template"
+	"os"
 	"reflect"
 	"strings"
 	"time"
 	"unicode/utf8"
+
+	"github.com/groupe-edf/watchdog/internal/config"
+	"github.com/groupe-edf/watchdog/internal/version"
 )
 
 // ElapsedTime log task elapsed time
@@ -39,4 +44,17 @@ func ItemExists(arrayType interface{}, item interface{}) bool {
 		}
 	}
 	return false
+}
+
+// PrintBanner Print watchdog banner
+func PrintBanner(ctx context.Context, options *config.Options) error {
+	t, err := template.New("watchdog").Parse(config.Banner)
+	if err != nil {
+		return err
+	}
+	data := map[string]interface{}{
+		"Options":   options,
+		"BuildInfo": version.GetBuildInfo(),
+	}
+	return t.Execute(os.Stdout, data)
 }

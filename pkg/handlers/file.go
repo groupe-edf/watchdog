@@ -10,8 +10,8 @@ import (
 	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
+	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/util"
-	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -44,11 +44,14 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 			fileHandler.Logger.Fatalf("GetFiles() error when loading commit files, %v", err)
 		}
 		for _, condition := range rule.Conditons {
+			if canSkip := core.CanSkip(commit, rule.Type, condition.Type); canSkip {
+				continue
+			}
 			data := issue.Data{
 				Commit:    commit,
 				Condition: condition,
 			}
-			fileHandler.Logger.WithFields(logrus.Fields{
+			fileHandler.Logger.WithFields(logging.Fields{
 				"commit":         commit.Hash.String(),
 				"condition":      condition.Type,
 				"correlation_id": util.GetRequestID(ctx),
@@ -91,7 +94,7 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 							issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "File {{ .Object }} size {{ .Value }} greater or equal than {{ .Operand }}"))
 						}
 					default:
-						fileHandler.Logger.WithFields(logrus.Fields{
+						fileHandler.Logger.WithFields(logging.Fields{
 							"commit":         commit.Hash.String(),
 							"condition":      condition.Type,
 							"correlation_id": util.GetRequestID(ctx),
@@ -101,7 +104,7 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 					}
 				}
 			default:
-				fileHandler.Logger.WithFields(logrus.Fields{
+				fileHandler.Logger.WithFields(logging.Fields{
 					"commit":         commit.Hash.String(),
 					"condition":      condition.Type,
 					"correlation_id": util.GetRequestID(ctx),

@@ -11,10 +11,10 @@ import (
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
+	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/output"
 	"github.com/groupe-edf/watchdog/internal/util"
 	"github.com/groupe-edf/watchdog/pkg/handlers"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -47,7 +47,11 @@ var (
 				_ = util.PrintBanner(ctx, options)
 				fmt.Println()
 			}
-			logger := util.GetLogger(options)
+			logger := logging.New(logging.Options{
+				LogsFormat: options.LogsFormat,
+				LogsLevel:  options.LogsLevel,
+				LogsPath:   options.LogsPath,
+			})
 			ctx, cancel := context.WithCancel(ctx)
 			interruption := make(chan os.Signal, 1)
 			signal.Notify(interruption, os.Interrupt)
@@ -67,26 +71,26 @@ var (
 				logger.Fatal(err)
 			}
 			analyzer.SetLogger(logger)
-			logger.WithFields(logrus.Fields{
+			logger.WithFields(logging.Fields{
 				"correlation_id": util.GetRequestID(ctx),
 				"user_id":        util.GetUserID(ctx),
 			}).Debugf("Loading repository `%v`", options.URI)
 			repository, err := util.LoadRepository(options.URI)
 			if err != nil {
-				logger.WithFields(logrus.Fields{
+				logger.WithFields(logging.Fields{
 					"correlation_id": util.GetRequestID(ctx),
 					"user_id":        util.GetUserID(ctx),
 				}).Fatal(err)
 			}
 			analyzer.SetRepository(repository)
 			if err != nil {
-				logger.WithFields(logrus.Fields{
+				logger.WithFields(logging.Fields{
 					"correlation_id": util.GetRequestID(ctx),
 					"user_id":        util.GetUserID(ctx),
 				}).Warning(err)
 			}
 			if options.HookFile != "" {
-				logger.WithFields(logrus.Fields{
+				logger.WithFields(logging.Fields{
 					"correlation_id": util.GetRequestID(ctx),
 					"user_id":        util.GetUserID(ctx),
 				}).Debugf("loading external hooks file %v", options.HookFile)
@@ -108,14 +112,14 @@ var (
 				} else {
 					reference, err := repository.Head()
 					if err != nil {
-						logger.WithFields(logrus.Fields{
+						logger.WithFields(logging.Fields{
 							"correlation_id": util.GetRequestID(ctx),
 							"user_id":        util.GetUserID(ctx),
 						}).Fatal(err)
 					}
 					commit, err = repository.CommitObject(reference.Hash())
 					if err != nil {
-						logger.WithFields(logrus.Fields{
+						logger.WithFields(logging.Fields{
 							"commit":         commit.Hash.String(),
 							"correlation_id": util.GetRequestID(ctx),
 							"user_id":        util.GetUserID(ctx),
@@ -124,7 +128,7 @@ var (
 				}
 				hooks, err = hook.ExtractConfigFile(ctx, commit)
 				if err != nil && !errors.Is(err, hook.ErrFileNotFound) {
-					logger.WithFields(logrus.Fields{
+					logger.WithFields(logging.Fields{
 						"commit":         commit.Hash.String(),
 						"correlation_id": util.GetRequestID(ctx),
 						"user_id":        util.GetUserID(ctx),
@@ -142,27 +146,27 @@ var (
 				// Fetching commits
 				commits, err := util.FetchCommits(repository, info, hookType)
 				if err != nil {
-					logger.WithFields(logrus.Fields{
+					logger.WithFields(logging.Fields{
 						"correlation_id": util.GetRequestID(ctx),
 						"user_id":        util.GetUserID(ctx),
 					}).Fatal(err)
 				}
 				if len(commits) == 0 {
-					logger.WithFields(logrus.Fields{
+					logger.WithFields(logging.Fields{
 						"correlation_id": util.GetRequestID(ctx),
 						"user_id":        util.GetUserID(ctx),
 					}).Fatal(errors.New("No commits found"))
 				}
 				err = analyzer.Analyze(ctx, commits)
 				if err != nil {
-					logger.WithFields(logrus.Fields{
+					logger.WithFields(logging.Fields{
 						"correlation_id": util.GetRequestID(ctx),
 						"user_id":        util.GetUserID(ctx),
 					}).Fatal(err)
 				}
 				err = output.Report(viper.GetString("output"), viper.GetString("output-format"), analyzer.Issues)
 				if err != nil {
-					logger.WithFields(logrus.Fields{
+					logger.WithFields(logging.Fields{
 						"correlation_id": util.GetRequestID(ctx),
 						"user_id":        util.GetUserID(ctx),
 					}).Fatal(err)

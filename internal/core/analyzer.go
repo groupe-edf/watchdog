@@ -13,8 +13,8 @@ import (
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
+	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/util"
-	"github.com/sirupsen/logrus"
 )
 
 // Analyzer git commits analyzer
@@ -23,7 +23,7 @@ type Analyzer struct {
 	Handlers   []Handler
 	Info       *hook.Info
 	Issues     *util.Set
-	Logger     *logrus.Logger
+	Logger     logging.Interface
 	Options    *config.Options
 	Repository *git.Repository
 }
@@ -33,7 +33,7 @@ func (analyzer *Analyzer) Analyze(ctx context.Context, commits []*object.Commit)
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	if len(analyzer.GitHooks.Hooks) > 0 {
-		analyzer.Logger.WithFields(logrus.Fields{
+		analyzer.Logger.WithFields(logging.Fields{
 			"correlation_id": util.GetRequestID(ctx),
 			"user_id":        util.GetUserID(ctx),
 		}).Debugf("%v handlers found and %v hooks found", len(analyzer.Handlers), len(analyzer.GitHooks.Hooks))
@@ -44,7 +44,7 @@ func (analyzer *Analyzer) Analyze(ctx context.Context, commits []*object.Commit)
 		}
 		wg.Wait()
 	} else {
-		analyzer.Logger.WithFields(logrus.Fields{
+		analyzer.Logger.WithFields(logging.Fields{
 			"correlation_id": util.GetRequestID(ctx),
 			"user_id":        util.GetUserID(ctx),
 		}).Info("There is no hooks in .githooks.yml file")
@@ -64,7 +64,7 @@ func (analyzer *Analyzer) HasErrors() bool {
 
 // RegisterHandler register git hook handler
 func (analyzer *Analyzer) RegisterHandler(ctx context.Context, handler Handler) {
-	analyzer.Logger.WithFields(logrus.Fields{
+	analyzer.Logger.WithFields(logging.Fields{
 		"correlation_id": util.GetRequestID(ctx),
 		"user_id":        util.GetUserID(ctx),
 	}).Debugf("Registring handler `%v`", reflect.TypeOf(handler))
@@ -87,7 +87,7 @@ func (analyzer *Analyzer) SetInfo(info *hook.Info) {
 }
 
 // SetLogger set logger
-func (analyzer *Analyzer) SetLogger(logger *logrus.Logger) {
+func (analyzer *Analyzer) SetLogger(logger logging.Interface) {
 	analyzer.Logger = logger
 }
 
@@ -102,6 +102,12 @@ func (analyzer *Analyzer) analyze(ctx context.Context, wg *sync.WaitGroup, gitHo
 	issues := make([]issue.Issue, 0)
 	for _, hook := range gitHooks.Hooks {
 		for _, rule := range hook.Rules {
+			analyzer.Logger.WithFields(logging.Fields{
+				"commit":         commit.Hash.String(),
+				"correlation_id": util.GetRequestID(ctx),
+				"rule":           rule.Type,
+				"user_id":        util.GetUserID(ctx),
+			}).Debug("Processing hook rule")
 			for _, handler := range analyzer.Handlers {
 				select {
 				case <-ctx.Done():
@@ -109,12 +115,6 @@ func (analyzer *Analyzer) analyze(ctx context.Context, wg *sync.WaitGroup, gitHo
 				default:
 					// Prevent from blocking.
 				}
-				analyzer.Logger.WithFields(logrus.Fields{
-					"commit":         commit.Hash.String(),
-					"correlation_id": util.GetRequestID(ctx),
-					"rule":           rule.Type,
-					"user_id":        util.GetUserID(ctx),
-				}).Debug("Processing commit rule")
 				issuesSlice, _ := handler.Handle(ctx, commit, rule)
 				issues = append(issues, issuesSlice...)
 			}

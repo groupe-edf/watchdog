@@ -1,0 +1,13 @@
+# Compliant
+spring.datasource.password
+
+# Non Compliant
+database.url=jdbc:sqlserver://localhost;user=root;password=Pa$$w0rd;
+
+spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+spring.datasource.url=jdbc:sqlserver://localhost\\SQLEXPRESS:1433;databaseName=watchdog
+spring.datasource.username=sa
+spring.datasource.password=Pa$$w0rd
+
+# Jasypt encrypted password
+spring.datasource.password=ENC(jG3oo+EA4hKi5rnzTVe7V4imvKfxH+wq)

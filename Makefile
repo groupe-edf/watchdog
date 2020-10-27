@@ -151,10 +151,10 @@ ifndef $(URI)
 		--hook-file=".githooks.yml" \
 		--hook-type="" \
 		--hook-input="" \
-		--logs-level="info" \
+		--logs-level="debug" \
 		--logs-format="json" \
-		--output-format="json" \
-		--uri="$(URI)"
+		--logs-path="watchdog.log" \
+		--output-format="json"
 else
 	@echo "${RED}> Repository URI is required${RESET}"
 endif
@@ -162,8 +162,9 @@ endif
 test: test-unit test-integration test-security clean
 
 TAGS=integration
+RUN=.
 test-integration:
-	$(GO_TEST) --tags=$(TAGS) ./test/integration/...
+	$(GO_TEST) --tags=$(TAGS) ./test/integration/... -run $(RUN)
 
 test-security:
 	@gosec -exclude=G101,G104,G204,G306,G307 -fmt=json -out=gosec.json ./...

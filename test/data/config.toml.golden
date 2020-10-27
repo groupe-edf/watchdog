@@ -1,0 +1,7 @@
+[compliant]
+
+[non_compliant]
+PRIVATE_API_TOKEN = "1234567890ABCDEF"
+api_key = "de2df0c1-d495-4d6a-b8da-991e88dd0396"
+  [environment]
+  license_key = ""

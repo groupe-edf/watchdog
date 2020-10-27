@@ -16,7 +16,7 @@ import (
 func TestTagRules(t *testing.T) {
 	var files []helpers.File
 	assert := assert.New(t)
-	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/tag_semver.golden"))
+	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/tag_semver"))
 	gitHooksFile = strings.Replace(gitHooksFile, "develop", Version, -1)
 	files = append(files, helpers.File{
 		FileName:    ".githooks.yml",

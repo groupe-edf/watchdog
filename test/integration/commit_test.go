@@ -19,7 +19,7 @@ import (
 
 func TestCommitPattern(t *testing.T) {
 	assert := assert.New(t)
-	goldenFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/commit_message_pattern.golden"))
+	goldenFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/commit_message_pattern"))
 	goldenFile = strings.Replace(goldenFile, "develop", Version, -1)
 	defaultPattern := `(?m).*`
 	conventionalCommitPattern := `(?m)^(build|ci|docs|feat|fix|perf|refactor|style|test)\([a-z]+\):\s([a-z\.\-\s]+)`
@@ -66,7 +66,7 @@ See merge request groupe-edf/watchdog#16`
 // TODO: Test all operators
 func TestCommitLengthRule(t *testing.T) {
 	assert := assert.New(t)
-	goldenFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/commit_message_length.golden"))
+	goldenFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/commit_message_length"))
 	goldenFile = strings.Replace(goldenFile, "develop", Version, -1)
 	tests := []struct {
 		name             string
@@ -112,7 +112,7 @@ func TestCommitLengthRule(t *testing.T) {
 
 func TestCommitEmailRule(t *testing.T) {
 	assert := assert.New(t)
-	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/commit_email.golden"))
+	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/commit_email"))
 	gitHooksFile = strings.Replace(gitHooksFile, "develop", Version, -1)
 	signature := &object.Signature{
 		Name:  "Habib MAALEM",

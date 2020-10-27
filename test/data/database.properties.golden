@@ -1,0 +1,11 @@
+# Non Compliant
+assets=https://root:Pa$$w0rd@acme.com:3306
+
+spring.datasource.url=jdbc:postgresql://root:Pa$$w0rd@localhost:5432/postgres
+
+database.mysql=mysql://root:Pa$$w0rd@localhost:3306
+
+database.redis=redis://root:Pa$$w0rd@redis.acme.com:3306
+database.redis=rediss://root:Pa$$w0rd@redis.acme.com:3306
+database.redis=redis-socket://root:Pa$$w0rd@redis.acme.com:3306
+database.redis=redis-sentinel://root:Pa$$w0rd@redis.acme.com:3306

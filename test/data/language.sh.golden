@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# Compliant
+export GITHUB_API_TOKEN=""
+export GITHUB_API_TOKEN=$TOKEN
+export GITHUB_API_TOKEN="${TOKEN}"
+docker run -it -e NEXUS_USERNAME=$NEXUS_USERNAME -e NEXUS_PASSWORD=$NEXUS_PASSWORD alpine
+curl -u admin: https://localhost
+curl --user admin: https://localhost
+curl --tlspassword https://localhost
+wget --user=admin --ask-password https://localhost
+wget --user=admin --password= https://localhost
+mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASSWORD"
+
+# Non Compliant
+curl --digest -u admin:Pa$$w0rd https://localhost:3000
+curl -k -v \
+    --proxy-user admin:Pa$$w0rd \
+    --proxy https://localhost:3131 \
+    https://localhost
+curl --tlspassword Pa$$w0rd https://localhost:3000
+curl --proxy-tlspassword Pa$$w0rd https://localhost
+curl --request POST https://language.googleapis.com/v1/documents:analyzeEntities?key=API_KEY
+
+export GITHUB_API_TOKEN=ff34885a8624460a855540c6592698d2f1812843
+export GITHUB_API_TOKEN="ff34885a8624460a855540c6592698d2f1812843"
+
+docker run -it -e NEXUS_USERNAME=admin -e NEXUS_PASSWORD="Pa$$w0rd" alpine
+
+wget --password=Pa$$w0rd https://localhost
+wget --http-password=Pa$$w0rd https://localhost
+wget --proxy-password=Pa$$w0rd https://localhost
+wget --ftp-password=Pa$$w0rd https://localhost
+

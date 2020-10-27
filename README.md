@@ -1,6 +1,6 @@
-# Watchdog - Git server-side custom hooks with YAML
+# Watchdog - Git server-side custom hooks
 [![Actions Status](https://github.com/groupe-edf/watchdog/workflows/test/badge.svg)](https://github.com/groupe-edf/watchdog/actions)
-[![codecov](https://codecov.io/gh/groupe-edf/watchdog/branch/feature/migrate-to-github/graph/badge.svg?token=IDCWJIZ156)](https://github.com/groupe-edf/watchdog)
+[![Codecov](https://codecov.io/gh/groupe-edf/watchdog/branch/feature/migrate-to-github/graph/badge.svg?token=IDCWJIZ156)](https://github.com/groupe-edf/watchdog)
 [![Go Report Card](https://goreportcard.com/badge/github.com/groupe-edf/watchdog)](https://goreportcard.com/report/github.com/groupe-edf/watchdog)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4370/badge)](https://bestpractices.coreinfrastructure.org/projects/4370)
 
@@ -21,9 +21,13 @@ hooks:
     rules:
       - type: commit
         conditions:
-          - type: length
-            condition: lt 120
-            rejection_message: Commit message longer than {{ .Operand }}
+        - type: length
+          condition: lt 120
+          rejection_message: Commit message longer than {{ .Operand }}
+      - type: security
+        conditions:
+        - type: secret
+          skip: docs/.*|.*.json|tests/.*
 ```
 
 ## Features

@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/hook"
+	"github.com/groupe-edf/watchdog/internal/security"
 )
 
 // Score type used by severity and confidence values
@@ -19,6 +20,15 @@ const (
 	SeverityMedium
 	// SeverityHigh severity or confidence
 	SeverityHigh
+)
+
+var (
+	// FunctionsMap helper functions
+	FunctionsMap = template.FuncMap{
+		"Hide": func(value string, characters int) string {
+			return strings.Replace(value, value[characters:], strings.Repeat("#", len(value)-characters), 1)
+		},
+	}
 )
 
 // Data data to be used for message rendering
@@ -35,11 +45,24 @@ type Data struct {
 
 // Issue analysis issue
 type Issue struct {
-	Hash      string             `json:"hash"`
+	Author    string             `json:"author"`
+	Commit    string             `json:"commit"`
+	Condition hook.ConditionType `json:"condition"`
+	Email     string             `json:"email"`
+	Handler   hook.HandlerType   `json:"handler"`
+	Leaks     []security.Leak    `json:"leaks,omitempty"`
 	Message   string             `json:"message"`
 	Severity  Score              `json:"severity"`
-	Handler   hook.HandlerType   `json:"handler"`
-	Condition hook.ConditionType `json:"condition"`
+}
+
+// WithLeak attach leaks to issue
+func (issue *Issue) WithLeak(leak security.Leak) {
+	issue.Leaks = append(issue.Leaks, leak)
+}
+
+// WithLeaks attach leaks to issue
+func (issue *Issue) WithLeaks(leaks []security.Leak) {
+	issue.Leaks = leaks
 }
 
 func (score Score) String() string {
@@ -63,19 +86,16 @@ func NewIssue(handlerType hook.HandlerType, conditionType hook.ConditionType, da
 		messageTemplate = data.Condition.RejectionMessage
 	}
 	var message bytes.Buffer
-	functionsMap := template.FuncMap{
-		"Hide": func(value string, characters int) string {
-			return strings.Replace(value, value[characters:], strings.Repeat("#", len(value)-characters), 1)
-		},
-	}
-	t := template.Must(template.New("").Funcs(functionsMap).Parse(messageTemplate))
+	t := template.Must(template.New("").Funcs(FunctionsMap).Parse(messageTemplate))
 	_ = t.Execute(&message, data)
 	return Issue{
-		Hash:      data.Commit.Hash.String(),
+		Author:    data.Commit.Author.Name,
+		Commit:    data.Commit.Hash.String(),
+		Condition: conditionType,
+		Email:     data.Commit.Author.Email,
+		Handler:   handlerType,
 		Message:   message.String(),
 		Severity:  severity,
-		Handler:   handlerType,
-		Condition: conditionType,
 	}
 }
 

@@ -1,0 +1,6 @@
+; Compliant
+//registry.npmjs.org/:_authToken=${NPM_TOKEN}
+
+; Non Compliant
+_auth = PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==
+//registry.npmjs.org/:_authToken=PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==

@@ -1,0 +1,16 @@
+<settings>
+  <servers>
+    <!--Compliant-->
+    <server>
+      <id>nexus</id>
+      <username>${NEXUS_USERNAME}</username>
+      <password>${NEXUS_PASSWORD}</password>
+    </server>
+    <!--Non Compliant-->
+    <server>
+      <id>artifactory</id>
+      <username>deployment</username>
+      <password>Pa$$w0rd</password>
+    </server>
+  </servers>
+</settings>

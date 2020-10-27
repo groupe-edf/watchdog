@@ -18,14 +18,15 @@ import (
 )
 
 const (
-	Version = "1.0.0"
+	OutputFormat = "json"
+	Version      = "1.0.0"
 )
 
 var (
-	Suite                       *helpers.GitSuite
+	ErrorPreReceiveHookDeclined = errors.New("command error on refs/heads/master: pre-receive hook declined")
 	RootDirectory               string
 	RulesDirectory              string
-	ErrorPreReceiveHookDeclined = errors.New("command error on refs/heads/master: pre-receive hook declined")
+	Suite                       *helpers.GitSuite
 )
 
 func TestMain(m *testing.M) {
@@ -40,17 +41,17 @@ func TestNoGitHooksFile(t *testing.T) {
 	setUpAll()
 	assert := assert.New(t)
 	buffer, err := Suite.PushFile("master", "README.md", []byte("#Test Application"), "Commit with no .githooks file", nil)
-	issues := helpers.ParseIssues(buffer.String())
+	issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 	assert.NoError(err)
 	assert.Equal(0, len(issues))
 }
 
 func TestDefaultRules(t *testing.T) {
 	assert := assert.New(t)
-	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/default_empty_hooks.golden"))
+	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/default_empty_hooks"))
 	gitHooksFile = strings.Replace(gitHooksFile, "develop", Version, -1)
 	buffer, err := Suite.PushFile("master", ".githooks.yml", []byte(gitHooksFile), "Add .githooks.yml with no hooks", nil)
-	issues := helpers.ParseIssues(buffer.String())
+	issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 	assert.NoError(err)
 	assert.Equal(0, len(issues))
 }
@@ -76,6 +77,7 @@ func setUpAll() {
 	}
 	Suite = &helpers.GitSuite{
 		RootDirectory: RootDirectory,
+		OutputFormat:  OutputFormat,
 	}
 	err = Suite.SetUp()
 	if err != nil {

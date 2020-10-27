@@ -20,6 +20,7 @@ type GitSuite struct {
 	BarePath       string
 	ClonePath      string
 	LastCommit     plumbing.Hash
+	OutputFormat   string
 	PreviousCommit plumbing.Hash
 	Repository     *git.Repository
 	RootDirectory  string
@@ -271,7 +272,7 @@ func (suite *GitSuite) installPreReceiveHook() {
 		os.Exit(1)
 	}
 	template, _ := ioutil.ReadFile(path.Join(suite.RootDirectory, "/test/data/pre-receive"))
-	preReceiveHook := []byte(fmt.Sprintf(string(template), path.Join(suite.RootDirectory, "/target/bin/watchdog")))
+	preReceiveHook := []byte(fmt.Sprintf(string(template), path.Join(suite.RootDirectory, "/target/bin/watchdog"), suite.OutputFormat))
 	err = ioutil.WriteFile(filepath.Join(hooks, "pre-receive"), preReceiveHook, 0777)
 	if err != nil {
 		fmt.Println(err)

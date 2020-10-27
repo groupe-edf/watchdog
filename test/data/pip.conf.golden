@@ -1,0 +1,8 @@
+[global]
+# Compliant
+index = https://pypi.example.com/pypi
+index-url = https://root:@pypi.example.com/simple
+
+# Non Compliant
+index = https://root:Pa$$w0rd@pypi.example.com/pypi
+index-url = https://root:Pa$$w0rd@pypi.example.com/simple

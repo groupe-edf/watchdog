@@ -8,8 +8,8 @@ import (
 	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
+	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/util"
-	"github.com/sirupsen/logrus"
 )
 
 // TagHandler handle tags
@@ -32,7 +32,7 @@ func (tagHandler *TagHandler) Handle(ctx context.Context, commit *object.Commit,
 				Condition: condition,
 				Tag:       tagHandler.Info.RefName,
 			}
-			tagHandler.Logger.WithFields(logrus.Fields{
+			tagHandler.Logger.WithFields(logging.Fields{
 				"tag":            data.Tag,
 				"condition":      condition.Type,
 				"correlation_id": util.GetRequestID(ctx),
@@ -46,7 +46,7 @@ func (tagHandler *TagHandler) Handle(ctx context.Context, commit *object.Commit,
 					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Tag version `{{ .Tag }}` must respect semantic versionning v2.0.0 https://semver.org/"))
 				}
 			default:
-				tagHandler.Logger.WithFields(logrus.Fields{
+				tagHandler.Logger.WithFields(logging.Fields{
 					"tag":            data.Tag,
 					"condition":      condition.Type,
 					"correlation_id": util.GetRequestID(ctx),

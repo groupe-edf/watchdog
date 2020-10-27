@@ -1,0 +1,39 @@
+-- MySQL dump 10.13  Distrib 8.0.1, for Linux (x86_64)
+--
+-- Host: 127.0.0.1    Database: main
+-- ------------------------------------------------------
+-- Server version	8.0.12
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) DEFAULT NULL,
+  `password` varchar(60) DEFAULT NULL,
+  `flag` tinyint(10) DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10001 ;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `username`, `password`, `flag`) VALUES
+(1, 'Bugs Bunny', '$2y$12$s3fn56ajUsYzNCVLkfprB.zHmMmOOBJ/Ro/wU0wRiIWaIRrk9gcei', 1),
+(2, 'Daffy Duck', '$2y$12$JQczJzpH39uR0oeEAdGCPOEjKgyGC9OHKMHKHi6kBa2q944rDV1pK', 1),
+(3, 'Porky Pig', '$2y$12$GgdRPB7/INMMHlfVwVXkM.zOQEwpFp8L0qUG5xkRHf6nEyzNtOylS', 1),
+(4, 'Elmer Fudd', '$2y$12$BE3owLSzVKkgeCgVvkIaWuATVpijfSZ1NOsC2MnhQjy4URLRc6mq6', 1),
+(5, 'Speedy Gonzales', '$2y$12$SV2jDq3g6nTRCVjm0QV6M.9YDeUq0Q0Nug0dDdwdzr2flhiOktgN.', 1),
+(6, 'Yosemite Sam', '$2y$12$aS1AxXLYHyDKCxF/RYFF5.nONTahJNlprtnFIlt81cnhC/ygWifNO', 1),
+(7, 'Tasmanian Devil', '$2y$12$pwpuVY9adEzj5McaVz6hQumHFmZtqb2JJZjZ4aI/FLI2GLhnACLhm', 1),
+(8, 'Marvin the Martian', '$2y$12$1yYhtmOXZG84v8HMRXkS3en4BTQRLhdzg1PMOkBi0I/jZCdqdSh/G', 1);

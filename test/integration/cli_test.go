@@ -18,7 +18,7 @@ func TestCli(t *testing.T) {
 		exitStatus string
 		golden     string
 	}{
-		{"NoArgs", "no-args.input", "exit status 1", "no-args.golden"},
+		{"NoArgs", "no-args.input", "exit status 1", "no-args"},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {

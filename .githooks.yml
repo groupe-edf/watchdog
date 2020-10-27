@@ -15,4 +15,4 @@ hooks:
       - type: security
         conditions:
         - type: secret
-          skip: .*.json|tests/.*
+          skip: docs/.*|.*.json|test/.*

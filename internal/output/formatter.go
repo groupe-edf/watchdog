@@ -15,11 +15,9 @@ import (
 
 var text = `
 {{- if .Issues -}}
------BEGIN REJECTION MESSAGES-----
 {{ range .Issues -}}
-{{ $.LinePrefix }}severity={{ .Severity }} handler={{ .Handler }} condition={{ .Condition }} commit={{ printf "%.8s" .Hash }} message="{{ .Message }}"
+{{ $.LinePrefix }}severity={{ .Severity }} handler={{ .Handler }} condition={{ .Condition }} commit={{ printf "%.8s" .Commit }} message="{{ .Message }}"
 {{ end -}}
------END REJECTION MESSAGES-----
 {{ end -}}
 `
 
@@ -31,9 +29,6 @@ type ReportData struct {
 
 // NewReport return analysis report
 func NewReport(writer io.Writer, format string, set *util.Set) (err error) {
-	functionsMap := template.FuncMap{
-		"ToUpper": strings.ToUpper,
-	}
 	switch format {
 	case "json":
 		raw, err := json.MarshalIndent(set.List(), "", "\t")
@@ -43,6 +38,9 @@ func NewReport(writer io.Writer, format string, set *util.Set) (err error) {
 		_, err = writer.Write(raw)
 		return err
 	case "text":
+		functionsMap := template.FuncMap{
+			"ToUpper": strings.ToUpper,
+		}
 		t := template.Must(template.New("watchdog").Funcs(functionsMap).Parse(text))
 		return t.Execute(writer, &ReportData{
 			Issues:     set.List(),
@@ -54,13 +52,19 @@ func NewReport(writer io.Writer, format string, set *util.Set) (err error) {
 
 // Report output issues report
 func Report(path string, format string, set *util.Set) (err error) {
-	if path != "" {
-		file, err := os.Create(path)
-		if err != nil {
-			return err
+	if set.Len() > 0 {
+		if path != "" {
+			file, err := os.Create(path)
+			if err != nil {
+				return err
+			}
+			defer file.Close()
+			return NewReport(file, format, set)
 		}
-		defer file.Close()
-		return NewReport(file, format, set)
+		os.Stdout.Write([]byte("-----BEGIN REJECTION MESSAGES-----\n"))
+		err = NewReport(os.Stdout, format, set)
+		os.Stdout.Write([]byte("\n-----BEGIN REJECTION MESSAGES-----"))
+		return err
 	}
-	return NewReport(os.Stdout, format, set)
+	return nil
 }

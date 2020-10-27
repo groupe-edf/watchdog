@@ -3,75 +3,97 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"path"
 	"strings"
 	"testing"
+	"text/template"
 
 	"github.com/groupe-edf/watchdog/internal/issue"
 	helpers "github.com/groupe-edf/watchdog/internal/test"
 	"github.com/stretchr/testify/assert"
 )
 
+type Issue struct {
+	Offender string
+	Rule     string
+}
+
 func TestSecretRules(t *testing.T) {
 	assert := assert.New(t)
 	tests := []struct {
-		provider    string
-		fileName    string
-		fileContent string
-		weakString  string
+		Provider    string
+		FileName    string
+		FileContent string
+		Count       int
+		Issue       *Issue
 	}{
-		{"AWS_ACCESS_KEY", "AWSProvider.java", `private static final String AWS_SECRET_ACCESS_KEY = "AKIAYYYYYYYYYYYYYYYY";`, `ACCESS_KEY = "AKIAYYYYYYYYYYYYYYYY"`},
-		{"BASIC_AUTHENTICATION_URI", "application.json", `{"baseUrl": "https://www.acme.com", "assets": "https://root:Pa$$w0rd@acme.com:3306"}`, "https://root:Pa$$w0rd@acme.com:3306"},
-		{"BASIC_AUTHENTICATION_HEADER", "main.py", `requests.get('https://www.acme.com', headers={'Authorization': 'Basic PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg=='})`, "Basic PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg=="},
-		{"BASIC_AUTHENTICATION_HEADER", "deploy.sh", `set -e | curl -i -H 'Authorization: Basic PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==' $NEXUS/watchdog/$VERSION/watchdog-$VERSION-linux_amd64.bin`, "Authorization: Basic PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg=="},
-		{"CONFIDENTIAL", "README.md", "CONFIDENTIAL", "CONFIDENTIAL"},
-		{"MYSQL", "database.json", `{"database": "mysql://root:Pa$$w0rd@localhost:3306"}`, "mysql://root:Pa$$w0rd@localhost:3306"},
-		{"NPM_AUTHENTICATION", ".npmrc", "_auth = PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==", "_auth = PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg=="},
-		{"PASSWORD", "application.properties", `jdbc:sqlserver://localhost;user=root;password=Pa$$w0rd;`, `password=Pa$$w0rd`},
-		{"PASSWORD_EMPTY", ".env", `export DATABASE_PASSWORD=""`, ``},
-		{"PASSWORD_QUOTES", "config.ini", `PASSWORD="Pa$$w0rd"`, `PASSWORD="Pa$$w0rd"`},
-		{"PASSWORD_JSON", "config.json", `{"password": "Pa$$w0rd"}`, `"password": "Pa$$w0rd"`},
-		{"PASSWORD_XML", "settings.xml", `<settings><servers><server><id>nexus</id><username>deployment</username><password>Pa$$w0rd@</password></server></servers></settings>`, `<password>Pa$$w0rd@</password>`},
-		{"PRIVATE_KEY", "server.key", `-----BEGIN RSA PRIVATE KEY-----`, "-----BEGIN RSA PRIVATE KEY-----"},
-		{"REDIS_URL", "database.json", `{"redisConnection": "redis://root:Pa$$w0rd@redis.acme.com:3306"}`, "redis://root:Pa$$w0rd@redis.acme.com:3306"},
-		{"REDIS_URL_SSL", "database.json", `{"redisConnection": "rediss://root:Pa$$w0rd@redis.acme.com:3306"}`, "rediss://root:Pa$$w0rd@redis.acme.com:3306"},
-		{"REDIS_URL_SOCKET", "database.json", `{"redisConnection": "redis-socket://root:Pa$$w0rd@redis.acme.com:3306"}`, "redis-socket://root:Pa$$w0rd@redis.acme.com:3306"},
-		{"SECRET_KEY", ".env", `export API_TOKEN="1234567890abcdef"`, `API_TOKEN="1234567890abcdef"`},
-		// FIXME: SECRET_KEY_VARIABLE should pass without errors
-		{"SECRET_KEY_VARIABLE", ".env", `export accessKey="$secretKeyVariable"`, `accessKey="$secretKeyVariable"`},
+		{"INITIAL_COMMIT", "README.md", "# Readme", 0, nil},
+		{"BASE_64_AUTHORIZATION_HEADER", "deploy.sh", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/deploy.sh")), 1, &Issue{Offender: "PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==", Rule: "BASE_64"}},
+		{"BASE_64_JSON", "config.json", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/config.json")), 1, &Issue{Offender: "X3Rva2VuOjEyMzQ1Njc4OTBBQkNERUY=", Rule: "BASE_64"}},
+		{"BASE_64_NPM", ".npmrc", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/.npmrc")), 3, &Issue{Offender: "PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==", Rule: "BASE_64"}},
+		{"CONFIDENTIAL", "SECURITY.md", "CONFIDENTIAL", 1, &Issue{Offender: "CONFIDENTIAL", Rule: "CONFIDENTIAL"}},
+		{"CONNECTION_STRING", "application.properties", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/database.properties")), 7, &Issue{Offender: "Pa$$w0rd", Rule: "CONNECTION_STRING"}},
+		{"CONNECTION_STRING_PIP", "pip.conf", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/pip.conf")), 2, &Issue{Offender: "Pa$$w0rd", Rule: "CONNECTION_STRING"}},
+		{"ENTROPY_MYSQL_DUMP", "dump.sql", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/dump.sql")), 8, &Issue{Offender: "$2y$12$s3fn56ajUsYzNCVLkfprB.zHmMmOOBJ/Ro/wU0wRiIWaIRrk9gcei", Rule: "ENTROPY"}},
+		{"HTPASSWD", ".htpasswd", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/.htpasswd")), 5, &Issue{Offender: "Pa$$w0rd", Rule: "HTPASSWD"}},
+		{"LANGUAGE_GO", "main.go", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/language.go")), 1, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
+		{"LANGUAGE_JAVA", "AWSProvider.java", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/language.java")), 5, &Issue{Offender: "AKIAYYYYYYYYYYYYYYYY", Rule: "AWS_ACCESS_KEY"}},
+		{"LANGUAGE_SHELL", "deploy.sh", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/language.sh")), 7, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
+		{"PASSWORD", "application.properties", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/application.properties")), 3, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
+		{"PASSWORD_ENV", ".env", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/.env")), 2, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
+		{"PASSWORD_JSON", "application.json", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/application.json")), 2, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
+		{"PASSWORD_QUOTES", "config.ini", `PASSWORD="Pa$$w0rd"`, 1, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
+		{"PASSWORD_XML", "settings.xml", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/settings.xml")), 1, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD_XML"}},
+		{"PRIVATE_KEY", "server.key", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/server.key")), 1, &Issue{Offender: "-----BEGIN RSA PRIVATE KEY-----", Rule: "ASYMMETRIC_PRIVATE_KEY"}},
+		{"SECRET_KEY_TOML", "config.toml", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/config.toml")), 2, &Issue{Offender: "1234567890ABCDEF", Rule: "SECRET_KEY"}},
+		{"SECRET_KEY_ENV", ".env", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/production.env")), 1, &Issue{Offender: "t&XG+FJ%M@8XYv5a!xaR", Rule: "SECRET_KEY"}},
 	}
-	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/security_secret.golden"))
-	gitHooksFile = strings.Replace(gitHooksFile, "develop", Version, -1)
+	rejectionMessage := "Secrets, token and passwords are forbidden, `{{ .Object }}:{{ Hide .Value 4 }}`"
+	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/security_secret"))
+	gitHooksFile = fmt.Sprintf(gitHooksFile, Version)
 	for _, test := range tests {
-		t.Run(test.provider, func(t *testing.T) {
+		t.Run(test.Provider, func(t *testing.T) {
 			var files []helpers.File
+			var issues = make([]issue.Issue, 0)
 			files = append(files, helpers.File{
 				FileName:    ".githooks.yml",
 				FileContent: []byte(gitHooksFile),
 			}, helpers.File{
-				FileName:    test.fileName,
-				FileContent: []byte(test.fileContent),
+				FileName:    test.FileName,
+				FileContent: []byte(test.FileContent),
 			})
-			buffer, err := Suite.CommitAndPush("master", files, "Add "+test.provider+" secret", nil)
-			issues := helpers.ParseIssues(buffer.String())
-			if test.weakString != "" {
+			buffer, err := Suite.CommitAndPush("master", files, "Add "+test.Provider+" secret", nil)
+			issues = helpers.ParseIssues(buffer.String(), "json")
+			assert.Equal(test.Count, len(issues))
+			if test.Issue != nil {
 				assert.Equal(ErrorPreReceiveHookDeclined, err)
-				assert.Equal(1, len(issues))
+				assert.NotEmpty(issues[0].Leaks)
+				assert.Equal(test.Issue.Rule, issues[0].Leaks[0].Rule)
 				assert.Equal(issue.SeverityHigh, issues[0].Severity)
-				assert.Equal(fmt.Sprintf("Secrets, token and passwords are forbidden, `%s:%s`", test.fileName, test.weakString), issues[0].Message)
+				var message bytes.Buffer
+				t := template.Must(template.New("").Funcs(issue.FunctionsMap).Parse(rejectionMessage))
+				_ = t.Execute(&message, issue.Data{
+					Object: test.FileName,
+					Value:  test.Issue.Offender,
+				})
+				assert.Equal(message.String(), issues[0].Message)
 			} else {
 				assert.NoError(err)
-				assert.Equal(0, len(issues))
+
 			}
-			Suite.ResetLastCommit()
+			err = Suite.ResetLastCommit()
+			if err != nil {
+				t.Fatalf("Something went wrong when trying to reset last commit: %s", err)
+			}
 		})
 	}
 }
 
 func TestSecretRulesWithSkip(t *testing.T) {
 	assert := assert.New(t)
-	gitHooksFile := helpers.LoadGolden(t, path.Join(RulesDirectory, "security_secret_with_skip.golden"))
+	gitHooksFile := helpers.LoadGolden(t, path.Join(RulesDirectory, "security_secret_with_skip"))
 	gitHooksFile = strings.Replace(gitHooksFile, "develop", Version, -1)
 	var files []helpers.File
 	files = append(files, helpers.File{
@@ -82,7 +104,7 @@ func TestSecretRulesWithSkip(t *testing.T) {
 		FileContent: []byte(`{"redisConnection": "rediss://root:Pa$$w0rd@redis.acme.com:3306"}`),
 	})
 	buffer, err := Suite.CommitAndPush("master", files, "Add REDIS_URL secret", nil)
-	issues := helpers.ParseIssues(buffer.String())
+	issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 	assert.NoError(err)
 	assert.Equal(0, len(issues))
 }
@@ -91,7 +113,7 @@ func TestSkipWithGitPushOption(t *testing.T) {
 	tearDownAll()
 	setUpAll()
 	assert := assert.New(t)
-	gitHooksFile := helpers.LoadGolden(t, path.Join(RulesDirectory, "skip_with_git_push_option.golden"))
+	gitHooksFile := helpers.LoadGolden(t, path.Join(RulesDirectory, "skip_with_git_push_option"))
 	gitHooksFile = strings.Replace(gitHooksFile, "develop", Version, -1)
 	var files []helpers.File
 	files = append(files, helpers.File{
@@ -102,7 +124,7 @@ func TestSkipWithGitPushOption(t *testing.T) {
 		FileContent: []byte(`{"password": "Pa$$w0rd"}`),
 	})
 	buffer, err := Suite.CommitAndPush("master", files, "Add REDIS_URL secret [skip hooks.security.secret]", nil)
-	issues := helpers.ParseIssues(buffer.String())
+	issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 	assert.NoError(err)
 	assert.Equal(0, len(issues))
 }

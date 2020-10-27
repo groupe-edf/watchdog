@@ -1,0 +1,19 @@
+package main
+
+import (
+  "fmt"
+  "os"
+)
+
+var (
+	// Compliant
+	password := os.Getenv("PASSWORD")
+  redisPassword := GetRedisPassword()
+
+	// Non Compliant
+	databasePassword := "Pa$$w0rd"
+)
+
+func main() {
+  fmt.Print("Starting...")
+}

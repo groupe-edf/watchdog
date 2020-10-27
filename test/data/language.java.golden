@@ -1,0 +1,14 @@
+package com.acme
+
+public class AWSProvider {
+  static final String COMPLIANT_APITOKEN = "{TOKEN}";
+  static final String NON_COMPLIANT_APITOKEN = "AKIAYYYYYYYYYYYYYYYY";
+  public static void main(String[] args) {
+    // Compliant
+    String password = NON_COMPLIANT_APITOKEN;
+    String password = System.getProperty("PASSWORD");
+    // Non Compliant
+    String password = "Pa$$w0rd";
+    final String password = "Pa$$w0rd";
+  }
+}

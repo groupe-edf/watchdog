@@ -9,9 +9,9 @@ import (
 	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
+	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/util"
 	"github.com/groupe-edf/watchdog/pkg/jira"
-	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -40,7 +40,7 @@ func (jiraHandler *JiraHandler) Handle(ctx context.Context, commit *object.Commi
 				Commit:    commit,
 				Condition: condition,
 			}
-			jiraHandler.Logger.WithFields(logrus.Fields{
+			jiraHandler.Logger.WithFields(logging.Fields{
 				"commit":         commit.Hash,
 				"condition":      condition.Type,
 				"correlation_id": util.GetRequestID(ctx),
@@ -74,7 +74,7 @@ func (jiraHandler *JiraHandler) Handle(ctx context.Context, commit *object.Commi
 					}
 				}
 			default:
-				jiraHandler.Logger.WithFields(logrus.Fields{
+				jiraHandler.Logger.WithFields(logging.Fields{
 					"commit":         commit.Hash,
 					"condition":      condition.Type,
 					"correlation_id": util.GetRequestID(ctx),

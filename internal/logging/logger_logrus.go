@@ -1,0 +1,74 @@
+package logging
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
+
+	"github.com/sirupsen/logrus"
+)
+
+// NewLogrusLogger create new logrus logger
+func NewLogrusLogger(options Options) Interface {
+	logger := logrus.New()
+	logLevel, _ := logrus.ParseLevel(options.LogsLevel)
+	logger.SetLevel(logLevel)
+	logger.SetReportCaller(true)
+	if options.LogsPath != "" {
+		logFile, err := os.OpenFile(filepath.Clean(options.LogsPath), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
+		if err != nil {
+			logger.Fatalf("Failed to open log file: %v", err)
+		}
+		logger.SetOutput(logFile)
+	}
+	if options.LogsFormat == "json" {
+		logger.SetFormatter(&logrus.JSONFormatter{
+			CallerPrettyfier: func(f *runtime.Frame) (string, string) {
+				slices := strings.Split(f.File, "/")
+				file := slices[len(slices)-1]
+				return "", fmt.Sprintf("%s:%d", file, f.Line)
+			},
+		})
+	}
+	return &logrusLogger{logger}
+}
+
+// Logrus logger adapter
+type logrusLogger struct {
+	*logrus.Logger
+}
+
+// WithField append field to log entry
+func (logger logrusLogger) WithField(key string, value interface{}) Interface {
+	return logrusEntry{
+		Entry: logger.Logger.WithField(key, value),
+	}
+}
+
+// WithFields append fields to log entry
+func (logger *logrusLogger) WithFields(fields Fields) Interface {
+	return logrusEntry{
+		Entry: logger.Logger.WithFields(map[string]interface{}(fields)),
+	}
+}
+
+// LogrusEntry logrus log entry
+type logrusEntry struct {
+	*logrus.Entry
+}
+
+// WithField log with field
+func (logger logrusEntry) WithField(key string, value interface{}) Interface {
+	return logrusEntry{
+		Entry: logger.Entry.WithField(key, value),
+	}
+}
+
+// WithFields log with fields
+func (logger logrusEntry) WithFields(fields Fields) Interface {
+	return logrusEntry{
+		Entry: logger.Entry.WithFields(map[string]interface{}(fields)),
+	}
+}

@@ -9,8 +9,8 @@ import (
 	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
+	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/util"
-	"github.com/sirupsen/logrus"
 )
 
 // CommitHandler handle commit messages
@@ -26,12 +26,15 @@ func (commitHandler *CommitHandler) GetType() string {
 // Handle checking commit message with defined rules
 func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error) {
 	if rule.Type == hook.TypeCommit {
-		data := issue.Data{
-			Commit: commit,
-		}
 		for _, condition := range rule.Conditons {
-			data.Condition = condition
-			commitHandler.Logger.WithFields(logrus.Fields{
+			if canSkip := core.CanSkip(commit, rule.Type, condition.Type); canSkip {
+				continue
+			}
+			data := issue.Data{
+				Commit:    commit,
+				Condition: condition,
+			}
+			commitHandler.Logger.WithFields(logging.Fields{
 				"commit":         commit.Hash.String(),
 				"condition":      condition.Type,
 				"correlation_id": util.GetRequestID(ctx),
@@ -70,7 +73,7 @@ func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.C
 				}
 				data.Operator = matches[1]
 				data.Operand = matches[2]
-				commitHandler.Logger.WithFields(logrus.Fields{
+				commitHandler.Logger.WithFields(logging.Fields{
 					"commit":         commit.Hash.String(),
 					"condition":      condition.Type,
 					"correlation_id": util.GetRequestID(ctx),
@@ -103,7 +106,7 @@ func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.C
 						issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Commit message not equal to {{ .Operand }}"))
 					}
 				default:
-					commitHandler.Logger.WithFields(logrus.Fields{
+					commitHandler.Logger.WithFields(logging.Fields{
 						"commit":         commit.Hash.String(),
 						"condition":      condition.Type,
 						"correlation_id": util.GetRequestID(ctx),
@@ -117,7 +120,7 @@ func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.C
 					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "User email `{{ .Commit.Author.Email }}` does't satisfy condition"))
 				}
 			default:
-				commitHandler.Logger.WithFields(logrus.Fields{
+				commitHandler.Logger.WithFields(logging.Fields{
 					"commit":         commit.Hash.String(),
 					"condition":      condition.Type,
 					"correlation_id": util.GetRequestID(ctx),
@@ -134,7 +137,7 @@ func (commitHandler *CommitHandler) canSkip(ctx context.Context, commitSubject s
 	if condition.Skip != "" {
 		matches := regexp.MustCompile(condition.Skip).FindStringSubmatch(commitSubject)
 		if len(matches) > 0 {
-			commitHandler.Logger.WithFields(logrus.Fields{
+			commitHandler.Logger.WithFields(logging.Fields{
 				"condition":      condition.Type,
 				"correlation_id": util.GetRequestID(ctx),
 				"user_id":        util.GetUserID(ctx),

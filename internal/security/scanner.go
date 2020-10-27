@@ -1,6 +1,9 @@
 package security
 
-import "regexp"
+// Options scanner options
+type Options struct {
+	AllowList AllowList
+}
 
 // Scanner scanner interface
 type Scanner interface {
@@ -10,11 +13,4 @@ type Scanner interface {
 // VerifiedScanner verify secret
 type VerifiedScanner interface {
 	Verify() bool
-}
-
-// BaseScanner data struct
-type BaseScanner struct {
-	Provider string
-	Regexp   *regexp.Regexp
-	Matches  []string
 }

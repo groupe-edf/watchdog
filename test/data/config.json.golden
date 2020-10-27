@@ -1,0 +1,9 @@
+{
+  "_comment": "Docker config.json file",
+  "auths": {
+    "https://index.docker.io/v1/": {
+      "email": "john.doe@acme.com",
+      "auth":"X3Rva2VuOjEyMzQ1Njc4OTBBQkNERUY="
+    }
+  }
+}

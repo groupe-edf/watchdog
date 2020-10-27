@@ -1,0 +1,13 @@
+{
+  "compliant": {
+    "username": "root",
+    "password: ""
+  },
+  "non_compliant": {
+    "username": "root",
+    "password: "Pa$$w0rd",
+    "environment": [
+      "DB_PASSWORD=Pa$$w0rd"
+    ]
+  }
+}

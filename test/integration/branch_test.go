@@ -15,7 +15,7 @@ import (
 
 func TestBranchNaming(t *testing.T) {
 	assert := assert.New(t)
-	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/branch_naming.golden"))
+	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/branch_naming"))
 	gitHooksFile = strings.Replace(gitHooksFile, "develop", Version, -1)
 	buffer, err := Suite.PushFile("master", ".githooks.yml", []byte(gitHooksFile), "Add .githooks.yml with branch naming rules", nil)
 	if err != nil {
@@ -51,7 +51,7 @@ func TestBranchNaming(t *testing.T) {
 
 func TestBranchProtected(t *testing.T) {
 	assert := assert.New(t)
-	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/branch_protected.golden"))
+	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/branch_protected"))
 	gitHooksFile = strings.Replace(gitHooksFile, "develop", Version, -1)
 	buffer, err := Suite.PushFile("master", ".githooks.yml", []byte(gitHooksFile), "Add .githooks.yml to check protected branches", nil)
 	if err != nil {

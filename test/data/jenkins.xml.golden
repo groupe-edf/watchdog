@@ -1,0 +1,10 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<user>
+  <fullName>admin</fullName>
+  <properties>
+    <jenkins.security.ApiTokenProperty>
+      <compliantApiToken></compliantApiToken>
+      <nonCompliantApiToken></noncompliantApiToken>
+    </jenkins.security.ApiTokenProperty>
+  </properties>
+</user>

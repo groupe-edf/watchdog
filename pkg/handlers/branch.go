@@ -9,8 +9,8 @@ import (
 	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
+	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/util"
-	"github.com/sirupsen/logrus"
 )
 
 // BranchHandler handle branch naming
@@ -34,7 +34,7 @@ func (branchHandler *BranchHandler) Handle(ctx context.Context, commit *object.C
 				Commit:    branchHandler.Info.NewRev,
 				Condition: condition,
 			}
-			branchHandler.Logger.WithFields(logrus.Fields{
+			branchHandler.Logger.WithFields(logging.Fields{
 				"branch":         data.Branch,
 				"condition":      condition.Type,
 				"correlation_id": util.GetRequestID(ctx),
@@ -60,7 +60,7 @@ func (branchHandler *BranchHandler) Handle(ctx context.Context, commit *object.C
 					}
 				}
 			default:
-				branchHandler.Logger.WithFields(logrus.Fields{
+				branchHandler.Logger.WithFields(logging.Fields{
 					"branch":         data.Branch,
 					"condition":      condition.Type,
 					"correlation_id": util.GetRequestID(ctx),

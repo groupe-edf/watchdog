@@ -1,0 +1,4 @@
+import firebase
+
+auth = firebase.auth()
+user = auth.sign_in_with_email_and_password("john.doe@acme.com", "Pa$$w0rd")

@@ -9,7 +9,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
-	"github.com/sirupsen/logrus"
+	"github.com/groupe-edf/watchdog/internal/logging"
 )
 
 const (
@@ -24,7 +24,7 @@ type Handler interface {
 	GetRepository() *git.Repository
 	GetType() string
 	Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error)
-	SetLogger(logger *logrus.Logger)
+	SetLogger(logger logging.Interface)
 	SetInfo(info *hook.Info)
 	SetRepository(repository *git.Repository)
 }
@@ -34,7 +34,7 @@ type AbstractHandler struct {
 	Handler
 	Info       *hook.Info
 	Repository *git.Repository
-	Logger     *logrus.Logger
+	Logger     logging.Interface
 }
 
 // GetRepository get git repository
@@ -43,7 +43,7 @@ func (handler *AbstractHandler) GetRepository() *git.Repository {
 }
 
 // SetLogger set logger
-func (handler *AbstractHandler) SetLogger(logger *logrus.Logger) {
+func (handler *AbstractHandler) SetLogger(logger logging.Interface) {
 	handler.Logger = logger
 }
 
