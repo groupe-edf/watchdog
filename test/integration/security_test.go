@@ -65,7 +65,7 @@ func TestSecretRules(t *testing.T) {
 				FileContent: []byte(test.FileContent),
 			})
 			buffer, err := Suite.CommitAndPush("master", files, "Add "+test.Provider+" secret", nil)
-			issues = helpers.ParseIssues(buffer.String(), "json")
+			issues = helpers.ParseIssues(buffer.String(), OutputFormat)
 			assert.Equal(test.Count, len(issues))
 			if test.Issue != nil {
 				assert.Equal(ErrorPreReceiveHookDeclined, err)

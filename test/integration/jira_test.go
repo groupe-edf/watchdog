@@ -37,7 +37,7 @@ func TestJiraRules(t *testing.T) {
 				if test.severity == issue.SeverityHigh {
 					assert.Equal(ErrorPreReceiveHookDeclined, err)
 				}
-				issues := helpers.ParseIssues(buffer.String())
+				issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 				assert.Equal(test.severity, issues[0].Severity)
 				assert.Equal(test.rejectionMessage, issues[0].Message)
 			}

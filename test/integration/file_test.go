@@ -34,7 +34,7 @@ func TestFileExtensionNotAllowedRule(t *testing.T) {
 		FileContent: []byte(""),
 	})
 	buffer, err := Suite.CommitAndPush("master", files, "Add .githooks.yml to exclude extensions", nil)
-	issues := helpers.ParseIssues(buffer.String())
+	issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 	assert.Error(err)
 	assert.Equal(ErrorPreReceiveHookDeclined, err)
 	assert.Equal(1, len(issues))
@@ -81,7 +81,7 @@ func TestFileSizeExceededRule(t *testing.T) {
 				t.Fatal("Error parsing file size")
 			}
 			buffer, err := Suite.CommitAndPush("master", files, "Add database dependency driver postgresql.jar", nil)
-			issues := helpers.ParseIssues(buffer.String())
+			issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 			if test.severity != issue.SeverityLow {
 				assert.Error(err)
 				assert.Equal(ErrorPreReceiveHookDeclined, err)

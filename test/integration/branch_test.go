@@ -35,7 +35,7 @@ func TestBranchNaming(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			buffer, err := Suite.CreateBranch(test.name)
-			issues := helpers.ParseIssues(buffer.String())
+			issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 			if test.severity == issue.SeverityHigh {
 				assert.Error(err)
 				assert.Equal(fmt.Errorf("command error on refs/heads/%s: pre-receive hook declined", test.name), err)
@@ -67,7 +67,7 @@ func TestBranchProtected(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			buffer, err = Suite.CreateBranch(test.name)
-			issues := helpers.ParseIssues(buffer.String())
+			issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 			if test.severity == issue.SeverityHigh {
 				assert.Equal(fmt.Errorf("command error on refs/heads/%s: pre-receive hook declined", test.name), err)
 				assert.Equal(1, len(issues))

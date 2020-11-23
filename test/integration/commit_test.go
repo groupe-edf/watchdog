@@ -48,7 +48,7 @@ See merge request groupe-edf/watchdog#16`
 		t.Run(test.name, func(t *testing.T) {
 			gitHooksFile := fmt.Sprintf(goldenFile, test.pattern, test.rejectionMessage, test.skip)
 			buffer, err := Suite.PushFile("master", ".githooks.yml", []byte(gitHooksFile), test.commitSubject, nil)
-			issues := helpers.ParseIssues(buffer.String())
+			issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 			if test.severity != issue.SeverityLow {
 				assert.Error(err)
 				assert.Equal(1, len(issues))
@@ -89,7 +89,7 @@ func TestCommitLengthRule(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			gitHooksFile := fmt.Sprintf(goldenFile, test.operator+" "+test.length, test.rejectionMessage)
 			buffer, err := Suite.PushFile("master", ".githooks.yml", []byte(gitHooksFile), test.commitSubject, nil)
-			issues := helpers.ParseIssues(buffer.String())
+			issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 			if test.severity != issue.SeverityLow {
 				assert.Error(err)
 				assert.Equal(ErrorPreReceiveHookDeclined, err)
@@ -120,7 +120,7 @@ func TestCommitEmailRule(t *testing.T) {
 		When:  time.Now(),
 	}
 	buffer, err := Suite.PushFile("master", ".githooks.yml", []byte(gitHooksFile), "Check author email in commit message", signature)
-	issues := helpers.ParseIssues(buffer.String())
+	issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 	assert.Error(err)
 	assert.Equal(ErrorPreReceiveHookDeclined, err)
 	assert.Equal(1, len(issues))

@@ -38,7 +38,7 @@ func TestTagRules(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			buffer, err := Suite.AnnotatedTag(test.name, Suite.LastCommit)
-			issues := helpers.ParseIssues(buffer.String())
+			issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 			if test.severity == issue.SeverityHigh {
 				fmt.Print(buffer.String())
 				assert.Equal(fmt.Errorf("command error on refs/tags/%s: pre-receive hook declined", test.name), err)
