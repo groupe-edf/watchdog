@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -30,6 +31,7 @@ func (tagHandler *TagHandler) Handle(ctx context.Context, commit *object.Commit,
 		for _, condition := range rule.Conditons {
 			data := issue.Data{
 				Condition: condition,
+				Commit:    tagHandler.Info.NewRev,
 				Tag:       tagHandler.Info.RefName,
 			}
 			tagHandler.Logger.WithFields(logging.Fields{
@@ -41,7 +43,8 @@ func (tagHandler *TagHandler) Handle(ctx context.Context, commit *object.Commit,
 			}).Info("Processing tag rule")
 			switch condition.Type {
 			case "semver":
-				_, err := semver.NewVersion(data.Tag)
+				version, err := semver.NewVersion(data.Tag)
+				fmt.Println(err, version)
 				if err != nil {
 					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Tag version `{{ .Tag }}` must respect semantic versionning v2.0.0 https://semver.org/"))
 				}

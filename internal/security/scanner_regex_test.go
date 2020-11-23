@@ -8,6 +8,6 @@ import (
 
 func TestIsFalsePositive(t *testing.T) {
 	assert := assert.New(t)
-	assert.Equal(IsPositive, IsFalsePositive("AWSProvider.java", "", "{TOKEN}"))
-	assert.Equal(IsPositive, IsFalsePositive("AWSProvider.java", `String password = System.getProperty("PASSWORD");`, "{TOKEN}"))
+	assert.Greater(IsFalsePositive("AWSProvider.java", "", "{TOKEN}"), IsPositive)
+	assert.Greater(IsFalsePositive("AWSProvider.java", "", `System.getProperty("PASSWORD");`), IsPositive)
 }

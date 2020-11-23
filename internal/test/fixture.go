@@ -73,7 +73,6 @@ func ParseIssues(output string, format string) []issue.Issue {
 				panic(err)
 			}
 		}
-
 	}
 	return issues
 }

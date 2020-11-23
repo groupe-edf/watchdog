@@ -126,7 +126,7 @@ func (analyzer *Analyzer) analyze(ctx context.Context, wg *sync.WaitGroup, gitHo
 		statusMessage = util.Colorize(util.Red, config.BallotX)
 	}
 	elapsed := time.Since(scanTimeStart)
-	fmt.Printf("%v · %v · %v (%v)\n", commit.Hash.String()[:8], strings.Split(commit.Message, "\n")[0], statusMessage, elapsed)
+	fmt.Printf("|_ %v · %v · %v (%v)\n", commit.Hash.String()[:8], strings.Split(commit.Message, "\n")[0], statusMessage, elapsed)
 	return ctx.Err()
 }
 

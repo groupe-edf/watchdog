@@ -32,7 +32,7 @@ func TestSecretRules(t *testing.T) {
 		{"INITIAL_COMMIT", "README.md", "# Readme", 0, nil},
 		{"BASE_64_AUTHORIZATION_HEADER", "deploy.sh", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/deploy.sh")), 1, &Issue{Offender: "PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==", Rule: "BASE_64"}},
 		{"BASE_64_JSON", "config.json", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/config.json")), 1, &Issue{Offender: "X3Rva2VuOjEyMzQ1Njc4OTBBQkNERUY=", Rule: "BASE_64"}},
-		{"BASE_64_NPM", ".npmrc", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/.npmrc")), 3, &Issue{Offender: "PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==", Rule: "BASE_64"}},
+		{"BASE_64_NPM", ".npmrc", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/.npmrc")), 2, &Issue{Offender: "PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==", Rule: "BASE_64"}},
 		{"CONFIDENTIAL", "SECURITY.md", "CONFIDENTIAL", 1, &Issue{Offender: "CONFIDENTIAL", Rule: "CONFIDENTIAL"}},
 		{"CONNECTION_STRING", "application.properties", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/database.properties")), 7, &Issue{Offender: "Pa$$w0rd", Rule: "CONNECTION_STRING"}},
 		{"CONNECTION_STRING_PIP", "pip.conf", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/pip.conf")), 2, &Issue{Offender: "Pa$$w0rd", Rule: "CONNECTION_STRING"}},

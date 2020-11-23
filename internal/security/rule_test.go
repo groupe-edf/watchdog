@@ -6,8 +6,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	EntropyThreshold = 4.00
+)
+
 func TestShannonEntropy(t *testing.T) {
 	assert := assert.New(t)
-	assert.Greater(1.00, ShannonEntropy("Pa$$w0rd"))
-	assert.Greater(1.00, ShannonEntropy("${PASSWORD}"))
+	assert.Greater(EntropyThreshold, ShannonEntropy("Pa$$w0rd"))
+	assert.Greater(EntropyThreshold, ShannonEntropy("${PASSWORD}"))
 }

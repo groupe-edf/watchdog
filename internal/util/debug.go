@@ -29,7 +29,6 @@ func PrintMessage(message string) {
 	fmt.Println("#  " + message + "  #")
 	fmt.Println("#  " + strings.Repeat(" ", utf8.RuneCountInString(message)) + "  #")
 	fmt.Println("###" + strings.Repeat("#", utf8.RuneCountInString(message)) + "###")
-	fmt.Println()
 }
 
 // ItemExists check if an element exists in array

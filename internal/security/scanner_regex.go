@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"io"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -31,11 +30,6 @@ var (
 	falsePostiveHeuristics = []IsFalsePositiveFunc{
 		// Check if is dynamic variable
 		IsFalsePositive,
-	}
-	globalAllowList = AllowList{
-		Files: []*regexp.Regexp{
-			regexp.MustCompile("(?i)(css)$"),
-		},
 	}
 	// SupportedLanguages list of supported languages
 	SupportedLanguages = []string{"go", "java"}

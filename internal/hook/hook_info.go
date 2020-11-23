@@ -116,9 +116,12 @@ func ReadHookInput(repository *git.Repository, input io.Reader) (*Info, error) {
 		}
 		info.OldRev = commit
 	}
-	newRevHash := plumbing.NewHash(chunks[1])
-	if newRevHash != plumbing.ZeroHash {
-		commit, err := repository.CommitObject(newRevHash)
+	newRevHash, err := repository.ResolveRevision(plumbing.Revision(chunks[1]))
+	if err != nil {
+		return nil, err
+	}
+	if *newRevHash != plumbing.ZeroHash {
+		commit, err := repository.CommitObject(*newRevHash)
 		if err != nil {
 			return nil, err
 		}

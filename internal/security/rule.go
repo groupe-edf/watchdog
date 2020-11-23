@@ -58,7 +58,7 @@ var (
 		},
 		{
 			Description: "BASE_64",
-			Regexp:      regexp.MustCompile("(?i)['\"]?((?:[_]?auth(?:Token)?)['\"]?[[:space:]]*[=:]{1}|Basic[[:space:]]+)[[:space:]]*['\"]?" + Base64Pattern + "['\"]?"),
+			Regexp:      regexp.MustCompile("(?i)['\"]?((?:[_]?auth(?:Token|orization:[[:space:]]Basic)?)['\"]?[[:space:]=:]{1})[[:space:]]*['\"]?" + Base64Pattern + "['\"]?"),
 			Tags:        []string{"authentication", "base64"},
 			Severity:    SeverityMinor,
 		},

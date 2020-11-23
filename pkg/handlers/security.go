@@ -94,15 +94,3 @@ func (securityHandler *SecurityHandler) Handle(ctx context.Context, commit *obje
 	}
 	return issues, nil
 }
-
-func (securityHandler *SecurityHandler) canSkip(fileName string, condition hook.Condition) bool {
-	if condition.Skip != "" {
-		securityHandler.Logger.Debugf("Skip condition `%v` found", condition.Skip)
-		matches := regexp.MustCompile(condition.Skip).FindStringSubmatch(fileName)
-		if len(matches) > 0 {
-			securityHandler.Logger.Debugf("Rule ignored due to skip condition `%v`", condition.Skip)
-			return true
-		}
-	}
-	return false
-}

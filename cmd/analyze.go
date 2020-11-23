@@ -75,6 +75,7 @@ var (
 				"correlation_id": util.GetRequestID(ctx),
 				"user_id":        util.GetUserID(ctx),
 			}).Debugf("Loading repository `%v`", options.URI)
+			// Loading git repository
 			repository, err := util.LoadRepository(options.URI)
 			if err != nil {
 				logger.WithFields(logging.Fields{
@@ -107,6 +108,8 @@ var (
 					os.Exit(0)
 				}
 				if info != nil {
+					fmt.Printf("Running analysis on %s:", util.Colorize(util.Green, info.Ref))
+					fmt.Println()
 					analyzer.SetInfo(info)
 					commit = info.NewRev
 				} else {
@@ -143,6 +146,7 @@ var (
 				analyzer.RegisterHandler(ctx, &handlers.FileHandler{})
 				analyzer.RegisterHandler(ctx, &handlers.JiraHandler{})
 				analyzer.RegisterHandler(ctx, &handlers.SecurityHandler{})
+				analyzer.RegisterHandler(ctx, &handlers.TagHandler{})
 				// Fetching commits
 				commits, err := util.FetchCommits(repository, info, hookType)
 				if err != nil {
@@ -157,6 +161,7 @@ var (
 						"user_id":        util.GetUserID(ctx),
 					}).Fatal(errors.New("No commits found"))
 				}
+				// Run analysis
 				err = analyzer.Analyze(ctx, commits)
 				if err != nil {
 					logger.WithFields(logging.Fields{
@@ -164,6 +169,7 @@ var (
 						"user_id":        util.GetUserID(ctx),
 					}).Fatal(err)
 				}
+				// Send report
 				err = output.Report(viper.GetString("output"), viper.GetString("output-format"), analyzer.Issues)
 				if err != nil {
 					logger.WithFields(logging.Fields{
@@ -176,7 +182,10 @@ var (
 					exitMessage = "Your push was rejected because previous errors"
 					exitStatus = 1
 				}
-				util.PrintMessage(exitMessage)
+				if info != nil {
+					util.PrintMessage(exitMessage)
+				}
+				fmt.Println()
 				util.ElapsedTime(ctx, "Operation")
 			}
 			os.Exit(exitStatus)

@@ -26,8 +26,7 @@ func (branchHandler *BranchHandler) GetType() string {
 // Handle chencking branch naming convention
 func (branchHandler *BranchHandler) Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error) {
 	// Handler must run only on branch changes
-	// TODO: check only heads refs
-	if rule.Type == hook.TypeBranch {
+	if rule.Type == hook.TypeBranch && branchHandler.Info.RefType == "heads" {
 		for _, condition := range rule.Conditons {
 			data := issue.Data{
 				Branch:    branchHandler.Info.RefName,

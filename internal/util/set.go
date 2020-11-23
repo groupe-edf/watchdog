@@ -29,9 +29,7 @@ func NewSet() *Set {
 func (s *Set) Add(items []issue.Issue) {
 	s.Lock()
 	defer s.Unlock()
-	for _, item := range items {
-		s.items = append(s.items, item)
-	}
+	s.items = append(s.items, items...)
 }
 
 // Clear removes all items from the set

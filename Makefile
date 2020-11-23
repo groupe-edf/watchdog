@@ -136,6 +136,7 @@ install: ## Install watchdog in local
 
 lint:
 	@golint -set_exit_status ./...
+	@golangci-lint run ./...
 	@misspell -error docs/content/**/* internal pkg test
 
 release:
