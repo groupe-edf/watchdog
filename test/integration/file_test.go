@@ -5,10 +5,10 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"path"
 	"strings"
 	"testing"
+	"text/template"
 
 	"github.com/c2h5oh/datasize"
 	"github.com/groupe-edf/watchdog/internal/issue"

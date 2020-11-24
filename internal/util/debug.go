@@ -3,10 +3,10 @@ package util
 import (
 	"context"
 	"fmt"
-	"html/template"
 	"os"
 	"reflect"
 	"strings"
+	"text/template"
 	"time"
 	"unicode/utf8"
 

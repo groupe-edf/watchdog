@@ -5,10 +5,10 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"path"
 	"strings"
 	"testing"
+	"text/template"
 	"time"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
