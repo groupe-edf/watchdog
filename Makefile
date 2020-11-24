@@ -149,13 +149,7 @@ URI=https://github.com/groupe-edf/watchdog
 run: ## Run watchdog locally to analyze repostiory `make run URI="https://github.com/groupe-edf/watchdog"`
 ifndef $(URI)
 	$(GO_RUN) -ldflags="$(LDFLAGS)" . \
-		--hook-file=".githooks.yml" \
-		--hook-type="" \
-		--hook-input="" \
-		--logs-level="debug" \
-		--logs-format="json" \
-		--logs-path="watchdog.log" \
-		--output-format="json"
+		--config="config/config.yml"
 else
 	@echo "${RED}> Repository URI is required${RESET}"
 endif

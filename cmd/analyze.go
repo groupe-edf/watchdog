@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/config"
@@ -21,8 +22,7 @@ import (
 
 var (
 	configFile     string
-	hookType       string
-	options        = config.NewOptions()
+	options        *config.Options
 	analyzeCommand = &cobra.Command{
 		Use:   "analyze",
 		Short: "",
@@ -34,7 +34,7 @@ var (
 			var exitStatus = 0
 			var hooks *hook.GitHooks
 			var info *hook.Info
-			err = viper.Unmarshal(options)
+			options, err = config.NewOptions(viper.GetViper())
 			if err != nil {
 				fmt.Printf("Unable to decode into config struct, %v", err)
 				os.Exit(0)
@@ -103,13 +103,11 @@ var (
 			} else {
 				var commit *object.Commit
 				info, err = hook.ParseInfo(repository, options.HookInput)
-				if err != nil {
+				if err != nil && err != hook.ErrNoHookData {
 					fmt.Printf("Error parsing hook info %v", err)
 					os.Exit(0)
 				}
 				if info != nil {
-					fmt.Printf("Running analysis on %s:", util.Colorize(util.Green, info.Ref))
-					fmt.Println()
 					analyzer.SetInfo(info)
 					commit = info.NewRev
 				} else {
@@ -148,7 +146,8 @@ var (
 				analyzer.RegisterHandler(ctx, &handlers.SecurityHandler{})
 				analyzer.RegisterHandler(ctx, &handlers.TagHandler{})
 				// Fetching commits
-				commits, err := util.FetchCommits(repository, info, hookType)
+				commits, err := util.FetchCommits(repository, info, options.HookType)
+				fmt.Println()
 				if err != nil {
 					logger.WithFields(logging.Fields{
 						"correlation_id": util.GetRequestID(ctx),
@@ -170,7 +169,7 @@ var (
 					}).Fatal(err)
 				}
 				// Send report
-				err = output.Report(viper.GetString("output"), viper.GetString("output-format"), analyzer.Issues)
+				err = output.Report(options.Output, options.OutputFormat, analyzer.Issues)
 				if err != nil {
 					logger.WithFields(logging.Fields{
 						"correlation_id": util.GetRequestID(ctx),
@@ -200,9 +199,9 @@ func Execute(ctx context.Context) error {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	analyzeCommand.Flags().Bool("profile", false, "collect the profile to hercules.pprof.")
+	analyzeCommand.PersistentFlags().Bool("profile", false, "collect the profile to hercules.pprof.")
 	analyzeCommand.PersistentFlags().String("hook-input", "", "standard input <old-value> SP <new-value> SP <ref-name> LF")
-	analyzeCommand.Flags().StringVar(&hookType, "hook-type", "pre-receive", "git server-side hook pre-receive, update or post-receive")
+	analyzeCommand.PersistentFlags().String("hook-type", "", "git server-side hook pre-receive, update or post-receive")
 	analyzeCommand.PersistentFlags().String("docs-link", "", "link to documentation")
 	analyzeCommand.PersistentFlags().String("logs-format", "json", "logging level")
 	analyzeCommand.PersistentFlags().String("logs-level", "info", "logging level")
@@ -214,8 +213,6 @@ func init() {
 	analyzeCommand.PersistentFlags().StringP("hook-file", "f", "", "path to external .githooks.yml file")
 	analyzeCommand.PersistentFlags().StringVarP(&configFile, "config", "c", "", "path to watchdog configuration file")
 	analyzeCommand.PersistentFlags().Bool("verbose", true, "make the operation more talkative")
-	_ = analyzeCommand.MarkFlagRequired("hook-input")
-	_ = analyzeCommand.MarkFlagRequired("hook-type")
 	// Bind flags to configuration
 	_ = viper.BindPFlags(analyzeCommand.PersistentFlags())
 }
@@ -224,6 +221,13 @@ func init() {
 func initConfig() {
 	if configFile != "" {
 		viper.SetConfigFile(configFile)
-		viper.AutomaticEnv()
 	}
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("WATCHDOG_")
+	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
+	viper.AllowEmptyEnv(true)
+	viper.AutomaticEnv()
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("/etc/watchdog/")
+	viper.AddConfigPath("/etc/watchdog/config")
 }

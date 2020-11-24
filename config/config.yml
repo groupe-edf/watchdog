@@ -1,0 +1,13 @@
+banner: true
+contact: Habib MAALEM <habib.maalem@gmail.com>
+docs_link: https://groupe-edf.github.io/watchdog/docs/
+hook_file: .githooks.yml
+hook_input: ""
+hook_type: ""
+logs_level: debug
+logs_format: json
+logs_path: /var/log/watchdog/watchdog.log
+output: ""
+output_format: json
+plugins_directory: ""
+profile: "false"

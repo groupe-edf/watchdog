@@ -7,8 +7,12 @@ const Banner = `
 └┴┘┴ ┴ ┴ └─┘┴ ┴─┴┘└─┘└─┘
 
 Watchdog Version v{{ .BuildInfo.Version }}+{{ printf "%.8s" .BuildInfo.Commit }}
-{{ if .Options.Contact }}{{ .Options.Contact }}{{ end }}
-{{ if .Options.DocsLink }}Documentation: {{ .Options.DocsLink }}{{ end }}
+{{ if .Options.Contact -}}
+Contact: {{ .Options.Contact }}
+{{ end -}}
+{{ if .Options.DocsLink -}}
+Documentation: {{ .Options.DocsLink }}
+{{ end -}}
 `
 
 var (

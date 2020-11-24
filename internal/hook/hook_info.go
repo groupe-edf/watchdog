@@ -30,6 +30,8 @@ const (
 )
 
 var (
+	// ErrNoHookData no hook data error
+	ErrNoHookData = errors.New("Hook data is mandatory")
 	// HookTypes that are supported by Watchdog
 	HookTypes = [...]string{
 		"pre-receive",
@@ -80,7 +82,7 @@ func ParseHookAction(info Info) string {
 // ParseInfo parse hook <old-value> SP <new-value> SP <ref-name> LF to models.Info
 func ParseInfo(repository *git.Repository, input string) (*Info, error) {
 	if input == "" {
-		return nil, errors.New("Hook data is mandatory")
+		return nil, ErrNoHookData
 	}
 	info, err := ReadHookInput(repository, strings.NewReader(input))
 	if err != nil {

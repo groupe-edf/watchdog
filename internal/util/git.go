@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"os"
 	"regexp"
 	"strings"
@@ -19,6 +20,8 @@ func FetchCommits(repository *git.Repository, info *hook.Info, hookType string) 
 	if hookType == "pre-receive" {
 		return RevList(repository, info)
 	}
+	reference, _ := repository.Head()
+	fmt.Printf("Running analysis on %s:", Colorize(Green, reference.Name().String()))
 	logOptions := &git.LogOptions{}
 	if info != nil {
 		if info.OldRev != nil {
@@ -78,6 +81,7 @@ type RevListOptions struct {
 
 // RevList is native implemetation of git rev-list command
 func RevList(repository *git.Repository, info *hook.Info) ([]*object.Commit, error) {
+	fmt.Printf("Running analysis on %s:", Colorize(Green, info.Ref))
 	var err error
 	opts := RevListOptions{}
 	if info.OldRev != nil {
