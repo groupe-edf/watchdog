@@ -28,3 +28,6 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./target/coverage.txt
+      ## Run unit tests
+      - name: Integration Test
+        run: make test-integration
