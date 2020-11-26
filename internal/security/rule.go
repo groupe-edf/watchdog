@@ -93,15 +93,15 @@ var (
 		},
 		{
 			Description: "PASSWORD",
-			Regexp:      regexp.MustCompile("(?im)['\"]?" + PasswordPrefixPattern + "['\"]?[[:space:]]{0,20}[=:]{1,3}?[[:space:]]{0,20}[@]?" + "['\"]?" + PasswordPattern + "((?:['\"]?(?:[;,])?)?$|[[:space:]])"),
-			Tags:        []string{"passwrod"},
+			Regexp:      regexp.MustCompile("(?im)['\"]?" + PasswordPrefixPattern + "['\"]?[[:blank:]]{0,20}[=:]{1,3}?[[:blank:]]{0,20}[@]?" + "['\"]?" + PasswordPattern + "((?:['\"]?(?:[;,])?)?$|[[:blank:]])"),
+			Tags:        []string{"password"},
 			Severity:    SeverityMajor,
 		},
 		{
 			Description: "PASSWORD_XML",
 			File:        regexp.MustCompile("(?i)(.*.xml)$"),
 			Regexp:      regexp.MustCompile("(?i)<" + PasswordPrefixPattern + ">(?P<secret>.{5,256})</" + PasswordPrefixPattern + ">"),
-			Tags:        []string{"passwrod"},
+			Tags:        []string{"password"},
 			Severity:    SeverityMajor,
 		},
 		{
