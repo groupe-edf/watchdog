@@ -51,7 +51,6 @@ func FetchCommits(repository *git.Repository, info *hook.Info, hookType string) 
 // LoadRepository load git repository
 func LoadRepository(ctx context.Context, options *config.Options) (*git.Repository, error) {
 	var backend storage.Storer
-	var repository *git.Repository
 	var err error
 	uri := options.URI
 	if strings.Contains(uri, "://") || regexp.MustCompile(string(`^[A-Za-z]\w*@[A-Za-z0-9][\w.]*:`)).MatchString(uri) {
@@ -74,22 +73,18 @@ func LoadRepository(ctx context.Context, options *config.Options) (*git.Reposito
 				Password: options.AuthBasicToken,
 			}
 		}
-		repository, err = git.CloneContext(ctx, backend, nil, cloneOptions)
+		return git.CloneContext(ctx, backend, nil, cloneOptions)
 	} else if stat, err := os.Stat(uri); err == nil && !stat.IsDir() {
 		fs := osfs.New(filepath.Dir(uri))
 		dot, _ := fs.Chroot(".git")
 		storage := filesystem.NewStorage(dot, cache.NewObjectLRUDefault())
-		repository, err = git.Open(storage, fs)
-		if err != nil {
-			return nil, err
-		}
+		return git.Open(storage, fs)
 	} else {
 		if uri[len(uri)-1] == os.PathSeparator {
 			uri = uri[:len(uri)-1]
 		}
-		repository, err = git.PlainOpen(uri)
+		return git.PlainOpen(uri)
 	}
-	return repository, err
 }
 
 // ParseGitPushOptions parse git push options

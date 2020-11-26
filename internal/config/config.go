@@ -84,7 +84,10 @@ func NewOptions(config *viper.Viper) (options *Options, err error) {
 	if err != nil {
 		return nil, err
 	}
-	config.UnmarshalKey("default_handlers", &options.DefaultHandlers)
+	err = config.UnmarshalKey("default_handlers", &options.DefaultHandlers)
+	if err != nil {
+		return nil, err
+	}
 	options.AuthBasicToken = config.GetString("auth_basic_token")
 	options.CacheDirectory = config.GetString("cache_directory")
 	options.Security.MergeRules = config.GetBool("security.merge_rules")

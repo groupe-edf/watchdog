@@ -54,7 +54,14 @@ func (analyzer *Analyzer) Analyze(ctx context.Context, commitIter object.CommitI
 			go func(commit *object.Commit) {
 				defer wg.Done()
 				defer func() { <-maxWorkers }()
-				analyzer.analyze(ctx, analyzer.GitHooks, commit)
+				err := analyzer.analyze(ctx, analyzer.GitHooks, commit)
+				if err != nil {
+					analyzer.Logger.WithFields(logging.Fields{
+						"commit":         commit.Hash.String(),
+						"correlation_id": util.GetRequestID(ctx),
+						"user_id":        util.GetUserID(ctx),
+					}).Error(err)
+				}
 			}(commit)
 		}
 		wg.Wait()
