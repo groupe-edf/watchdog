@@ -1,22 +1,30 @@
 package util
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
+	"github.com/go-git/go-billy/v5/osfs"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing/cache"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/revlist"
+	"github.com/go-git/go-git/v5/plumbing/storer"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/go-git/go-git/v5/storage"
+	"github.com/go-git/go-git/v5/storage/filesystem"
 	"github.com/go-git/go-git/v5/storage/memory"
+	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/hook"
 )
 
 // FetchCommits fetching commits
-func FetchCommits(repository *git.Repository, info *hook.Info, hookType string) (commits []*object.Commit, err error) {
+func FetchCommits(repository *git.Repository, info *hook.Info, hookType string) (commitIter object.CommitIter, err error) {
 	if hookType == "pre-receive" {
 		return RevList(repository, info)
 	}
@@ -31,37 +39,55 @@ func FetchCommits(repository *git.Repository, info *hook.Info, hookType string) 
 			logOptions.Until = &info.NewRev.Committer.When
 		}
 	}
-	cmmitIter, err := repository.Log(&git.LogOptions{
+	commitIter, err = repository.Log(&git.LogOptions{
 		All: true,
 	})
 	if err != nil {
 		return nil, err
 	}
-	defer cmmitIter.Close()
-	err = cmmitIter.ForEach(func(commit *object.Commit) error {
-		commits = append(commits, commit)
-		return nil
-	})
-	return commits, err
+	return commitIter, err
 }
 
 // LoadRepository load git repository
-func LoadRepository(uri string) (*git.Repository, error) {
+func LoadRepository(ctx context.Context, options *config.Options) (*git.Repository, error) {
+	var backend storage.Storer
 	var repository *git.Repository
-	var backend storage.Storer = memory.NewStorage()
 	var err error
+	uri := options.URI
 	if strings.Contains(uri, "://") || regexp.MustCompile(string(`^[A-Za-z]\w*@[A-Za-z0-9][\w.]*:`)).MatchString(uri) {
+		if options.CacheDirectory != "" {
+			backend = filesystem.NewStorage(osfs.New(options.CacheDirectory), cache.NewObjectLRUDefault())
+			_, err = os.Stat(options.CacheDirectory)
+			if !os.IsNotExist(err) {
+				os.RemoveAll(options.CacheDirectory)
+			}
+		} else {
+			backend = memory.NewStorage()
+		}
 		cloneOptions := &git.CloneOptions{
 			Progress: os.Stderr,
 			URL:      uri,
 		}
-		repository, err = git.Clone(backend, nil, cloneOptions)
-	} else {
-		path, _ := os.Getwd()
-		if uri[len(path)-1] == os.PathSeparator {
-			path = path[:len(path)-1]
+		if options.AuthBasicToken != "" {
+			cloneOptions.Auth = &http.BasicAuth{
+				Username: "watchdog",
+				Password: options.AuthBasicToken,
+			}
 		}
-		repository, err = git.PlainOpen(path)
+		repository, err = git.CloneContext(ctx, backend, nil, cloneOptions)
+	} else if stat, err := os.Stat(uri); err == nil && !stat.IsDir() {
+		fs := osfs.New(filepath.Dir(uri))
+		dot, _ := fs.Chroot(".git")
+		storage := filesystem.NewStorage(dot, cache.NewObjectLRUDefault())
+		repository, err = git.Open(storage, fs)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		if uri[len(uri)-1] == os.PathSeparator {
+			uri = uri[:len(uri)-1]
+		}
+		repository, err = git.PlainOpen(uri)
 	}
 	return repository, err
 }
@@ -80,7 +106,7 @@ type RevListOptions struct {
 }
 
 // RevList is native implemetation of git rev-list command
-func RevList(repository *git.Repository, info *hook.Info) ([]*object.Commit, error) {
+func RevList(repository *git.Repository, info *hook.Info) (object.CommitIter, error) {
 	fmt.Printf("Running analysis on %s:", Colorize(Green, info.Ref))
 	var err error
 	opts := RevListOptions{}
@@ -90,7 +116,6 @@ func RevList(repository *git.Repository, info *hook.Info) ([]*object.Commit, err
 	if info.NewRev != nil {
 		opts.NewRev = info.NewRev.Hash
 	}
-	commits := make([]*object.Commit, 0)
 	oldRevObjects := make([]plumbing.Hash, 0)
 	newRevObjects := make([]plumbing.Hash, 0)
 	if opts.OldRev != plumbing.ZeroHash {
@@ -105,12 +130,6 @@ func RevList(repository *git.Repository, info *hook.Info) ([]*object.Commit, err
 			return nil, err
 		}
 	}
-	for _, hash := range newRevObjects {
-		commit, err := repository.CommitObject(hash)
-		if err != nil {
-			continue
-		}
-		commits = append(commits, commit)
-	}
-	return commits, err
+	commitIter := object.NewCommitIter(repository.Storer, storer.NewEncodedObjectLookupIter(repository.Storer, plumbing.AnyObject, newRevObjects))
+	return commitIter, err
 }

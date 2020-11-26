@@ -25,6 +25,7 @@ const (
 // SecurityHandler handle committed secrets, passwords and tokens
 type SecurityHandler struct {
 	core.AbstractHandler
+	scanner security.Scanner
 }
 
 // GetType return handler type
@@ -35,7 +36,7 @@ func (securityHandler *SecurityHandler) GetType() string {
 // Handle checking files for secrets
 func (securityHandler *SecurityHandler) Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error) {
 	if rule.Type == hook.TypeSecurity {
-		for _, condition := range rule.Conditons {
+		for _, condition := range rule.Conditions {
 			if canSkip := core.CanSkip(commit, rule.Type, condition.Type); canSkip {
 				continue
 			}
@@ -52,19 +53,14 @@ func (securityHandler *SecurityHandler) Handle(ctx context.Context, commit *obje
 			}).Info("Processing security analysis")
 			switch condition.Type {
 			case ConditionSecret:
-				// Create a new regex scanner
-				options := security.Options{
-					AllowList: security.AllowList{
-						Files: []*regexp.Regexp{
-							regexp.MustCompile("(?i)(css)$"),
-						},
-					},
+				if securityHandler.scanner == nil {
+					// Create a new regex scanner
+					securityHandler.scanner = security.NewRegexScanner(securityHandler.Logger, securityHandler.Options)
+					if condition.Skip != "" {
+						securityHandler.scanner.AddAllowedFiles(regexp.MustCompile(condition.Skip))
+					}
 				}
-				if condition.Skip != "" {
-					options.AllowList.Files = append(options.AllowList.Files, regexp.MustCompile(condition.Skip))
-				}
-				scanner := security.NewRegexScanner(securityHandler.Logger, options)
-				leaks, err := scanner.Scan(commit)
+				leaks, err := securityHandler.scanner.Scan(commit)
 				if err != nil {
 					return nil, err
 				}

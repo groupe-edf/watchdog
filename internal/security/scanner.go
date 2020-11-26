@@ -1,5 +1,11 @@
 package security
 
+import (
+	"regexp"
+
+	"github.com/go-git/go-git/v5/plumbing/object"
+)
+
 // Options scanner options
 type Options struct {
 	AllowList AllowList
@@ -7,7 +13,8 @@ type Options struct {
 
 // Scanner scanner interface
 type Scanner interface {
-	Scan(content string) []string
+	AddAllowedFiles(files *regexp.Regexp)
+	Scan(commit *object.Commit) (leaks []Leak, err error)
 }
 
 // VerifiedScanner verify secret

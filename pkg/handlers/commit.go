@@ -26,7 +26,7 @@ func (commitHandler *CommitHandler) GetType() string {
 // Handle checking commit message with defined rules
 func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error) {
 	if rule.Type == hook.TypeCommit {
-		for _, condition := range rule.Conditons {
+		for _, condition := range rule.Conditions {
 			if canSkip := core.CanSkip(commit, rule.Type, condition.Type); canSkip {
 				continue
 			}

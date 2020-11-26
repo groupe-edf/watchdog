@@ -2,32 +2,50 @@ package config
 
 import (
 	"os"
+	"runtime"
 	"strings"
 
+	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/spf13/viper"
 )
 
 const (
 	// LogsPath default log file location
 	LogsPath = "/var/log/watchdog/watchdog.log"
+	// MaxWorkers max workers running at the same time
+	MaxWorkers = 4
 )
 
 // Options options data structure
 type Options struct {
-	Banner           bool   `mapstructure:"banner"`
-	Contact          string `mapstructure:"contact"`
-	DocsLink         string `mapstructure:"docs-link"`
-	HookFile         string `mapstructure:"hook-file"`
-	HookInput        string `mapstructure:"hook-input"`
-	HookType         string `mapstructure:"hook-type"`
-	LogsFormat       string `mapstructure:"logs-format"`
-	LogsLevel        string `mapstructure:"logs-level"`
-	LogsPath         string `mapstructure:"logs-path"`
-	Output           string `mapstructure:"output"`
-	OutputFormat     string `mapstructure:"output-format"`
-	PluginsDirectory string `mapstructure:"plugins-directory"`
-	Verbose          bool   `mapstructure:"verbose"`
-	URI              string `mapstructure:"uri"`
+	AuthBasicToken   string               `mapstructure:"auth-basic-token"`
+	Banner           bool                 `mapstructure:"banner"`
+	CacheDirectory   string               `mapstructure:"cache-directory"`
+	Contact          string               `mapstructure:"contact"`
+	DefaultHandlers  map[string]hook.Rule `mapstructure:"default-hadnlers"`
+	DocsLink         string               `mapstructure:"docs-link"`
+	HookFile         string               `mapstructure:"hook-file"`
+	HookInput        string               `mapstructure:"hook-input"`
+	HookType         string               `mapstructure:"hook-type"`
+	LogsFormat       string               `mapstructure:"logs-format"`
+	LogsLevel        string               `mapstructure:"logs-level"`
+	LogsPath         string               `mapstructure:"logs-path"`
+	MaxWorkers       int                  `mapstructure:"max-workers"`
+	Output           string               `mapstructure:"output"`
+	OutputFormat     string               `mapstructure:"output-format"`
+	PluginsDirectory string               `mapstructure:"plugins-directory"`
+	Security         struct {
+		MergeRules bool `mapstructure:"merge-rules"`
+		Rules      []struct {
+			Description string   `mapstructure:"description"`
+			File        string   `mapstructure:"file"`
+			Regexp      string   `mapstructure:"regexp"`
+			Severity    string   `mapstructure:"severity"`
+			Tags        []string `mapstructure:"tags"`
+		} `mapstructure:"rules"`
+	} `mapstructure:"security"`
+	Verbose bool   `mapstructure:"verbose"`
+	URI     string `mapstructure:"uri"`
 }
 
 // Validate validate options
@@ -38,6 +56,10 @@ func (options *Options) Validate() error {
 	}
 	if options.LogsPath == "" {
 		options.LogsPath = LogsPath
+	}
+	if options.MaxWorkers == 0 || options.MaxWorkers > MaxWorkers {
+		runtime.GOMAXPROCS(4)
+		options.MaxWorkers = MaxWorkers
 	}
 	return nil
 }
@@ -53,11 +75,19 @@ func NewOptions(config *viper.Viper) (options *Options, err error) {
 	for _, key := range config.AllKeys() {
 		config.RegisterAlias(strings.ReplaceAll(key, "-", "_"), key)
 	}
+	config.AutomaticEnv()
+	config.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
+	config.SetEnvPrefix("WATCHDOG")
+	config.AllowEmptyEnv(true)
 	config.SetDefault("banner", true)
 	err = config.Unmarshal(&options)
 	if err != nil {
 		return nil, err
 	}
+	config.UnmarshalKey("default_handlers", &options.DefaultHandlers)
+	options.AuthBasicToken = config.GetString("auth_basic_token")
+	options.CacheDirectory = config.GetString("cache_directory")
+	options.Security.MergeRules = config.GetBool("security.merge_rules")
 	err = options.Validate()
 	if err != nil {
 		return nil, err

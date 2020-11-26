@@ -7,6 +7,7 @@ require (
 	github.com/c2h5oh/datasize v0.0.0-20200825124411-48ed595a09d2
 	github.com/coreos/go-semver v0.3.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/go-git/go-billy/v5 v5.0.0
 	github.com/go-git/go-git/v5 v5.2.0
 	github.com/google/go-cmp v0.5.0 // indirect
 	github.com/google/go-querystring v1.0.0

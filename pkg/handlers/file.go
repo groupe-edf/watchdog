@@ -34,16 +34,19 @@ func (fileHandler *FileHandler) GetType() string {
 // Handle checking files with defined rules
 func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error) {
 	if rule.Type == hook.TypeFile {
-		fileIter, _ := commit.Files()
+		fileIter, err := commit.Files()
+		if err != nil {
+			fileHandler.Logger.Fatalf("error when loading commit files, %v", err)
+		}
 		var files []*object.File
-		_ = fileIter.ForEach(func(file *object.File) error {
+		err = fileIter.ForEach(func(file *object.File) error {
 			files = append(files, file)
 			return nil
 		})
 		if err != nil {
-			fileHandler.Logger.Fatalf("GetFiles() error when loading commit files, %v", err)
+			fileHandler.Logger.Fatalf("error when loading commit files, %v", err)
 		}
-		for _, condition := range rule.Conditons {
+		for _, condition := range rule.Conditions {
 			if canSkip := core.CanSkip(commit, rule.Type, condition.Type); canSkip {
 				continue
 			}

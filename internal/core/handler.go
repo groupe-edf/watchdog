@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/logging"
@@ -24,8 +25,9 @@ type Handler interface {
 	GetRepository() *git.Repository
 	GetType() string
 	Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error)
-	SetLogger(logger logging.Interface)
 	SetInfo(info *hook.Info)
+	SetLogger(logger logging.Interface)
+	SetOptions(options *config.Options)
 	SetRepository(repository *git.Repository)
 }
 
@@ -33,8 +35,9 @@ type Handler interface {
 type AbstractHandler struct {
 	Handler
 	Info       *hook.Info
-	Repository *git.Repository
 	Logger     logging.Interface
+	Options    *config.Options
+	Repository *git.Repository
 }
 
 // GetRepository get git repository
@@ -42,14 +45,19 @@ func (handler *AbstractHandler) GetRepository() *git.Repository {
 	return handler.Repository
 }
 
+// SetInfo set info
+func (handler *AbstractHandler) SetInfo(info *hook.Info) {
+	handler.Info = info
+}
+
 // SetLogger set logger
 func (handler *AbstractHandler) SetLogger(logger logging.Interface) {
 	handler.Logger = logger
 }
 
-// SetInfo set logger
-func (handler *AbstractHandler) SetInfo(info *hook.Info) {
-	handler.Info = info
+// SetOptions set options
+func (handler *AbstractHandler) SetOptions(options *config.Options) {
+	handler.Options = options
 }
 
 // SetRepository set logger

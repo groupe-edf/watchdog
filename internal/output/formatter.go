@@ -3,6 +3,7 @@ package output
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -59,7 +60,13 @@ func Report(path string, format string, set *util.Set) (err error) {
 				return err
 			}
 			defer file.Close()
-			return NewReport(file, format, set)
+			err = NewReport(file, format, set)
+			if err != nil {
+				return err
+			}
+			fmt.Printf("Report file generated in %s", util.Colorize(util.Green, path))
+			fmt.Println()
+			return nil
 		}
 		os.Stdout.Write([]byte("-----BEGIN REJECTION MESSAGES-----\n"))
 		err = NewReport(os.Stdout, format, set)

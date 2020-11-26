@@ -35,7 +35,7 @@ func (jiraHandler *JiraHandler) GetType() string {
 // Handle checking files with defined rules
 func (jiraHandler *JiraHandler) Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error) {
 	if rule.Type == hook.TypeJira {
-		for _, condition := range rule.Conditons {
+		for _, condition := range rule.Conditions {
 			data := issue.Data{
 				Commit:    commit,
 				Condition: condition,

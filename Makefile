@@ -145,14 +145,12 @@ release:
 release-snapshot:
 	@goreleaser release --skip-publish --snapshot --rm-dist
 
-URI=https://github.com/groupe-edf/watchdog
+URI=
 run: ## Run watchdog locally to analyze repostiory `make run URI="https://github.com/groupe-edf/watchdog"`
-ifndef $(URI)
 	$(GO_RUN) -ldflags="$(LDFLAGS)" . \
-		--config="config/config.yml"
-else
-	@echo "${RED}> Repository URI is required${RESET}"
-endif
+		--config="config/config.yml" \
+		--uri="$(URI)"
+	@echo "${GREEN}> Repository successfully analyzed${RESET}"
 
 test: test-unit test-integration test-security clean
 

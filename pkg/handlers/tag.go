@@ -28,7 +28,7 @@ func (tagHandler *TagHandler) Handle(ctx context.Context, commit *object.Commit,
 	// Handler must run only on tag changes
 	// TODO: check only heads refs
 	if rule.Type == hook.TypeTag && tagHandler.Info.RefType == "tags" {
-		for _, condition := range rule.Conditons {
+		for _, condition := range rule.Conditions {
 			data := issue.Data{
 				Condition: condition,
 				Commit:    tagHandler.Info.NewRev,

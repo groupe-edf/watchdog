@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"fmt"
+	"io"
 	"reflect"
 	"strings"
 	"sync"
@@ -29,20 +30,35 @@ type Analyzer struct {
 }
 
 // Analyze execute analysis
-func (analyzer *Analyzer) Analyze(ctx context.Context, commits []*object.Commit) error {
+func (analyzer *Analyzer) Analyze(ctx context.Context, commitIter object.CommitIter) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
+	defer commitIter.Close()
+	maxWorkers := make(chan struct{}, analyzer.Options.MaxWorkers)
 	if len(analyzer.GitHooks.Hooks) > 0 {
 		analyzer.Logger.WithFields(logging.Fields{
 			"correlation_id": util.GetRequestID(ctx),
 			"user_id":        util.GetUserID(ctx),
 		}).Debugf("%v handlers found and %v hooks found", len(analyzer.Handlers), len(analyzer.GitHooks.Hooks))
 		var wg sync.WaitGroup
-		for _, commit := range commits {
+		for {
+			commit, err := commitIter.Next()
+			if err == object.ErrUnsupportedObject {
+				continue
+			}
+			if err == io.EOF {
+				break
+			}
 			wg.Add(1)
-			go analyzer.analyze(ctx, &wg, analyzer.GitHooks, commit)
+			maxWorkers <- struct{}{}
+			go func(commit *object.Commit) {
+				defer wg.Done()
+				defer func() { <-maxWorkers }()
+				analyzer.analyze(ctx, analyzer.GitHooks, commit)
+			}(commit)
 		}
 		wg.Wait()
+		close(maxWorkers)
 	} else {
 		analyzer.Logger.WithFields(logging.Fields{
 			"correlation_id": util.GetRequestID(ctx),
@@ -72,12 +88,21 @@ func (analyzer *Analyzer) RegisterHandler(ctx context.Context, handler Handler) 
 	if analyzer.Info != nil {
 		handler.SetInfo(analyzer.Info)
 	}
+	handler.SetOptions(analyzer.Options)
 	handler.SetRepository(analyzer.Repository)
 	analyzer.Handlers = append(analyzer.Handlers, handler)
 }
 
 // SetHooks set hooks
 func (analyzer *Analyzer) SetHooks(hooks *hook.GitHooks) {
+	if len(analyzer.Options.DefaultHandlers) > 0 {
+		for handler, rule := range analyzer.Options.DefaultHandlers {
+			hooks.Hooks[0].Rules = append(hooks.Hooks[0].Rules, &hook.Rule{
+				Type:       hook.HandlerType(handler),
+				Conditions: rule.Conditions,
+			})
+		}
+	}
 	analyzer.GitHooks = hooks
 }
 
@@ -96,9 +121,8 @@ func (analyzer *Analyzer) SetRepository(repository *git.Repository) {
 	analyzer.Repository = repository
 }
 
-func (analyzer *Analyzer) analyze(ctx context.Context, wg *sync.WaitGroup, gitHooks *hook.GitHooks, commit *object.Commit) error {
+func (analyzer *Analyzer) analyze(ctx context.Context, gitHooks *hook.GitHooks, commit *object.Commit) error {
 	scanTimeStart := time.Now()
-	defer wg.Done()
 	issues := make([]issue.Issue, 0)
 	for _, hook := range gitHooks.Hooks {
 		for _, rule := range hook.Rules {

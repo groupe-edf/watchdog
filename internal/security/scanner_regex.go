@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"io"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/logging"
 )
 
@@ -32,7 +34,7 @@ var (
 		IsFalsePositive,
 	}
 	// SupportedLanguages list of supported languages
-	SupportedLanguages = []string{"go", "java"}
+	SupportedLanguages = []string{"go", "java", "py"}
 )
 
 // RegexScanner data struct
@@ -40,6 +42,11 @@ type RegexScanner struct {
 	Logger  logging.Interface
 	Options Options
 	Rules   []Rule
+}
+
+// AddAllowedFiles add files to allowed list
+func (scanner *RegexScanner) AddAllowedFiles(files *regexp.Regexp) {
+	scanner.Options.AllowList.Files = append(scanner.Options.AllowList.Files, files)
 }
 
 // Scan scan commit
@@ -76,6 +83,11 @@ func (scanner *RegexScanner) Scan(commit *object.Commit) (leaks []Leak, err erro
 // SatisfyRules check all security rules
 func (scanner *RegexScanner) SatisfyRules(commit *object.Commit, filePath string, content string) (leaks []Leak) {
 	for _, rule := range scanner.Rules {
+		scanner.Logger.WithFields(logging.Fields{
+			"condition": "secret",
+			"commit":    commit.Hash.String(),
+			"rule":      "security",
+		}).Debugf("Searching for `%v` secret", rule.Description)
 		if rule.File != nil && rule.File.FindString(filePath) == "" {
 			continue
 		}
@@ -165,11 +177,31 @@ func (scanner *RegexScanner) validateEntropy(groups []string, rule Rule) bool {
 }
 
 // NewRegexScanner create new regular expression
-func NewRegexScanner(logger logging.Interface, options Options) *RegexScanner {
+func NewRegexScanner(logger logging.Interface, options *config.Options) *RegexScanner {
+	if len(options.Security.Rules) > 0 {
+		var defaultRules []Rule
+		for _, rule := range options.Security.Rules {
+			defaultRules = append(defaultRules, Rule{
+				Description: rule.Description,
+				File:        regexp.MustCompile(rule.File),
+				Regexp:      regexp.MustCompile(rule.Regexp),
+				Severity:    Severity(rule.Severity),
+			})
+		}
+		if options.Security.MergeRules {
+			rules = append(rules, defaultRules...)
+		} else {
+			rules = defaultRules
+		}
+	}
 	return &RegexScanner{
-		Logger:  logger,
-		Options: options,
-		Rules:   rules,
+		Logger: logger,
+		Options: Options{
+			AllowList: AllowList{
+				Description: "Default allowed files",
+			},
+		},
+		Rules: rules,
 	}
 }
 
@@ -202,6 +234,9 @@ func IsFalsePositive(filePath string, line string, secret string) int {
 			if openBrackets == closeBrackets {
 				return IsFunction
 			}
+		}
+		if strings.Count(line, "\""+secret+"\"") < 1 {
+			return IsVariable
 		}
 	}
 	if strings.HasSuffix(secret, ";") {

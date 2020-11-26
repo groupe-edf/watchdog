@@ -21,7 +21,7 @@ const (
 // Rule data structure
 // Use similar mechanism as Gitlab, see https://docs.gitlab.com/ee/push_rules/push_rules.html
 type Rule struct {
-	Conditons   []Condition `yaml:"conditions,omitempty"`
+	Conditions  []Condition `yaml:"conditions,omitempty"`
 	Description string      `yaml:"description,omitempty"`
 	Enabled     bool        `yaml:"enabled,omitempty"`
 	Type        HandlerType `yaml:"type,omitempty"`

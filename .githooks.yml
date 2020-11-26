@@ -12,7 +12,3 @@ hooks:
         - type: email
           condition: (?m)^[a-zA-Z.\-]+@gmail.com$
           ignore: true
-      - type: security
-        conditions:
-        - type: secret
-          skip: .*.go|.*.json|CONTRIBUTING.md|docs/.*|test/.*

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"strings"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/config"
@@ -15,6 +14,7 @@ import (
 	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/output"
 	"github.com/groupe-edf/watchdog/internal/util"
+	"github.com/groupe-edf/watchdog/internal/version"
 	"github.com/groupe-edf/watchdog/pkg/handlers"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -71,17 +71,18 @@ var (
 				logger.Fatal(err)
 			}
 			analyzer.SetLogger(logger)
+			// Loading git repository
+			repository, err := util.LoadRepository(ctx, options)
 			logger.WithFields(logging.Fields{
 				"correlation_id": util.GetRequestID(ctx),
 				"user_id":        util.GetUserID(ctx),
-			}).Debugf("Loading repository `%v`", options.URI)
-			// Loading git repository
-			repository, err := util.LoadRepository(options.URI)
+			}).Debugf("Repository `%v` successfully fetched", options.URI)
 			if err != nil {
+				fmt.Println(util.Colorize(util.Red, err.Error()))
 				logger.WithFields(logging.Fields{
 					"correlation_id": util.GetRequestID(ctx),
 					"user_id":        util.GetUserID(ctx),
-				}).Fatal(err)
+				}).Debugf("Error fetching repository `%v`", err)
 			}
 			analyzer.SetRepository(repository)
 			if err != nil {
@@ -136,6 +137,21 @@ var (
 					}).Errorf("Error when extracting config file %v", err)
 				}
 			}
+			// No .githooks.yml file was referenced, create default one if we have global default handlers in configuration
+			if hooks == nil && len(options.DefaultHandlers) > 0 {
+				hooks = &hook.GitHooks{
+					Hooks: []hook.Hook{
+						{
+							Name: "default",
+						},
+					},
+					Version: version.Version,
+				}
+				logger.WithFields(logging.Fields{
+					"correlation_id": util.GetRequestID(ctx),
+					"user_id":        util.GetUserID(ctx),
+				}).Debug("No .githooks.yml file was referenced")
+			}
 			if hooks != nil {
 				analyzer.SetHooks(hooks)
 				// Register handlers
@@ -149,16 +165,11 @@ var (
 				commits, err := util.FetchCommits(repository, info, options.HookType)
 				fmt.Println()
 				if err != nil {
+					fmt.Println(util.Colorize(util.Red, err.Error()))
 					logger.WithFields(logging.Fields{
 						"correlation_id": util.GetRequestID(ctx),
 						"user_id":        util.GetUserID(ctx),
 					}).Fatal(err)
-				}
-				if len(commits) == 0 {
-					logger.WithFields(logging.Fields{
-						"correlation_id": util.GetRequestID(ctx),
-						"user_id":        util.GetUserID(ctx),
-					}).Fatal(errors.New("No commits found"))
 				}
 				// Run analysis
 				err = analyzer.Analyze(ctx, commits)
@@ -222,11 +233,6 @@ func initConfig() {
 	if configFile != "" {
 		viper.SetConfigFile(configFile)
 	}
-	viper.AutomaticEnv()
-	viper.SetEnvPrefix("WATCHDOG_")
-	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
-	viper.AllowEmptyEnv(true)
-	viper.AutomaticEnv()
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("/etc/watchdog/")
 	viper.AddConfigPath("/etc/watchdog/config")

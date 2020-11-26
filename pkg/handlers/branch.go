@@ -27,7 +27,7 @@ func (branchHandler *BranchHandler) GetType() string {
 func (branchHandler *BranchHandler) Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error) {
 	// Handler must run only on branch changes
 	if rule.Type == hook.TypeBranch && branchHandler.Info.RefType == "heads" {
-		for _, condition := range rule.Conditons {
+		for _, condition := range rule.Conditions {
 			data := issue.Data{
 				Branch:    branchHandler.Info.RefName,
 				Commit:    branchHandler.Info.NewRev,

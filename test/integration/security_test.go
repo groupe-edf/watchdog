@@ -39,7 +39,7 @@ func TestSecretRules(t *testing.T) {
 		{"ENTROPY_MYSQL_DUMP", "dump.sql", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/dump.sql")), 8, &Issue{Offender: "$2y$12$s3fn56ajUsYzNCVLkfprB.zHmMmOOBJ/Ro/wU0wRiIWaIRrk9gcei", Rule: "ENTROPY"}},
 		{"HTPASSWD", ".htpasswd", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/.htpasswd")), 5, &Issue{Offender: "Pa$$w0rd", Rule: "HTPASSWD"}},
 		{"LANGUAGE_GO", "main.go", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/language.go")), 1, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
-		{"LANGUAGE_JAVA", "AWSProvider.java", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/language.java")), 5, &Issue{Offender: "AKIAYYYYYYYYYYYYYYYY", Rule: "AWS_ACCESS_KEY"}},
+		{"LANGUAGE_JAVA", "AWSProvider.java", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/language.java")), 4, &Issue{Offender: "AKIAYYYYYYYYYYYYYYYY", Rule: "AWS_ACCESS_KEY"}},
 		{"LANGUAGE_SHELL", "deploy.sh", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/language.sh")), 7, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
 		{"PASSWORD", "application.properties", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/application.properties")), 3, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
 		{"PASSWORD_ENV", ".env", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/.env")), 2, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
