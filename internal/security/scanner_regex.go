@@ -34,7 +34,7 @@ var (
 		IsFalsePositive,
 	}
 	// SupportedLanguages list of supported languages
-	SupportedLanguages = []string{"go", "java", "py"}
+	SupportedLanguages = []string{"go", "groovy", "java", "py"}
 )
 
 // RegexScanner data struct
