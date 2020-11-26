@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/coreos/go-semver/semver"
+	"github.com/groupe-edf/watchdog/internal/version"
 )
 
 // GitHooks data structure
@@ -14,17 +15,17 @@ type GitHooks struct {
 }
 
 // Validate Check if version is supported
-func (gitHooks *GitHooks) Validate(cliVersion string) error {
+func (gitHooks *GitHooks) Validate() error {
 	gitHooksVersion, err := semver.NewVersion(gitHooks.Version)
 	if err != nil {
 		return err
 	}
-	watchDogVersion, err := semver.NewVersion(cliVersion)
+	watchDogVersion, err := semver.NewVersion(version.Version)
 	if err != nil {
 		return err
 	}
 	if !gitHooksVersion.LessThan(*watchDogVersion) && !gitHooksVersion.Equal(*watchDogVersion) {
-		return fmt.Errorf("Unsupported version %s with Watchdog %s", gitHooksVersion.String(), cliVersion)
+		return fmt.Errorf("Unsupported .githooks.yml version %s by watchdog v%s", gitHooksVersion.String(), version.Version)
 	}
 	return nil
 }

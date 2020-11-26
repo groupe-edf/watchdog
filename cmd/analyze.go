@@ -130,11 +130,12 @@ var (
 				}
 				hooks, err = hook.ExtractConfigFile(ctx, commit)
 				if err != nil && !errors.Is(err, hook.ErrFileNotFound) {
+					fmt.Println(util.Colorize(util.Red, err.Error()))
 					logger.WithFields(logging.Fields{
 						"commit":         commit.Hash.String(),
 						"correlation_id": util.GetRequestID(ctx),
 						"user_id":        util.GetUserID(ctx),
-					}).Errorf("Error when extracting config file %v", err)
+					}).Fatalf("Error when extracting config file %v", err)
 				}
 			}
 			// No .githooks.yml file was referenced, create default one if we have global default handlers in configuration

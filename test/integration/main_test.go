@@ -5,6 +5,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
@@ -19,7 +20,6 @@ import (
 
 const (
 	OutputFormat = "json"
-	Version      = "1.0.0"
 )
 
 var (
@@ -27,6 +27,7 @@ var (
 	RootDirectory               string
 	RulesDirectory              string
 	Suite                       *helpers.GitSuite
+	Version                     string
 )
 
 func TestMain(m *testing.M) {
@@ -63,12 +64,15 @@ func BenchmarkCli(b *testing.B) {
 func setUpAll() {
 	_, directory, _, _ := runtime.Caller(0)
 	RootDirectory = filepath.Join(filepath.Dir(directory), "../..")
-	RulesDirectory = RootDirectory + "/test/data/rules"
+
 	err := os.Chdir(RootDirectory)
 	if err != nil {
 		fmt.Printf("Could not change directory %v", err)
 		os.Exit(1)
 	}
+	versionFile, _ := ioutil.ReadFile(filepath.Join(RootDirectory, "Version"))
+	Version = strings.TrimSpace(string(versionFile))
+	RulesDirectory = RootDirectory + "/test/data/rules"
 	make := exec.Command("make", "build-test")
 	err = make.Run()
 	if err != nil {

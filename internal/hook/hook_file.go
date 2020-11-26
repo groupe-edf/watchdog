@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/groupe-edf/watchdog/internal/version"
 	"gopkg.in/yaml.v3"
 )
 
@@ -47,7 +46,7 @@ func LoadGitHooksFromRaw(fileContent string) (*GitHooks, error) {
 	if err := yaml.Unmarshal([]byte(fileContent), hooks); err != nil {
 		return nil, fmt.Errorf("Unable to decode into struct, %v", err)
 	}
-	if err := hooks.Validate(version.Version); err != nil {
+	if err := hooks.Validate(); err != nil {
 		return nil, err
 	}
 	return hooks, nil
