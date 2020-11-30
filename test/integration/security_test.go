@@ -109,6 +109,25 @@ func TestSecretRulesWithSkip(t *testing.T) {
 	assert.Equal(0, len(issues))
 }
 
+func TestSecretRulesWithIgnore(t *testing.T) {
+	assert := assert.New(t)
+	gitHooksFile := helpers.LoadGolden(t, path.Join(RulesDirectory, "security_secret_with_ignore"))
+	gitHooksFile = strings.Replace(gitHooksFile, "develop", Version, -1)
+	var files []helpers.File
+	files = append(files, helpers.File{
+		FileName:    ".githooks.yml",
+		FileContent: []byte(gitHooksFile),
+	}, helpers.File{
+		FileName:    "application.properties",
+		FileContent: []byte(helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/application.properties"))),
+	})
+	buffer, err := Suite.CommitAndPush("master", files, "Add REDIS_URL secret", nil)
+	issues := helpers.ParseIssues(buffer.String(), OutputFormat)
+	assert.NoError(err)
+	assert.Equal(3, len(issues))
+	assert.Equal(issue.SeverityLow, issues[0].Severity)
+}
+
 func TestSkipWithGitPushOption(t *testing.T) {
 	tearDownAll()
 	setUpAll()

@@ -57,20 +57,15 @@ func TestDefaultRules(t *testing.T) {
 	assert.Equal(0, len(issues))
 }
 
-func BenchmarkCli(b *testing.B) {
-	// TODO: stress watchdog performance
-}
-
 func setUpAll() {
 	_, directory, _, _ := runtime.Caller(0)
 	RootDirectory = filepath.Join(filepath.Dir(directory), "../..")
-
 	err := os.Chdir(RootDirectory)
 	if err != nil {
 		fmt.Printf("Could not change directory %v", err)
 		os.Exit(1)
 	}
-	versionFile, _ := ioutil.ReadFile(filepath.Join(RootDirectory, "Version"))
+	versionFile, _ := ioutil.ReadFile(filepath.Join(RootDirectory, "VERSION"))
 	Version = strings.TrimSpace(string(versionFile))
 	RulesDirectory = RootDirectory + "/test/data/rules"
 	make := exec.Command("make", "build-test")
