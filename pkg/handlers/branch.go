@@ -39,7 +39,7 @@ func (branchHandler *BranchHandler) Handle(ctx context.Context, commit *object.C
 				"correlation_id": util.GetRequestID(ctx),
 				"rule":           rule.Type,
 				"user_id":        util.GetUserID(ctx),
-			}).Info("Processing branch rule")
+			}).Debug("processing branch rule")
 			switch condition.Type {
 			case "pattern":
 				// User created new branch, check naming convention
@@ -65,7 +65,7 @@ func (branchHandler *BranchHandler) Handle(ctx context.Context, commit *object.C
 					"correlation_id": util.GetRequestID(ctx),
 					"rule":           rule.Type,
 					"user_id":        util.GetUserID(ctx),
-				}).Info("Unsuported condition")
+				}).Warning("unsuported condition")
 			}
 		}
 	}

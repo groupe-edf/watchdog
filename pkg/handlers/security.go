@@ -50,7 +50,7 @@ func (securityHandler *SecurityHandler) Handle(ctx context.Context, commit *obje
 				"correlation_id": util.GetRequestID(ctx),
 				"rule":           rule.Type,
 				"user_id":        util.GetUserID(ctx),
-			}).Info("Processing security analysis")
+			}).Debug("processing security analysis")
 			switch condition.Type {
 			case ConditionSecret:
 				if securityHandler.scanner == nil {
@@ -66,6 +66,13 @@ func (securityHandler *SecurityHandler) Handle(ctx context.Context, commit *obje
 				}
 				if len(leaks) > 0 {
 					for _, leak := range leaks {
+						securityHandler.Logger.WithFields(logging.Fields{
+							"commit":         commit.Hash.String(),
+							"condition":      condition.Type,
+							"correlation_id": util.GetRequestID(ctx),
+							"rule":           rule.Type,
+							"user_id":        util.GetUserID(ctx),
+						}).Infof("potential %s secret leaked in file %s line %d: %s####", leak.Rule, leak.File, leak.LineNumber, leak.Offender[:4])
 						data.Value = leak.Offender
 						data.Object = leak.File
 						issue := issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Secrets, token and passwords are forbidden, `{{ .Object }}:{{ Hide .Value 4 }}`")
@@ -84,7 +91,7 @@ func (securityHandler *SecurityHandler) Handle(ctx context.Context, commit *obje
 					"correlation_id": util.GetRequestID(ctx),
 					"rule":           rule.Type,
 					"user_id":        util.GetUserID(ctx),
-				}).Info("Unsuported condition")
+				}).Warning("unsuported condition")
 			}
 		}
 	}

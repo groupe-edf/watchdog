@@ -60,7 +60,7 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 				"correlation_id": util.GetRequestID(ctx),
 				"rule":           rule.Type,
 				"user_id":        util.GetUserID(ctx),
-			}).Info("Processing file analysis")
+			}).Debug("processing file analysis")
 			switch condition.Type {
 			case ConditionExtension:
 				for _, file := range files {
@@ -103,7 +103,7 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 							"correlation_id": util.GetRequestID(ctx),
 							"rule":           rule.Type,
 							"user_id":        util.GetUserID(ctx),
-						}).Infof("Unknown operation %v for file size condition", matches[1])
+						}).Warningf("unknown operation %v for file size condition", matches[1])
 					}
 				}
 			default:
@@ -113,7 +113,7 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 					"correlation_id": util.GetRequestID(ctx),
 					"rule":           rule.Type,
 					"user_id":        util.GetUserID(ctx),
-				}).Info("Unsuported condition")
+				}).Warning("unsuported condition")
 			}
 		}
 	}

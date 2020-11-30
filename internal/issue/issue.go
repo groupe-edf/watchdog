@@ -25,9 +25,7 @@ const (
 var (
 	// FunctionsMap helper functions
 	FunctionsMap = template.FuncMap{
-		"Hide": func(value string, characters int) string {
-			return strings.Replace(value, value[characters:], strings.Repeat("#", len(value)-characters), 1)
-		},
+		"Hide": HideSecret,
 	}
 )
 
@@ -110,4 +108,9 @@ func ParseScore(score string) Score {
 		return SeverityLow
 	}
 	return SeverityLow
+}
+
+// HideSecret hide leaks in text
+func HideSecret(value string, characters int) string {
+	return strings.Replace(value, value[characters:], strings.Repeat("#", len(value)-characters), 1)
 }

@@ -3,7 +3,7 @@ package security
 // Leak data struct
 type Leak struct {
 	File        string   `json:"file"`
-	Line        string   `json:"line"`
+	Line        string   `json:"-"`
 	LineNumber  int      `json:"line_number"`
 	Offender    string   `json:"-"`
 	Remediation string   `json:"remediation,omitempty"`

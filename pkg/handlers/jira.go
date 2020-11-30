@@ -46,7 +46,7 @@ func (jiraHandler *JiraHandler) Handle(ctx context.Context, commit *object.Commi
 				"correlation_id": util.GetRequestID(ctx),
 				"rule":           rule.Type,
 				"user_id":        util.GetUserID(ctx),
-			}).Info("Processing jira analysis")
+			}).Debug("processing jira analysis")
 			switch condition.Type {
 			case "issue":
 				// Check if commit message contains issue reference
@@ -80,7 +80,7 @@ func (jiraHandler *JiraHandler) Handle(ctx context.Context, commit *object.Commi
 					"correlation_id": util.GetRequestID(ctx),
 					"rule":           rule.Type,
 					"user_id":        util.GetUserID(ctx),
-				}).Info("Unsuported condition")
+				}).Warning("unsuported condition")
 			}
 		}
 	}
@@ -91,7 +91,7 @@ func (jiraHandler *JiraHandler) canSkip(commitSubject string, condition hook.Con
 	if condition.Skip != "" {
 		matches := regexp.MustCompile(condition.Skip).FindStringSubmatch(commitSubject)
 		if len(matches) > 0 {
-			jiraHandler.Logger.Infof("Rule ignored due to skip condition `%v`", condition.Skip)
+			jiraHandler.Logger.Infof("rule ignored due to skip condition `%v`", condition.Skip)
 			return true
 		}
 	}

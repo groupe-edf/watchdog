@@ -40,7 +40,7 @@ func (tagHandler *TagHandler) Handle(ctx context.Context, commit *object.Commit,
 				"correlation_id": util.GetRequestID(ctx),
 				"rule":           rule.Type,
 				"user_id":        util.GetUserID(ctx),
-			}).Info("Processing tag rule")
+			}).Debug("processing tag rule")
 			switch condition.Type {
 			case "semver":
 				version, err := semver.NewVersion(data.Tag)
@@ -55,7 +55,7 @@ func (tagHandler *TagHandler) Handle(ctx context.Context, commit *object.Commit,
 					"correlation_id": util.GetRequestID(ctx),
 					"rule":           rule.Type,
 					"user_id":        util.GetUserID(ctx),
-				}).Info("Unsuported condition")
+				}).Warning("unsuported condition")
 			}
 		}
 	}

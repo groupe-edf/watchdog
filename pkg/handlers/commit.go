@@ -40,7 +40,7 @@ func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.C
 				"correlation_id": util.GetRequestID(ctx),
 				"rule":           rule.Type,
 				"user_id":        util.GetUserID(ctx),
-			}).Debug("Processing commit rule")
+			}).Debug("processing commit rule")
 			switch condition.Type {
 			case "pattern":
 				commitHandler.Logger.Debugf("Commit pattern `%v`", condition.Condition)
@@ -112,7 +112,7 @@ func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.C
 						"correlation_id": util.GetRequestID(ctx),
 						"rule":           rule.Type,
 						"user_id":        util.GetUserID(ctx),
-					}).Infof("Unknown operation %v for length condition", matches[1])
+					}).Warningf("unknown operation %v for length condition", matches[1])
 				}
 			case "email":
 				matches := regexp.MustCompile(condition.Condition).FindStringSubmatch(commit.Author.Email)
@@ -126,7 +126,7 @@ func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.C
 					"correlation_id": util.GetRequestID(ctx),
 					"rule":           rule.Type,
 					"user_id":        util.GetUserID(ctx),
-				}).Info("Unsuported condition")
+				}).Warning("unsuported condition")
 			}
 		}
 	}
@@ -141,7 +141,7 @@ func (commitHandler *CommitHandler) canSkip(ctx context.Context, commitSubject s
 				"condition":      condition.Type,
 				"correlation_id": util.GetRequestID(ctx),
 				"user_id":        util.GetUserID(ctx),
-			}).Infof("Rule ignored due to skip condition `%v`", condition.Skip)
+			}).Infof("rule ignored due to skip condition `%v`", condition.Skip)
 			return true
 		}
 	}

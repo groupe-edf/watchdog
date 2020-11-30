@@ -27,7 +27,7 @@ logs_format: json
 logs_path: /var/log/watchdog/watchdog.log
 max_workers: 10
 output:
-output_format: text
+output_format: json
 plugins_directory:
 profile: false
 security:

@@ -31,6 +31,11 @@ type Analyzer struct {
 
 // Analyze execute analysis
 func (analyzer *Analyzer) Analyze(ctx context.Context, commitIter object.CommitIter) error {
+	analyzer.Logger.WithFields(logging.Fields{
+		"correlation_id": util.GetRequestID(ctx),
+		"repository":     analyzer.Options.URI,
+		"user_id":        util.GetUserID(ctx),
+	}).Info("starting analysis")
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	defer commitIter.Close()
@@ -70,7 +75,7 @@ func (analyzer *Analyzer) Analyze(ctx context.Context, commitIter object.CommitI
 		analyzer.Logger.WithFields(logging.Fields{
 			"correlation_id": util.GetRequestID(ctx),
 			"user_id":        util.GetUserID(ctx),
-		}).Info("There is no hooks in .githooks.yml file")
+		}).Info("there is no hooks in .githooks.yml file")
 	}
 	return nil
 }
@@ -90,7 +95,7 @@ func (analyzer *Analyzer) RegisterHandler(ctx context.Context, handler Handler) 
 	analyzer.Logger.WithFields(logging.Fields{
 		"correlation_id": util.GetRequestID(ctx),
 		"user_id":        util.GetUserID(ctx),
-	}).Debugf("Registring handler `%v`", reflect.TypeOf(handler))
+	}).Debugf("registring handler `%v`", reflect.TypeOf(handler))
 	handler.SetLogger(analyzer.Logger)
 	if analyzer.Info != nil {
 		handler.SetInfo(analyzer.Info)
@@ -143,7 +148,7 @@ func (analyzer *Analyzer) analyze(ctx context.Context, gitHooks *hook.GitHooks, 
 				"correlation_id": util.GetRequestID(ctx),
 				"rule":           rule.Type,
 				"user_id":        util.GetUserID(ctx),
-			}).Debug("Processing hook rule")
+			}).Debug("processing hook rule")
 			for _, handler := range analyzer.Handlers {
 				select {
 				case <-ctx.Done():

@@ -76,13 +76,13 @@ var (
 			logger.WithFields(logging.Fields{
 				"correlation_id": util.GetRequestID(ctx),
 				"user_id":        util.GetUserID(ctx),
-			}).Debugf("Repository `%v` successfully fetched", options.URI)
+			}).Debugf("repository `%v` successfully fetched", options.URI)
 			if err != nil {
 				fmt.Println(util.Colorize(util.Red, err.Error()))
 				logger.WithFields(logging.Fields{
 					"correlation_id": util.GetRequestID(ctx),
 					"user_id":        util.GetUserID(ctx),
-				}).Debugf("Error fetching repository `%v`", err)
+				}).Debugf("error fetching repository `%v`", err)
 			}
 			analyzer.SetRepository(repository)
 			if err != nil {
@@ -91,7 +91,9 @@ var (
 					"user_id":        util.GetUserID(ctx),
 				}).Warning(err)
 			}
+			// Loading .githooks.yml file
 			if options.HookFile != "" {
+				// External .githooks.yml
 				logger.WithFields(logging.Fields{
 					"correlation_id": util.GetRequestID(ctx),
 					"user_id":        util.GetUserID(ctx),
@@ -102,11 +104,15 @@ var (
 					os.Exit(0)
 				}
 			} else {
+				// Versionned .githooks.yml
 				var commit *object.Commit
 				info, err = hook.ParseInfo(repository, options.HookInput)
 				if err != nil && err != hook.ErrNoHookData {
 					fmt.Printf("Error parsing hook info %v", err)
-					os.Exit(0)
+					logger.WithFields(logging.Fields{
+						"correlation_id": util.GetRequestID(ctx),
+						"user_id":        util.GetUserID(ctx),
+					}).Fatal(err)
 				}
 				if info != nil {
 					analyzer.SetInfo(info)
@@ -135,7 +141,7 @@ var (
 						"commit":         commit.Hash.String(),
 						"correlation_id": util.GetRequestID(ctx),
 						"user_id":        util.GetUserID(ctx),
-					}).Fatalf("Error when extracting config file %v", err)
+					}).Fatalf("error when extracting config file %v", err)
 				}
 			}
 			// No .githooks.yml file was referenced, create default one if we have global default handlers in configuration
@@ -151,7 +157,7 @@ var (
 				logger.WithFields(logging.Fields{
 					"correlation_id": util.GetRequestID(ctx),
 					"user_id":        util.GetUserID(ctx),
-				}).Debug("No .githooks.yml file was referenced")
+				}).Debug("no .githooks.yml file was referenced")
 			}
 			if hooks != nil {
 				analyzer.SetHooks(hooks)
