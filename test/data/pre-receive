@@ -6,7 +6,7 @@ while read -r OldRev NewRev RefName; do
     --hook-type="pre-receive" \
     --hook-input="$OldRev $NewRev $RefName" \
     --verbose="true" \
-    --logs-path="/var/log/watchdog/watchdog.log" \
+    --logs-path="watchdog.log" \
     --logs-level="debug" \
     --output-format="%s"
   status=$?

@@ -1,5 +1,7 @@
 # Compliant
 spring.datasource.password
+spring.datasource.password=
+spring.datasource.password=${PASSWORD}
 
 # Non Compliant
 database.url=jdbc:sqlserver://localhost;user=root;password=Pa$$w0rd;

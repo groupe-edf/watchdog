@@ -40,7 +40,7 @@ var (
 	rules = []Rule{
 		{
 			Description: "ASYMMETRIC_PRIVATE_KEY",
-			Regexp:      regexp.MustCompile(string(`(\-){5}BEGIN[[:space:]]*?(RSA|OPENSSH|DSA|EC|PGP)?[[:space:]]*?PRIVATE[[:space:]]KEY[[:space:]]*?(BLOCK)?(\-){5}.*`)),
+			Regexp:      regexp.MustCompile(string(`(\-){5}BEGIN[[:blank:]]*?(RSA|OPENSSH|DSA|EC|PGP)?[[:blank:]]*?PRIVATE[[:blank:]]KEY[[:blank:]]*?(BLOCK)?(\-){5}.*`)),
 			Tags:        []string{"key"},
 			Severity:    SeverityMajor,
 		},
@@ -58,7 +58,7 @@ var (
 		},
 		{
 			Description: "BASE_64",
-			Regexp:      regexp.MustCompile("(?i)['\"]?((?:[_]?auth(?:Token|orization:[[:space:]]Basic)?)['\"]?[[:space:]=:]{1})[[:space:]]*['\"]?" + Base64Pattern + "['\"]?"),
+			Regexp:      regexp.MustCompile("(?i)['\"]?((?:[_]?auth(?:Token|orization:[[:blank:]]Basic)?)['\"]?[[:blank:]=:]{1})[[:blank:]]*['\"]?" + Base64Pattern + "['\"]?"),
 			Tags:        []string{"authentication", "base64"},
 			Severity:    SeverityMinor,
 		},

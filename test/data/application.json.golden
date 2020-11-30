@@ -5,7 +5,7 @@
   },
   "non_compliant": {
     "username": "root",
-    "password: "Pa$$w0rd",
+    "password": "Pa$$w0rd",
     "environment": [
       "DB_PASSWORD=Pa$$w0rd"
     ]
