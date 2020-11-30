@@ -12,28 +12,29 @@ import (
 const (
 	// LogsPath default log file location
 	LogsPath = "/var/log/watchdog/watchdog.log"
-	// MaxWorkers max workers running at the same time
-	MaxWorkers = 4
 )
 
 // Options options data structure
 type Options struct {
-	AuthBasicToken   string               `mapstructure:"auth-basic-token"`
-	Banner           bool                 `mapstructure:"banner"`
-	CacheDirectory   string               `mapstructure:"cache-directory"`
-	Contact          string               `mapstructure:"contact"`
-	DefaultHandlers  map[string]hook.Rule `mapstructure:"default-hadnlers"`
-	DocsLink         string               `mapstructure:"docs-link"`
-	HookFile         string               `mapstructure:"hook-file"`
-	HookInput        string               `mapstructure:"hook-input"`
-	HookType         string               `mapstructure:"hook-type"`
-	LogsFormat       string               `mapstructure:"logs-format"`
-	LogsLevel        string               `mapstructure:"logs-level"`
-	LogsPath         string               `mapstructure:"logs-path"`
-	MaxWorkers       int                  `mapstructure:"max-workers"`
-	Output           string               `mapstructure:"output"`
-	OutputFormat     string               `mapstructure:"output-format"`
-	PluginsDirectory string               `mapstructure:"plugins-directory"`
+	AuthBasicToken    string               `mapstructure:"auth-basic-token"`
+	Banner            bool                 `mapstructure:"banner"`
+	CacheDirectory    string               `mapstructure:"cache-directory"`
+	Contact           string               `mapstructure:"contact"`
+	DefaultHandlers   map[string]hook.Rule `mapstructure:"default-handlers"`
+	DocsLink          string               `mapstructure:"docs-link"`
+	HookFile          string               `mapstructure:"hook-file"`
+	HookInput         string               `mapstructure:"hook-input"`
+	HookType          string               `mapstructure:"hook-type"`
+	LogsFormat        string               `mapstructure:"logs-format"`
+	LogsLevel         string               `mapstructure:"logs-level"`
+	LogsPath          string               `mapstructure:"logs-path"`
+	MaxFileSize       uint
+	MaxRepositorySize uint
+	// MaxWorkers max workers running at the same time
+	MaxWorkers       int    `mapstructure:"max-workers"`
+	Output           string `mapstructure:"output"`
+	OutputFormat     string `mapstructure:"output-format"`
+	PluginsDirectory string `mapstructure:"plugins-directory"`
 	Security         struct {
 		MergeRules bool `mapstructure:"merge-rules"`
 		Rules      []struct {
@@ -57,9 +58,8 @@ func (options *Options) Validate() error {
 	if options.LogsPath == "" {
 		options.LogsPath = LogsPath
 	}
-	if options.MaxWorkers == 0 || options.MaxWorkers > MaxWorkers {
-		runtime.GOMAXPROCS(4)
-		options.MaxWorkers = MaxWorkers
+	if options.MaxWorkers == 0 {
+		options.MaxWorkers = runtime.NumCPU()
 	}
 	return nil
 }

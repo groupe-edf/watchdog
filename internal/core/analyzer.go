@@ -104,9 +104,14 @@ func (analyzer *Analyzer) RegisterHandler(ctx context.Context, handler Handler) 
 func (analyzer *Analyzer) SetHooks(hooks *hook.GitHooks) {
 	if len(analyzer.Options.DefaultHandlers) > 0 {
 		for handler, rule := range analyzer.Options.DefaultHandlers {
+			if rule.Disabled {
+				continue
+			}
 			hooks.Hooks[0].Rules = append(hooks.Hooks[0].Rules, &hook.Rule{
-				Type:       hook.HandlerType(handler),
-				Conditions: rule.Conditions,
+				Conditions:  rule.Conditions,
+				Description: rule.Description,
+				Disabled:    rule.Disabled,
+				Type:        hook.HandlerType(handler),
 			})
 		}
 	}

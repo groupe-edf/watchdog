@@ -2,6 +2,7 @@ auth_basic_token: WATCHDOG_AUTH_BASIC_TOKEN
 banner: true
 cache_directory: /opt/watchdog/repositories
 contact: Habib MAALEM <habib.maalem@gmail.com>
+debug: true
 default_handlers:
   file:
     description: File default handler
@@ -11,22 +12,23 @@ default_handlers:
       condition: lt 500kb
   security:
     description: Security default handler
-    enabled: true
+    disabled: false
     type: security
     conditions:
     - type: secret
-      skip: .*.go|.*.json|CONTRIBUTING.md|docs/.*|test/.*
+      ignore: true
+      skip: .*.go|CONTRIBUTING.md|docs/.*|test/.*|.*.min.js
 docs_link: https://groupe-edf.github.io/watchdog/docs/
 hook_file:
 hook_input:
 hook_type:
-logs_level: debug
+logs_level: info
 logs_format: json
 logs_path: /var/log/watchdog/watchdog.log
 max_workers: 10
-output: report.json
-output_format: json
-plugins_directory: ""
+output:
+output_format: text
+plugins_directory:
 profile: false
 security:
   merge_rules: true

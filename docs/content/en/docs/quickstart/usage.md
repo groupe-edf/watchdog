@@ -33,7 +33,7 @@ In this file the developer or rather the maintainer of the project will define t
 | **hook.rejection_message** | Global rejection message |  | Yes | String |
 | **hook.rules[]** | List of custom hook rules |  |  | String |
 | **hook.rule.type** | Type of the rule to be triggered, it can have one of the following values `branch`, `commit`, `file`, `jira`, `security`. See [Handlers](#handlers) |  |  | String |
-| **hook.rule.enabled** | This attribute enables or disables the rule | true | Yes | String |
+| **hook.rule.disabled** | This attribute enables or disables the rule | true | Yes | String |
 | **hook.rule.conditions[]** | List of conditions that will trigger the rule. They are specific to each rule |  |  | String |
 | **hook.rule.condition.type** | Type of condition, the value of this attribute may vary from one rule to another |  |  | String |
 | **hook.rule.condition.pattern** | It is a regular expression that describes the condition to be satisfied. See [Syntaxe](https://github.com/google/re2/wiki/Syntax) |  |  | String |

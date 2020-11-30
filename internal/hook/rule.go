@@ -23,6 +23,6 @@ const (
 type Rule struct {
 	Conditions  []Condition `yaml:"conditions,omitempty"`
 	Description string      `yaml:"description,omitempty"`
-	Enabled     bool        `yaml:"enabled,omitempty"`
+	Disabled    bool        `yaml:"disabled,omitempty"`
 	Type        HandlerType `yaml:"type,omitempty"`
 }
