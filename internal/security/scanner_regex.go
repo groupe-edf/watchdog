@@ -18,6 +18,8 @@ type IsFalsePositiveFunc func(file string, line string, secret string) int
 const (
 	// IsPositive string is secret
 	IsPositive int = iota
+	// IsFile string is a path
+	IsFile
 	// IsFunction string is function
 	IsFunction
 	// IsPlaceholder string is placeholder
@@ -34,7 +36,7 @@ var (
 		IsFalsePositive,
 	}
 	// SupportedLanguages list of supported languages
-	SupportedLanguages = []string{"go", "groovy", "java", "py"}
+	SupportedLanguages = []string{"go", "groovy", "java", "js", "py"}
 )
 
 // RegexScanner data struct
@@ -86,8 +88,9 @@ func (scanner *RegexScanner) SatisfyRules(commit *object.Commit, filePath string
 		scanner.Logger.WithFields(logging.Fields{
 			"condition": "secret",
 			"commit":    commit.Hash.String(),
+			"file":      filePath,
 			"rule":      "security",
-		}).Debugf("Searching for `%v` secret", rule.Description)
+		}).Debugf("Searching for `%v`", rule.Description)
 		if rule.File != nil && rule.File.FindString(filePath) == "" {
 			continue
 		}
@@ -109,7 +112,11 @@ func (scanner *RegexScanner) SatisfyRules(commit *object.Commit, filePath string
 					continue
 				}
 				if scanner.checkFalsePositive(filePath, line, offender) != IsPositive {
-					scanner.Logger.Debugf("False positive secret %s", offender)
+					scanner.Logger.WithFields(logging.Fields{
+						"condition": "secret",
+						"commit":    commit.Hash.String(),
+						"rule":      "security",
+					}).Warningf("False positive secret %s", offender)
 					continue
 				}
 				file, _ := commit.File(filePath)
