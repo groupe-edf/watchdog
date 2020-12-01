@@ -187,7 +187,7 @@ var (
 					}).Fatal(err)
 				}
 				// Send report
-				err = output.Report(options.Output, options.OutputFormat, analyzer.Issues)
+				err = output.Report(options, analyzer.Issues)
 				if err != nil {
 					logger.WithFields(logging.Fields{
 						"correlation_id": util.GetRequestID(ctx),

@@ -9,7 +9,7 @@ default_handlers:
     type: file
     conditions:
     - type: size
-      condition: lt 500kb
+      condition: lt 1mb
   security:
     description: Security default handler
     disabled: false
@@ -19,6 +19,9 @@ default_handlers:
       ignore: true
       skip: .*.go|CONTRIBUTING.md|docs/.*|test/.*|.*.min.js
 docs_link: https://groupe-edf.github.io/watchdog/docs/
+# Prefix to have custom error messages appear in GitLab’s UI
+# when the commit is declined or an error occurs during the Git hook
+error_message_prefix: "GL-HOOK-ERR: "
 hook_file:
 hook_input:
 hook_type:
@@ -27,7 +30,7 @@ logs_format: json
 logs_path: /var/log/watchdog/watchdog.log
 max_workers: 10
 output:
-output_format: json
+output_format: text
 plugins_directory:
 profile: false
 security:

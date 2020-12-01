@@ -16,20 +16,21 @@ const (
 
 // Options options data structure
 type Options struct {
-	AuthBasicToken    string               `mapstructure:"auth-basic-token"`
-	Banner            bool                 `mapstructure:"banner"`
-	CacheDirectory    string               `mapstructure:"cache-directory"`
-	Contact           string               `mapstructure:"contact"`
-	DefaultHandlers   map[string]hook.Rule `mapstructure:"default-handlers"`
-	DocsLink          string               `mapstructure:"docs-link"`
-	HookFile          string               `mapstructure:"hook-file"`
-	HookInput         string               `mapstructure:"hook-input"`
-	HookType          string               `mapstructure:"hook-type"`
-	LogsFormat        string               `mapstructure:"logs-format"`
-	LogsLevel         string               `mapstructure:"logs-level"`
-	LogsPath          string               `mapstructure:"logs-path"`
-	MaxFileSize       uint
-	MaxRepositorySize uint
+	AuthBasicToken     string               `mapstructure:"auth-basic-token"`
+	Banner             bool                 `mapstructure:"banner"`
+	CacheDirectory     string               `mapstructure:"cache-directory"`
+	Contact            string               `mapstructure:"contact"`
+	DefaultHandlers    map[string]hook.Rule `mapstructure:"default-handlers"`
+	DocsLink           string               `mapstructure:"docs-link"`
+	ErrorMessagePrefix string               `mapstructure:"error-message-prefix"`
+	HookFile           string               `mapstructure:"hook-file"`
+	HookInput          string               `mapstructure:"hook-input"`
+	HookType           string               `mapstructure:"hook-type"`
+	LogsFormat         string               `mapstructure:"logs-format"`
+	LogsLevel          string               `mapstructure:"logs-level"`
+	LogsPath           string               `mapstructure:"logs-path"`
+	MaxFileSize        uint
+	MaxRepositorySize  uint
 	// MaxWorkers max workers running at the same time
 	MaxWorkers       int    `mapstructure:"max-workers"`
 	Output           string `mapstructure:"output"`
@@ -90,6 +91,7 @@ func NewOptions(config *viper.Viper) (options *Options, err error) {
 	}
 	options.AuthBasicToken = config.GetString("auth_basic_token")
 	options.CacheDirectory = config.GetString("cache_directory")
+	options.ErrorMessagePrefix = config.GetString("error_message_prefix")
 	options.Security.MergeRules = config.GetBool("security.merge_rules")
 	err = options.Validate()
 	if err != nil {

@@ -17,20 +17,20 @@ import (
 var text = `
 {{- if .Issues -}}
 {{ range .Issues -}}
-{{ $.LinePrefix }}severity={{ .Severity }} handler={{ .Handler }} condition={{ .Condition }} commit={{ printf "%.8s" .Commit }} message="{{ .Message }}"
+{{- if eq .Severity 2 -}}{{ $.ErrorMessagePrefix }}{{ end -}}severity={{ .Severity }} handler={{ .Handler }} condition={{ .Condition }} commit={{ printf "%.8s" .Commit }} message="{{ .Message }}"
 {{ end -}}
 {{ end -}}
 `
 
 // ReportData report data
 type ReportData struct {
-	Issues     []issue.Issue
-	LinePrefix string
+	Issues             []issue.Issue
+	ErrorMessagePrefix string
 }
 
 // NewReport return analysis report
-func NewReport(writer io.Writer, format string, set *util.Set) (err error) {
-	switch format {
+func NewReport(writer io.Writer, options *config.Options, set *util.Set) (err error) {
+	switch options.OutputFormat {
 	case "json":
 		raw, err := json.MarshalIndent(set.List(), "", "\t")
 		if err != nil {
@@ -44,32 +44,32 @@ func NewReport(writer io.Writer, format string, set *util.Set) (err error) {
 		}
 		t := template.Must(template.New("watchdog").Funcs(functionsMap).Parse(text))
 		return t.Execute(writer, &ReportData{
-			Issues:     set.List(),
-			LinePrefix: config.ErrorMessagePrefix,
+			Issues:             set.List(),
+			ErrorMessagePrefix: options.ErrorMessagePrefix,
 		})
 	}
 	return errors.New("Unsupported output format")
 }
 
 // Report output issues report
-func Report(path string, format string, set *util.Set) (err error) {
+func Report(options *config.Options, set *util.Set) (err error) {
 	if set.Len() > 0 {
-		if path != "" {
-			file, err := os.Create(path)
+		if options.Output != "" {
+			file, err := os.Create(options.Output)
 			if err != nil {
 				return err
 			}
 			defer file.Close()
-			err = NewReport(file, format, set)
+			err = NewReport(file, options, set)
 			if err != nil {
 				return err
 			}
-			fmt.Printf("Report file generated in %s", util.Colorize(util.Green, path))
+			fmt.Printf("Report file generated in %s", util.Colorize(util.Green, options.Output))
 			fmt.Println()
 			return nil
 		}
 		os.Stdout.Write([]byte("-----BEGIN REJECTION MESSAGES-----\n"))
-		err = NewReport(os.Stdout, format, set)
+		err = NewReport(os.Stdout, options, set)
 		os.Stdout.Write([]byte("\n-----BEGIN REJECTION MESSAGES-----"))
 		return err
 	}
