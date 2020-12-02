@@ -112,5 +112,5 @@ func ParseScore(score string) Score {
 
 // HideSecret hide leaks in text
 func HideSecret(value string, characters int) string {
-	return strings.Replace(value, value[characters:], strings.Repeat("#", len(value)-characters), 1)
+	return strings.Replace(value, value[characters:], strings.Repeat("*", len(value)-characters), 1)
 }

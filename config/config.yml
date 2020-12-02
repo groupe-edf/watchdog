@@ -35,6 +35,10 @@ plugins_directory:
 profile: false
 security:
   merge_rules: true
+  # reveal_secrets < 0  hide secrets
+  # reveal_secrets = 0  reveal full secrets
+  # reveal_secrets > 0  partial reveal "x" characters from secrets
+  reveal_secrets: 5
   rules:
   - description: GOOGLE_API_KEY
     regexp: AIza[0-9A-Za-z\\-_]{35}

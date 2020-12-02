@@ -37,8 +37,9 @@ type Options struct {
 	OutputFormat     string `mapstructure:"output-format"`
 	PluginsDirectory string `mapstructure:"plugins-directory"`
 	Security         struct {
-		MergeRules bool `mapstructure:"merge-rules"`
-		Rules      []struct {
+		MergeRules    bool `mapstructure:"merge-rules"`
+		RevealSecrets int  `mapstructure:"reveal-secrets"`
+		Rules         []struct {
 			Description string   `mapstructure:"description"`
 			File        string   `mapstructure:"file"`
 			Regexp      string   `mapstructure:"regexp"`
@@ -93,6 +94,7 @@ func NewOptions(config *viper.Viper) (options *Options, err error) {
 	options.CacheDirectory = config.GetString("cache_directory")
 	options.ErrorMessagePrefix = config.GetString("error_message_prefix")
 	options.Security.MergeRules = config.GetBool("security.merge_rules")
+	options.Security.RevealSecrets = config.GetInt("security.reveal_secrets")
 	err = options.Validate()
 	if err != nil {
 		return nil, err

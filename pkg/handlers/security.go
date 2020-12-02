@@ -3,6 +3,8 @@ package handlers
 import (
 	"context"
 	"regexp"
+	"strings"
+	"unicode/utf8"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/core"
@@ -66,16 +68,23 @@ func (securityHandler *SecurityHandler) Handle(ctx context.Context, commit *obje
 				}
 				if len(leaks) > 0 {
 					for _, leak := range leaks {
+						offender := leak.Offender
+						if securityHandler.Options.Security.RevealSecrets > 0 {
+							offender = issue.HideSecret(leak.Offender, securityHandler.Options.Security.RevealSecrets)
+						}
+						if securityHandler.Options.Security.RevealSecrets < 0 {
+							offender = strings.Repeat("*", utf8.RuneCountInString(offender))
+						}
 						securityHandler.Logger.WithFields(logging.Fields{
 							"commit":         commit.Hash.String(),
 							"condition":      condition.Type,
 							"correlation_id": util.GetRequestID(ctx),
 							"rule":           rule.Type,
 							"user_id":        util.GetUserID(ctx),
-						}).Infof("potential %s secret leaked in file %s line %d: %s####", leak.Rule, leak.File, leak.LineNumber, leak.Offender[:4])
-						data.Value = leak.Offender
+						}).Infof("potential %s secret leaked in file %s line %d: %s", leak.Rule, leak.File, leak.LineNumber, offender)
+						data.Value = offender
 						data.Object = leak.File
-						issue := issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Secrets, token and passwords are forbidden, `{{ .Object }}:{{ Hide .Value 4 }}`")
+						issue := issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Secrets, token and passwords are forbidden, `{{ .Object }}:{{ .Value }}`")
 						issue.WithLeak(leak)
 						issues = append(issues, issue)
 					}
