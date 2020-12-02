@@ -163,9 +163,10 @@ test-security:
 	@gosec -exclude=G101,G104,G204,G306,G307 -fmt=json -out=gosec.json ./...
 
 COVERAGE_PROFILE=$(TARGET)/coverage.txt
+RUN=.
 test-unit:
 	@mkdir -p $(TARGET)
-	$(GO_TEST) -race -coverprofile=$(COVERAGE_PROFILE) -covermode=atomic ./...
+	$(GO_TEST) -race -coverprofile=$(COVERAGE_PROFILE) -covermode=atomic ./... -run $(RUN)
 
 tidy:
 	@$(GO) mod tidy
