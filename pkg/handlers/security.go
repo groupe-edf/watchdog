@@ -3,8 +3,6 @@ package handlers
 import (
 	"context"
 	"regexp"
-	"strings"
-	"unicode/utf8"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/core"
@@ -68,13 +66,7 @@ func (securityHandler *SecurityHandler) Handle(ctx context.Context, commit *obje
 				}
 				if len(leaks) > 0 {
 					for _, leak := range leaks {
-						offender := leak.Offender
-						if securityHandler.Options.Security.RevealSecrets > 0 {
-							offender = issue.HideSecret(leak.Offender, securityHandler.Options.Security.RevealSecrets)
-						}
-						if securityHandler.Options.Security.RevealSecrets < 0 {
-							offender = strings.Repeat("*", utf8.RuneCountInString(offender))
-						}
+						offender := issue.HideSecret(leak.Offender, securityHandler.Options.Security.RevealSecrets)
 						securityHandler.Logger.WithFields(logging.Fields{
 							"commit":         commit.Hash.String(),
 							"condition":      condition.Type,

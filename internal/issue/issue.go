@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"strings"
 	"text/template"
+	"unicode/utf8"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/hook"
@@ -111,6 +112,15 @@ func ParseScore(score string) Score {
 }
 
 // HideSecret hide leaks in text
-func HideSecret(value string, characters int) string {
-	return strings.Replace(value, value[characters:], strings.Repeat("*", len(value)-characters), 1)
+func HideSecret(secret string, reveal int) string {
+	if reveal > len(secret) {
+		reveal = len(secret)
+	}
+	if reveal == 0 {
+		secret = strings.Repeat("*", utf8.RuneCountInString(secret))
+	}
+	if reveal > 0 {
+		secret = strings.Replace(secret, secret[reveal:], strings.Repeat("*", len(secret)-reveal), 1)
+	}
+	return secret
 }
