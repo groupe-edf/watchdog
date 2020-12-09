@@ -30,25 +30,25 @@ func TestSecretRules(t *testing.T) {
 		Issue       *Issue
 	}{
 		{"INITIAL_COMMIT", "README.md", "# Readme", 0, nil},
-		{"BASE_64_AUTHORIZATION_HEADER", "deploy.sh", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/deploy.sh")), 1, &Issue{Offender: "PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==", Rule: "BASE_64"}},
-		{"BASE_64_JSON", "config.json", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/config.json")), 1, &Issue{Offender: "X3Rva2VuOjEyMzQ1Njc4OTBBQkNERUY=", Rule: "BASE_64"}},
-		{"BASE_64_NPM", ".npmrc", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/.npmrc")), 2, &Issue{Offender: "PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==", Rule: "BASE_64"}},
+		{"BASE_64_AUTHORIZATION_HEADER", "deploy.sh", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/deploy.sh")), 1, &Issue{Offender: "PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==", Rule: "BASE_64"}},
+		{"BASE_64_JSON", "config.json", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/config.json")), 1, &Issue{Offender: "X3Rva2VuOjEyMzQ1Njc4OTBBQkNERUY=", Rule: "BASE_64"}},
+		{"BASE_64_NPM", ".npmrc", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/.npmrc")), 2, &Issue{Offender: "PFVTRVJOQU1FPjo8UEFTU1dPUkQ+Cg==", Rule: "BASE_64"}},
 		{"CONFIDENTIAL", "SECURITY.md", "CONFIDENTIAL", 1, &Issue{Offender: "CONFIDENTIAL", Rule: "CONFIDENTIAL"}},
-		{"CONNECTION_STRING", "application.properties", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/database.properties")), 7, &Issue{Offender: "Pa$$w0rd", Rule: "CONNECTION_STRING"}},
-		{"CONNECTION_STRING_PIP", "pip.conf", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/pip.conf")), 2, &Issue{Offender: "Pa$$w0rd", Rule: "CONNECTION_STRING"}},
-		{"ENTROPY_MYSQL_DUMP", "dump.sql", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/dump.sql")), 8, &Issue{Offender: "$2y$12$s3fn56ajUsYzNCVLkfprB.zHmMmOOBJ/Ro/wU0wRiIWaIRrk9gcei", Rule: "ENTROPY"}},
-		{"HTPASSWD", ".htpasswd", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/.htpasswd")), 5, &Issue{Offender: "Pa$$w0rd", Rule: "HTPASSWD"}},
-		{"LANGUAGE_GO", "main.go", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/language.go")), 1, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
-		{"LANGUAGE_JAVA", "AWSProvider.java", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/language.java")), 4, &Issue{Offender: "AKIAYYYYYYYYYYYYYYYY", Rule: "AWS_ACCESS_KEY"}},
-		{"LANGUAGE_SHELL", "deploy.sh", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/language.sh")), 7, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
-		{"PASSWORD", "application.properties", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/application.properties")), 3, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
-		{"PASSWORD_ENV", ".env", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/.env")), 2, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
-		{"PASSWORD_JSON", "application.json", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/application.json")), 2, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
+		{"CONNECTION_STRING", "application.properties", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/database.properties")), 7, &Issue{Offender: "Pa$$w0rd", Rule: "CONNECTION_STRING"}},
+		{"CONNECTION_STRING_PIP", "pip.conf", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/pip.conf")), 2, &Issue{Offender: "Pa$$w0rd", Rule: "CONNECTION_STRING"}},
+		{"ENTROPY_MYSQL_DUMP", "dump.sql", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/dump.sql")), 8, &Issue{Offender: "$2y$12$s3fn56ajUsYzNCVLkfprB.zHmMmOOBJ/Ro/wU0wRiIWaIRrk9gcei", Rule: "ENTROPY"}},
+		{"HTPASSWD", ".htpasswd", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/.htpasswd")), 5, &Issue{Offender: "Pa$$w0rd", Rule: "HTPASSWD"}},
+		{"LANGUAGE_GO", "main.go", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/language.go")), 1, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
+		{"LANGUAGE_JAVA", "AWSProvider.java", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/language.java")), 4, &Issue{Offender: "AKIAYYYYYYYYYYYYYYYY", Rule: "AWS_ACCESS_KEY"}},
+		{"LANGUAGE_SHELL", "deploy.sh", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/language.sh")), 7, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
+		{"PASSWORD", "application.properties", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/application.properties")), 3, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
+		{"PASSWORD_ENV", ".env", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/.env")), 2, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
+		{"PASSWORD_JSON", "application.json", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/application.json")), 2, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
 		{"PASSWORD_QUOTES", "config.ini", `PASSWORD="Pa$$w0rd"`, 1, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD"}},
-		{"PASSWORD_XML", "settings.xml", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/settings.xml")), 1, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD_XML"}},
-		{"PRIVATE_KEY", "server.key", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/server.key")), 1, &Issue{Offender: "-----BEGIN RSA PRIVATE KEY-----", Rule: "ASYMMETRIC_PRIVATE_KEY"}},
-		{"SECRET_KEY_TOML", "config.toml", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/config.toml")), 2, &Issue{Offender: "1234567890ABCDEF", Rule: "SECRET_KEY"}},
-		{"SECRET_KEY_ENV", ".env", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/production.env")), 1, &Issue{Offender: "t&XG+FJ%M@8XYv5a!xaR", Rule: "SECRET_KEY"}},
+		{"PASSWORD_XML", "settings.xml", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/settings.xml")), 1, &Issue{Offender: "Pa$$w0rd", Rule: "PASSWORD_XML"}},
+		{"PRIVATE_KEY", "server.key", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/server.key")), 1, &Issue{Offender: "-----BEGIN RSA PRIVATE KEY-----", Rule: "ASYMMETRIC_PRIVATE_KEY"}},
+		{"SECRET_KEY_TOML", "config.toml", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/config.toml")), 2, &Issue{Offender: "1234567890ABCDEF", Rule: "SECRET_KEY"}},
+		{"SECRET_KEY_ENV", ".env", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/production.env")), 1, &Issue{Offender: "t&XG+FJ%M@8XYv5a!xaR", Rule: "SECRET_KEY"}},
 	}
 	rejectionMessage := "Secrets, token and passwords are forbidden, `{{ .Object }}:{{ Hide .Value 4 }}`"
 	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/security_secret"))
@@ -119,7 +119,7 @@ func TestSecretRulesWithIgnore(t *testing.T) {
 		FileContent: []byte(gitHooksFile),
 	}, helpers.File{
 		FileName:    "application.properties",
-		FileContent: []byte(helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/application.properties"))),
+		FileContent: []byte(helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/application.properties"))),
 	})
 	buffer, err := Suite.CommitAndPush("master", files, "Add REDIS_URL secret", nil)
 	issues := helpers.ParseIssues(buffer.String(), OutputFormat)
