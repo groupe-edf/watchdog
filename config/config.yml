@@ -1,9 +1,18 @@
-auth_basic_token: WATCHDOG_AUTH_BASIC_TOKEN
+# credentials to be used to fetch git repositories
+auth_basic_token:
+# show or hide watchdog banner
 banner: true
+# cache directory for git repositories
 cache_directory: /opt/watchdog/repositories
 contact: Habib MAALEM <habib.maalem@gmail.com>
-debug: true
-default_handlers:
+# link to watchdog documentation
+docs_link: https://groupe-edf.github.io/watchdog/docs/
+# Prefix to have custom error messages appear in GitLab’s UI
+# when the commit is declined or an error occurs during the Git hook
+error_message_prefix: "GL-HOOK-ERR: "
+# default handlers executed every time analysis is runned
+# see https://groupe-edf.github.io/watchdog/docs/handlers/
+handlers:
   file:
     description: File default handler
     type: file
@@ -18,27 +27,34 @@ default_handlers:
     - type: secret
       ignore: true
       skip: .*.go|CONTRIBUTING.md|docs/.*|test/.*|.*.min.js
-docs_link: https://groupe-edf.github.io/watchdog/docs/
-# Prefix to have custom error messages appear in GitLab’s UI
-# when the commit is declined or an error occurs during the Git hook
-error_message_prefix: "GL-HOOK-ERR: "
 hook_file:
 hook_input:
 hook_type:
+# logs level
 logs_level: info
-logs_format: json
+# logs format
+logs_format: text
+# logs path
 logs_path: /var/log/watchdog/watchdog.log
-max_workers: 10
+# number of cocurrent worker user to run analysis
+max_workers: 8
+# output file for analysis report
 output:
-output_format: text
+# report format
+output_format: json
+# coming soon
 plugins_directory:
+# enable or disable profiling, for development purpose
 profile: false
+# security options
 security:
+  # override or not default security rules
   merge_rules: true
-  # reveal_secrets < 0  hide secrets
-  # reveal_secrets = 0  reveal full secrets
-  # reveal_secrets > 0  partial reveal "x" characters from secrets
-  reveal_secrets: 5
+  # reveal_secrets < 0  reveal full secrets
+  # reveal_secrets = 0  hide secrets
+  # reveal_secrets > 0  partial reveal "N" characters from secrets
+  reveal_secrets: 4
+  # security rules
   rules:
   - description: GOOGLE_API_KEY
     regexp: AIza[0-9A-Za-z\\-_]{35}

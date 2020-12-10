@@ -8,7 +8,8 @@ while read -r OldRev NewRev RefName; do
     --verbose="true" \
     --logs-path="watchdog.log" \
     --logs-level="debug" \
-    --output-format="%s"
+    --output-format="%s" \
+    --security.reveal-secrets=4
   status=$?
   if [ $status -eq 1 ]; then
     exit 1
