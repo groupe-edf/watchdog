@@ -147,12 +147,10 @@ release-snapshot:
 
 URI=
 run: ## Run watchdog locally to analyze repostiory `make run URI="https://github.com/groupe-edf/watchdog"`
-	$(GO_RUN) -ldflags="$(LDFLAGS)" . \
+	$(GO_RUN) -ldflags="$(LDFLAGS)" . analyze \
 		--config config/config.yml \
-		--logs-format text \
-		--logs-level debug \
 		--logs-path /var/log/watchdog/watchdog.log \
-		--uri $(URI)
+		--uri "$(URI)"
 	@echo "${GREEN}> Repository successfully analyzed${RESET}"
 
 test: test-unit test-integration test-security clean

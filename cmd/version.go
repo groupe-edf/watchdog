@@ -33,6 +33,6 @@ var (
 )
 
 func init() {
-	analyzeCommand.AddCommand(versionCmd)
+	rootCommand.AddCommand(versionCmd)
 	versionCmd.Flags().BoolVar(&short, "short", false, "print just the version number.")
 }

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"strings"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/config"
@@ -18,16 +17,14 @@ import (
 	"github.com/groupe-edf/watchdog/internal/version"
 	"github.com/groupe-edf/watchdog/pkg/handlers"
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
 var (
-	configFile     string
 	options        *config.Options
 	analyzeCommand = &cobra.Command{
 		Use:   "analyze",
-		Short: "",
+		Short: "Run analysis",
 		Long:  ``,
 		Run: func(cmd *cobra.Command, args []string) {
 			var ctx = cmd.Context()
@@ -212,56 +209,6 @@ var (
 	}
 )
 
-// Execute execute audit command
-func Execute(ctx context.Context) error {
-	return analyzeCommand.ExecuteContext(ctx)
-}
-
 func init() {
-	cobra.OnInitialize(initConfig)
-	analyzeCommand.PersistentFlags().Bool("profile", false, "collect the profile to hercules.pprof.")
-	analyzeCommand.PersistentFlags().Int("max-workers", 0, "coccurent worker used to run analysus")
-	analyzeCommand.PersistentFlags().Int("security.reveal-secrets", 0, "full or partial reveal of secrets in report and logs")
-	analyzeCommand.PersistentFlags().String("auth-basic-token", "", "authentication token used to fetch remote repositories")
-	analyzeCommand.PersistentFlags().String("hook-input", "", "standard input <old-value> SP <new-value> SP <ref-name> LF")
-	analyzeCommand.PersistentFlags().String("hook-type", "", "git server-side hook pre-receive, update or post-receive")
-	analyzeCommand.PersistentFlags().String("docs-link", "", "link to documentation")
-	analyzeCommand.PersistentFlags().String("logs-format", "json", "logging level")
-	analyzeCommand.PersistentFlags().String("logs-level", "info", "logging level")
-	analyzeCommand.PersistentFlags().String("logs-path", "/var/log/watchdog/watchdog.log", "path to logs")
-	analyzeCommand.PersistentFlags().String("output", "", "path to output file")
-	analyzeCommand.PersistentFlags().String("output-format", "text", "report format")
-	analyzeCommand.PersistentFlags().String("plugins-directory", "plugins", "path to plugins directory")
-	analyzeCommand.PersistentFlags().String("uri", "", "path to working directory")
-	analyzeCommand.PersistentFlags().StringP("hook-file", "f", "", "path to external .githooks.yml file")
-	analyzeCommand.PersistentFlags().StringVarP(&configFile, "config", "c", "", "path to watchdog configuration file")
-	analyzeCommand.PersistentFlags().Bool("verbose", true, "make the operation more talkative")
-	// Bind flags to configuration
-	_ = viper.BindPFlags(analyzeCommand.PersistentFlags())
-}
-
-// Load configuration from file
-func initConfig() {
-	if configFile != "" {
-		viper.SetConfigFile(configFile)
-	}
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("/etc/watchdog/")
-	viper.AddConfigPath("/etc/watchdog/config")
-	viper.AutomaticEnv()
-	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
-	viper.SetEnvPrefix("WATCHDOG")
-	viper.AllowEmptyEnv(true)
-	for _, key := range viper.AllKeys() {
-		viper.RegisterAlias(strings.ReplaceAll(key, "-", "_"), key)
-	}
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	}
-	analyzeCommand.Flags().VisitAll(func(f *pflag.Flag) {
-		if !f.Changed && viper.IsSet(f.Name) {
-			value := viper.Get(f.Name)
-			analyzeCommand.Flags().Set(f.Name, fmt.Sprintf("%v", value))
-		}
-	})
+	rootCommand.AddCommand(analyzeCommand)
 }

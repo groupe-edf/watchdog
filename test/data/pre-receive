@@ -1,7 +1,7 @@
 #!/bin/sh
 export GL_USERNAME=""
 while read -r OldRev NewRev RefName; do
-  %s \
+  %s analyze \
     --docs-link="https://groupe-edf.github.io/watchdog" \
     --hook-type="pre-receive" \
     --hook-input="$OldRev $NewRev $RefName" \
