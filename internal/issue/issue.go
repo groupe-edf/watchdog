@@ -11,18 +11,6 @@ import (
 	"github.com/groupe-edf/watchdog/internal/security"
 )
 
-// Score type used by severity and confidence values
-type Score int
-
-const (
-	// SeverityLow severity or confidence
-	SeverityLow Score = iota
-	// SeverityMedium severity or confidence
-	SeverityMedium
-	// SeverityHigh severity or confidence
-	SeverityHigh
-)
-
 var (
 	// FunctionsMap helper functions
 	FunctionsMap = template.FuncMap{
@@ -64,18 +52,6 @@ func (issue *Issue) WithLeaks(leaks []security.Leak) {
 	issue.Leaks = leaks
 }
 
-func (score Score) String() string {
-	switch score {
-	case SeverityHigh:
-		return "high"
-	case SeverityMedium:
-		return "medium"
-	case SeverityLow:
-		return "low"
-	}
-	return "undefined"
-}
-
 // NewIssue create new issue
 func NewIssue(handlerType hook.HandlerType, conditionType hook.ConditionType, data Data, severity Score, messageTemplate string) Issue {
 	if data.Condition.Ignore {
@@ -96,19 +72,6 @@ func NewIssue(handlerType hook.HandlerType, conditionType hook.ConditionType, da
 		Message:   message.String(),
 		Severity:  severity,
 	}
-}
-
-// ParseScore parse score from string input
-func ParseScore(score string) Score {
-	switch score {
-	case "high":
-		return SeverityHigh
-	case "medium":
-		return SeverityMedium
-	case "low":
-		return SeverityLow
-	}
-	return SeverityLow
 }
 
 // HideSecret hide leaks in text
