@@ -68,7 +68,7 @@ func initConfig() {
 	rootCommand.Flags().VisitAll(func(f *pflag.Flag) {
 		if !f.Changed && viper.IsSet(f.Name) {
 			value := viper.Get(f.Name)
-			rootCommand.Flags().Set(f.Name, fmt.Sprintf("%v", value))
+			_ = rootCommand.Flags().Set(f.Name, fmt.Sprintf("%v", value))
 		}
 	})
 }
