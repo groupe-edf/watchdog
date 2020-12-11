@@ -14,7 +14,7 @@ const (
 // Score type used by severity and confidence values
 type Score int
 
-// MarshalJSON return score as json
+// MarshalJSON marshal score to json
 func (score Score) MarshalJSON() ([]byte, error) {
 	buffer := bytes.NewBufferString("\"")
 	buffer.WriteString(score.String())
@@ -32,6 +32,16 @@ func (score Score) String() string {
 		return "low"
 	}
 	return "undefined"
+}
+
+// UnmarshalJSON unmarshal json to score
+func (score *Score) UnmarshalJSON(raw []byte) error {
+	runes := bytes.Runes(raw)
+	if runes[0] == '"' && runes[len(runes)-1] == '"' {
+		runes = runes[1 : len(runes)-1]
+	}
+	*score = ParseScore(string(runes))
+	return nil
 }
 
 // ParseScore parse score from string input

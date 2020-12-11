@@ -39,7 +39,7 @@ func (analyzer *Analyzer) Analyze(ctx context.Context, commitIter object.CommitI
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	defer commitIter.Close()
-	maxWorkers := make(chan struct{}, analyzer.Options.MaxWorkers)
+	maxWorkers := make(chan struct{}, analyzer.Options.Concurrent)
 	if len(analyzer.GitHooks.Hooks) > 0 {
 		analyzer.Logger.WithFields(logging.Fields{
 			"correlation_id": util.GetRequestID(ctx),

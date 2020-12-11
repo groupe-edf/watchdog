@@ -27,7 +27,7 @@ func Execute(ctx context.Context) error {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCommand.PersistentFlags().Bool("profile", false, "collect the profile to hercules.pprof.")
-	rootCommand.PersistentFlags().Int("max-workers", 0, "coccurent worker used to run analysus")
+	rootCommand.PersistentFlags().Int("concurrent", 0, "concurrent worker used to run analysus")
 	rootCommand.PersistentFlags().Int("security.reveal-secrets", 0, "full or partial reveal of secrets in report and logs")
 	rootCommand.PersistentFlags().String("auth-basic-token", "", "authentication token used to fetch remote repositories")
 	rootCommand.PersistentFlags().String("hook-input", "", "standard input <old-value> SP <new-value> SP <ref-name> LF")

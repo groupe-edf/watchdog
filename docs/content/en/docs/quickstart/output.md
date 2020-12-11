@@ -43,6 +43,8 @@ remote: Operation took 43.319478ms
 Format
 --------------------
 
+### logfmt
+
 The default output format of the messages is [logfmt] (https://brandur.org/logfmt) prefixed by `GL-HOOK-ERR:` to have the possibility of uploading these messages on the Gitlab graphical interface in the case of a direct modification of the code on Gitlab.
 
 ```bash
@@ -56,3 +58,29 @@ severity=high handler=file condition=extension commit=eda373cc message="'*.exe' 
 * **message** Issue description
 
 Only high severity issues block commits from being persisted in the Git repository.
+
+### json
+```bash
+[
+  {
+    "author": "Habib MAALEM",
+    "commit": "9560bbeb3b93d9a6d545133dea3e26e0f1fd7a66",
+    "condition": "secret",
+    "email": "habib.maalem@gmail.com",
+    "handler": "security",
+    "leaks": [
+      {
+        "file": "src/main/resources/rsa_server.key",
+        "line_number": 1,
+        "rule": "ASYMMETRIC_PRIVATE_KEY",
+        "severity": "MAJOR",
+        "tags": [
+          "key"
+        ]
+      }
+    ],
+    "message": "Secrets, token and passwords are forbidden, `src/main/resources/rsa_server.key:----***********************`",
+    "severity": "low"
+  }
+]
+```

@@ -81,6 +81,7 @@ Available Commands:
 
 Flags:
       --auth-basic-token string       authentication token used to fetch remote repositories
+      --concurrent int                concurrent worker used to run analysus
   -c, --config string                 path to watchdog configuration file
       --docs-link string              link to documentation
   -h, --help                          help for watchdog
@@ -90,7 +91,6 @@ Flags:
       --logs-format string            logging level (default "json")
       --logs-level string             logging level (default "info")
       --logs-path string              path to logs (default "/var/log/watchdog/watchdog.log")
-      --max-workers int               coccurent worker used to run analysus
       --output string                 path to output file
       --output-format string          report format (default "text")
       --plugins-directory string      path to plugins directory (default "plugins")

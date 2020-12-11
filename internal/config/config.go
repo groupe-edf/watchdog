@@ -30,8 +30,8 @@ type Options struct {
 	LogsPath           string               `mapstructure:"logs-path"`
 	MaxFileSize        uint
 	MaxRepositorySize  uint
-	// MaxWorkers max workers running at the same time
-	MaxWorkers       int    `mapstructure:"max-workers"`
+	// Concurrent max workers running at the same time
+	Concurrent       int    `mapstructure:"concurrent"`
 	Output           string `mapstructure:"output"`
 	OutputFormat     string `mapstructure:"output-format"`
 	PluginsDirectory string `mapstructure:"plugins-directory"`
@@ -62,8 +62,8 @@ func (options *Options) Validate() error {
 	if options.LogsPath == "" {
 		options.LogsPath = LogsPath
 	}
-	if options.MaxWorkers == 0 {
-		options.MaxWorkers = runtime.NumCPU()
+	if options.Concurrent == 0 {
+		options.Concurrent = runtime.NumCPU()
 	}
 	return nil
 }

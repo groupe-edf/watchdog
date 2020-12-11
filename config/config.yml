@@ -36,8 +36,8 @@ logs_level: info
 logs_format: json
 # logs path
 logs_path: /var/log/watchdog/watchdog.log
-# number of cocurrent worker user to run analysis
-max_workers: 8
+# number of cocurrent worker used to run analysis
+concurrent: 4
 # output file for analysis report
 output:
 # report format

@@ -12,11 +12,11 @@ On the developer side, to invoke customs hooks, the user must add a configuratio
 
 ``` bash
 $ ll /workspaces/project-name
-  |--docs/
-  |--src/
-  |--tests/
-  |--.gitignore
-  |--.githooks.yml
+  |__ docs/
+  |__ src/
+  |__ tests/
+  |__ .gitignore
+  |__ .githooks.yml
 ```
 
 .githooks.yml

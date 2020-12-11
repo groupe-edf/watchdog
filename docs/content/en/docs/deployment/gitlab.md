@@ -24,7 +24,7 @@ For a global deployment, you must create one of the `pre-receive.d`,` post-recei
 HOOKS=("pre-receive" "post-receive" "update")
 HOOK_TYPE=$(cd $(dirname "${BASH_SOURCE[0]}") >/dev/null 2>&1 && echo ${PWD##*/})
 while read -r OLDREV NEWREV REFNAME; do
-  /usr/local/bin/watchdog \
+  /usr/local/bin/watchdog analyze \
     --docs-link="https://groupe-edf.github.io/watchdog/docs/" \
     --hook-type="pre-receive" \
     --hook-input="$OLDREV $NEWREV $REFNAME" \
