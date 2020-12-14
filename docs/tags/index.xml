@@ -1,0 +1,17 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Watchdog – Tags</title>
+    <link>https://groupe-edf.github.io/watchdog/tags/</link>
+    <description>Recent content in Tags on Watchdog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    
+	  <atom:link href="https://groupe-edf.github.io/watchdog/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+  </channel>
+</rss>

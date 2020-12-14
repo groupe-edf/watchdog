@@ -1,0 +1,201 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Watchdog – Deployment</title>
+    <link>https://groupe-edf.github.io/watchdog/docs/deployment/</link>
+    <description>Recent content in Deployment on Watchdog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    
+	  <atom:link href="https://groupe-edf.github.io/watchdog/docs/deployment/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs: Release</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/deployment/release/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/deployment/release/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;docker&#34;&gt;Docker&lt;/h2&gt;
+&lt;p&gt;Create the Watchdog Docker image with the following command.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;docker build &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;  --tag groupe-edf/watchdog &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;  --file build/Dockerfile &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;  --build-arg&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;http_proxy&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$HTTPS_PROXY&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;  --build-arg&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;https_proxy&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$HTTPS_PROXY&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;  --build-arg&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;CGO_ENABLED&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;  .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Install</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/deployment/install/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/deployment/install/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;from-the-binary-releases&#34;&gt;From the Binary Releases&lt;/h2&gt;
+&lt;p&gt;Every &lt;a href=&#34;https://github.com/groupe-edf/watchdog/releases&#34;&gt;release&lt;/a&gt; of Watchdog provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Download your desired version&lt;/li&gt;
+&lt;li&gt;Unpack it &lt;code&gt;tar -zxvf watchdog-v1.2.0-linux-amd64.tar.gz&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Find the &lt;code&gt;watchdog&lt;/code&gt; binary in the unpacked directory, and move it to its desired destination &lt;code&gt;mv watchdog-v1.2.0-linux-amd64 /usr/local/bin/watchdog&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Make it executable &lt;code&gt;chmod +x /usr/local/bin/watchdog&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;watchdog version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Gitlab</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/deployment/gitlab/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/deployment/gitlab/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;usage-server-side&#34;&gt;Usage server-side&lt;/h2&gt;
+&lt;p&gt;Watchdog can be configured only in the server side of the Git repository (For the moment a &lt;strong&gt;bare&lt;/strong&gt; repository), it is compatible with different Git solutions like &lt;a href=&#34;https://gitea.io/&#34;&gt;Gitea&lt;/a&gt;, &lt;a href=&#34;https://gogs.io/&#34;&gt;Gogs&lt;/a&gt;, &lt;a href=&#34;https://gitlab.com/&#34;&gt;Gitlab&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In our case we will focus on installing Watchdog on the Gitlab platform. See &lt;a href=&#34;https://docs.gitlab.com/ee/administration/server_hooks.html&#34;&gt;instructions&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;We have the possibility to install the tool in different levels of Gitlab&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Global&lt;/li&gt;
+&lt;li&gt;By group&lt;/li&gt;
+&lt;li&gt;By project&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For a global deployment, you must create one of the &lt;code&gt;pre-receive.d&lt;/code&gt;,&lt;code&gt; post-receive.d&lt;/code&gt; or &lt;code&gt;update.d&lt;/code&gt; folders in the &lt;code&gt;/opt/gitlab/embedded/service/gitlab-shell/hooks&lt;/code&gt; directory and add a script that will launch note CLI&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#080&#34;&gt;#!/bin/sh
+&lt;/span&gt;&lt;span style=&#34;color:#080&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;HOOKS&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=(&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;pre-receive&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;post-receive&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;update&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color:#b8860b&#34;&gt;HOOK_TYPE&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;$(&lt;/span&gt;&lt;span style=&#34;color:#a2f&#34;&gt;cd&lt;/span&gt; &lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;$(&lt;/span&gt;dirname &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#b68;font-weight:bold&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;BASH_SOURCE&lt;/span&gt;[0]&lt;span style=&#34;color:#b68;font-weight:bold&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;)&lt;/span&gt; &amp;gt;/dev/null 2&amp;gt;&amp;amp;&lt;span style=&#34;color:#666&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#666&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#a2f&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#b68;font-weight:bold&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;PWD&lt;/span&gt;##*/&lt;span style=&#34;color:#b68;font-weight:bold&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;while&lt;/span&gt; &lt;span style=&#34;color:#a2f&#34;&gt;read&lt;/span&gt; -r OLDREV NEWREV REFNAME; &lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;do&lt;/span&gt;
+  /usr/local/bin/watchdog analyze &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;    --docs-link&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;https://groupe-edf.github.io/watchdog/docs/&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;    --hook-type&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;pre-receive&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;    --hook-input&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$OLDREV&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$NEWREV&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$REFNAME&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;    --logs-path&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;watchdog.log&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;    --logs-level&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;info&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;    --verbose&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;true&amp;#34;&lt;/span&gt;
+  &lt;span style=&#34;color:#b8860b&#34;&gt;status&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$?&lt;/span&gt;
+  &lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#666&#34;&gt;[&lt;/span&gt; &lt;span style=&#34;color:#b8860b&#34;&gt;$status&lt;/span&gt; -eq &lt;span style=&#34;color:#666&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#666&#34;&gt;]&lt;/span&gt;; &lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;then&lt;/span&gt;
+    &lt;span style=&#34;color:#a2f&#34;&gt;exit&lt;/span&gt; &lt;span style=&#34;color:#666&#34;&gt;1&lt;/span&gt;
+  &lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;fi&lt;/span&gt;
+&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;options&#34;&gt;Options&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Option&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--docs-link&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Allows you to define the link to the Custom Hooks documentation&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--hook-input&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;This data is automatically filled in upon receipt of a Git &lt;code&gt;git push&lt;/code&gt; package&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--hook-type&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Allows you to specify to the watchdog CLI the type of hooks it has just received to pass it to the different managers. By default &lt;code&gt;pre-receive&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--logs-path&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Allows you to define the path for writing logs. By default it is &lt;code&gt;/var/log/watchdog/watchdog.log&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--logs-level&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Allows to define the level of logs to write, can take one of the following values: &lt;code&gt;debug&lt;/code&gt;, &lt;code&gt;error&lt;/code&gt;, &lt;code&gt;fatal&lt;/code&gt;, &lt;code&gt;info&lt;/code&gt;, &lt;code&gt;panic&lt;/code&gt;, &lt;code&gt;trace&lt;/code&gt; and &lt;code&gt;warning&lt;/code&gt;. By default it is &lt;code&gt;info&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--verbose&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Allows you to view more information about running Custom Hooks in the Developer Console. Default &lt;code&gt;true&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--help&lt;/code&gt;, &lt;code&gt;-h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Show help/usage&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--version&lt;/code&gt;, &lt;code&gt;-v&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Print version&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The &lt;code&gt;WATCHDOG_*&lt;/code&gt; environment variables are used to pass the adjustment parameters of certain services&lt;/p&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Logrotate</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/deployment/logrotate/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/deployment/logrotate/</guid>
+      <description>
+        
+        
+        &lt;p&gt;logrotate is designed to ease administration of systems that generate large numbers of log files. It allows automatic rotation, compression, removal, and mailing of log files. Each log file may be handled daily, weekly, monthly, or when it grows too large.&lt;/p&gt;
+&lt;p&gt;The logs are saved in &lt;code&gt;/var/log/watchdog/*.Log&lt;/code&gt;, here is an example of a logrotate configuration&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/var/log/watchdog/*.log {
+    daily
+    rotate 8
+    size 500M
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 440 root root
+}
+&lt;/code&gt;&lt;/pre&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Promtail</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/deployment/promtail/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/deployment/promtail/</guid>
+      <description>
+        
+        
+        &lt;p&gt;Promtail is configured in a YAML file (usually referred to as config.yaml) which contains information on the Promtail server, where positions are stored, and how to scrape logs from files.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;server&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;http_listen_port&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;9080&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;grpc_listen_port&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;positions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;filename&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;/tmp/positions.yaml&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;clients&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;url&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;http://localhost:3100/loki/api/v1/push&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;scrape_configs&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;job_name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;watchdog&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;static_configs&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;targets&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- localhost&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;labels&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;job&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;watchdog&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;__path__&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;/var/log/watchdog/watchdog.log&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+  </channel>
+</rss>

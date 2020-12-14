@@ -1,0 +1,333 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Watchdog – Getting Started</title>
+    <link>https://groupe-edf.github.io/watchdog/docs/quickstart/</link>
+    <description>Recent content in Getting Started on Watchdog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 30 Sep 2020 00:00:00 +0000</lastBuildDate>
+    
+	  <atom:link href="https://groupe-edf.github.io/watchdog/docs/quickstart/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs: Usage</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/quickstart/usage/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/quickstart/usage/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;usage-client-side&#34;&gt;Usage client-side&lt;/h2&gt;
+&lt;p&gt;On the developer side, to invoke customs hooks, the user must add a configuration file under the name of &lt;code&gt;.githooks.yml&lt;/code&gt; or &lt;code&gt;.githook.yaml&lt;/code&gt; in the root of the project.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ ll /workspaces/project-name
+  |__ docs/
+  |__ src/
+  |__ tests/
+  |__ .gitignore
+  |__ .githooks.yml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;githooksyml&#34;&gt;.githooks.yml&lt;/h2&gt;
+&lt;p&gt;In this file the developer or rather the maintainer of the project will define the different rules that will be executed in the remote Git repository. The following table describes the schema and the different attributes of the file.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;Attribut&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;Description&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;Default&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;Optional&lt;/th&gt;
+&lt;th style=&#34;text-align:right&#34;&gt;Type&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;version&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Version of the .githooks file, the tool will allow you to accept different versions of the diagram&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hooks[]&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Liste des hooks à déclencher&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.name&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Nom du hook&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.type&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Git hook type, it can have one of the values &lt;code&gt;pre-receive&lt;/code&gt;, &lt;code&gt;update&lt;/code&gt;, &lt;code&gt;post-receive&lt;/code&gt;. See &lt;a href=&#34;https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks&#34;&gt;Customizing Git - Git Hooks&lt;/a&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;pre-receive&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rejection_message&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Global rejection message&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Yes&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rules[]&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;List of custom hook rules&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.type&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Type of the rule to be triggered, it can have one of the following values &lt;code&gt;branch&lt;/code&gt;, &lt;code&gt;commit&lt;/code&gt;, &lt;code&gt;file&lt;/code&gt;, &lt;code&gt;jira&lt;/code&gt;, &lt;code&gt;security&lt;/code&gt;. See &lt;a href=&#34;#handlers&#34;&gt;Handlers&lt;/a&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.disabled&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;This attribute enables or disables the rule&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;true&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Yes&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.conditions[]&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;List of conditions that will trigger the rule. They are specific to each rule&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.condition.type&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Type of condition, the value of this attribute may vary from one rule to another&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.condition.pattern&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;It is a regular expression that describes the condition to be satisfied. See &lt;a href=&#34;https://github.com/google/re2/wiki/Syntax&#34;&gt;Syntaxe&lt;/a&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.condition.rejection_message&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Rule-specific rejection message. By default all customs hooks offer rejection messages. See &lt;a href=&#34;#issues&#34;&gt;Acceptance and rejection messages&lt;/a&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Yes&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.condition.ignore&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;This option allows you to ignore not to block the push even if the rule is not satisfied&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;false&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Yes&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.condition.skip&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;A regular expression that allows the rule to be ignored if it is satisfied. See &lt;a href=&#34;https://github.com/google/re2/wiki/Syntax&#34;&gt;Syntaxe&lt;/a&gt;. Useful in the case of automatic commits generated during Merge Requests&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Yes&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Messages</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/quickstart/messages/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/quickstart/messages/</guid>
+      <description>
+        
+        
+        &lt;p&gt;The rejection messages are written in the form of a template that can be enriched with the already predefined substitution variables&lt;/p&gt;
+&lt;h2 id=&#34;variables&#34;&gt;Variables&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Variable&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Branch }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The name of the branch.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Commit.Author.Email }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Email of the author of the commit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Commit.Author.Name }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The name of the author of the commit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Commit.Subject }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The commit message.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Commit.Date }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The date of the commit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Commit.Hash }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The hash of the commit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Commit.ShortHash }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The 8 character hash of the commit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Condition.Condition }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;La condition définit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Object }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;It can have several values, for example the name of the scanned file in the manager &lt;strong&gt;File&lt;/strong&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Operator }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The operator used in the condition.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Operand }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The comparison value.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Tag }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The name of the tag.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Value }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;It can have several values, for example the size of the file in the &lt;strong&gt;File&lt;/strong&gt; manager or confidential information detected in the &lt;strong&gt;Security&lt;/strong&gt; manager.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Example&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rejection_message&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;File {{ .Object }} size {{ .Value }} greater or equal than {{ .Operand }}&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Output</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/quickstart/output/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/quickstart/output/</guid>
+      <description>
+        
+        
+        &lt;p&gt;When the developer pushes his changes to the remote repository, the watchdog analysis of the various commits will return successfully with a detailed list of low severity issues.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;remote:
+remote: -----BEGIN REJECTION MESSAGES-----
+remote: GL-HOOK-ERR: &lt;span style=&#34;color:#b8860b&#34;&gt;severity&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;low &lt;span style=&#34;color:#b8860b&#34;&gt;handler&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;file &lt;span style=&#34;color:#b8860b&#34;&gt;condition&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;extension &lt;span style=&#34;color:#b8860b&#34;&gt;commit&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;eda373cc &lt;span style=&#34;color:#b8860b&#34;&gt;message&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&amp;#39;*.exe&amp;#39; files are not allowed&amp;#34;&lt;/span&gt;
+remote: -----END REJECTION MESSAGES-----
+remote:
+remote:
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#########################################&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#                                       #&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#  Your push was successfully accepted  #&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#                                       #&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#########################################&lt;/span&gt;
+remote:
+remote: Operation took 43.319478ms
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Either fail with a detailed list of high severity issues&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;remote:
+remote: -----BEGIN REJECTION MESSAGES-----
+remote: GL-HOOK-ERR: &lt;span style=&#34;color:#b8860b&#34;&gt;severity&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;high &lt;span style=&#34;color:#b8860b&#34;&gt;handler&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;file &lt;span style=&#34;color:#b8860b&#34;&gt;condition&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;extension &lt;span style=&#34;color:#b8860b&#34;&gt;commit&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;eda373cc &lt;span style=&#34;color:#b8860b&#34;&gt;message&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&amp;#39;*.exe&amp;#39; files are not allowed&amp;#34;&lt;/span&gt;
+remote: -----END REJECTION MESSAGES-----
+remote:
+remote:
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;####################################################&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#                                                  #&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#  Your push was rejected because previous errors  #&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#                                                  #&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;####################################################&lt;/span&gt;
+remote:
+remote: Operation took 43.319478ms
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;format&#34;&gt;Format&lt;/h2&gt;
+&lt;h3 id=&#34;logfmt&#34;&gt;logfmt&lt;/h3&gt;
+&lt;p&gt;The default output format of the messages is [logfmt] (&lt;a href=&#34;https://brandur.org/logfmt&#34;&gt;https://brandur.org/logfmt&lt;/a&gt;) prefixed by &lt;code&gt;GL-HOOK-ERR:&lt;/code&gt; to have the possibility of uploading these messages on the Gitlab graphical interface in the case of a direct modification of the code on Gitlab.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;severity&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;high &lt;span style=&#34;color:#b8860b&#34;&gt;handler&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;file &lt;span style=&#34;color:#b8860b&#34;&gt;condition&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;extension &lt;span style=&#34;color:#b8860b&#34;&gt;commit&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;eda373cc &lt;span style=&#34;color:#b8860b&#34;&gt;message&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&amp;#39;*.exe&amp;#39; files are not allowed&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;severity&lt;/strong&gt; Issue severity &lt;code&gt;high&lt;/code&gt;, &lt;code&gt;medium&lt;/code&gt; or &lt;code&gt;low&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;handler&lt;/strong&gt; Name of the handler that detected the problem&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;condition&lt;/strong&gt; Name of the condition that detected the problem&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;commit&lt;/strong&gt; The current hash of the commit (On 8 characters)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;message&lt;/strong&gt; Issue description&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Only high severity issues block commits from being persisted in the Git repository.&lt;/p&gt;
+&lt;h3 id=&#34;json&#34;&gt;json&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#666&#34;&gt;[&lt;/span&gt;
+  &lt;span style=&#34;color:#666&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;author&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;Habib MAALEM&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;commit&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;9560bbeb3b93d9a6d545133dea3e26e0f1fd7a66&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;condition&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;secret&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;email&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;habib.maalem@gmail.com&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;handler&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;security&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;leaks&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#666&#34;&gt;[&lt;/span&gt;
+      &lt;span style=&#34;color:#666&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;file&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;src/main/resources/rsa_server.key&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;line_number&amp;#34;&lt;/span&gt;: 1,
+        &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;rule&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;ASYMMETRIC_PRIVATE_KEY&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;severity&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;MAJOR&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;tags&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#666&#34;&gt;[&lt;/span&gt;
+          &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;key&amp;#34;&lt;/span&gt;
+        &lt;span style=&#34;color:#666&#34;&gt;]&lt;/span&gt;
+      &lt;span style=&#34;color:#666&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color:#666&#34;&gt;]&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;message&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;Secrets, token and passwords are forbidden, `src/main/resources/rsa_server.key:----***********************`&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;severity&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;low&amp;#34;&lt;/span&gt;
+  &lt;span style=&#34;color:#666&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color:#666&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Skip</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/quickstart/skip/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/quickstart/skip/</guid>
+      <description>
+        
+        
+        &lt;p&gt;Developers have the option of skipping checks on certain commits with the expression &lt;code&gt;[skip hooks.rule.condition]&lt;/code&gt;. The expression is valid at&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Rule, for example: Ignore security rules of type &lt;code&gt;Secret&lt;/code&gt; &lt;strong&gt;[skip hooks.security.secret]&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Handler, for example: Skip all &lt;code&gt;security&lt;/code&gt; rules &lt;strong&gt;[skip hooks.security]&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;All Handlers &lt;strong&gt;[skip hooks]&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;example&#34;&gt;Example&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ git commit -am &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;chore: add dummy configuration file [skip hooks.security.secret]&amp;#34;&lt;/span&gt;
+$ git commit -am &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;chore: add dummy configuration file [skip hooks.security]&amp;#34;&lt;/span&gt;
+$ git commit -am &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;chore: add dummy configuration file [skip hooks]&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Or even better with &lt;a href=&#34;https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt&#34;&gt;Push Options&lt;/a&gt; to keep git history clean &lt;strong&gt;Under development&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ git push -o security.secrets.skip
+$ git push -o hooks.skip&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;security.secrets,tag.semver&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;# Comma separated handler.rule&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+  </channel>
+</rss>

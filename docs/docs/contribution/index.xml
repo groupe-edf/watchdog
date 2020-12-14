@@ -1,0 +1,145 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Watchdog – Contribution Guidelinesss</title>
+    <link>https://groupe-edf.github.io/watchdog/docs/contribution/</link>
+    <description>Recent content in Contribution Guidelinesss on Watchdog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    
+	  <atom:link href="https://groupe-edf.github.io/watchdog/docs/contribution/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs: Install</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/contribution/install/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/contribution/install/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;downloading-go-lang-installation-files&#34;&gt;Downloading Go Lang Installation Files&lt;/h2&gt;
+&lt;p&gt;Visit Go Lang’s official download page to download the installer according to your operating system. See &lt;a href=&#34;https://golang.org/dl/&#34;&gt;Downloads&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Go Lang is currently supported only on &lt;strong&gt;x64&lt;/strong&gt; based processors.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;setting-up-on-windows&#34;&gt;Setting up on Windows&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Double click the MSI installer, you just downloaded to start the Go Lang installation on your Windows system.&lt;/li&gt;
+&lt;li&gt;Follow the prompts to install the Go tools. By default, the installer puts the Go distribution in &lt;code&gt;C:\Go&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The installer should put the &lt;code&gt;C:\Go\bin&lt;/code&gt; directory in your &lt;code&gt;PATH&lt;/code&gt; environment variable. You may need to restart any open command prompts for the change to take effect.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;setting-up-on-linux&#34;&gt;Setting up on Linux&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Extract the &lt;code&gt;.tar.gz&lt;/code&gt; archive you just downloaded to &lt;code&gt;/usr/local&lt;/code&gt;, creating a Go tree in &lt;code&gt;/usr/local/go&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ sudo tar -C /usr/local -xzf go1.15.2.linux-amd64.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;Change the archive name as per requirement. go1.15.2.linux-amd64.tar.gz is the latest version available at the time of this writing.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Add &lt;code&gt;/usr/local/go/bin&lt;/code&gt; to the PATH environment variable. You can do this by adding this line to your &lt;code&gt;/etc/profile&lt;/code&gt; (for a system-wide installation) or &lt;code&gt;$HOME/.profile&lt;/code&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ &lt;span style=&#34;color:#a2f&#34;&gt;export&lt;/span&gt; &lt;span style=&#34;color:#b8860b&#34;&gt;PATH&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$PATH&lt;/span&gt;:/usr/local/go/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;verifying-your-installation&#34;&gt;Verifying your installation&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ go version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Create a file named &lt;code&gt;main.go&lt;/code&gt; using the text editor of your choice, and copy-paste the following content into it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-golang&#34; data-lang=&#34;golang&#34;&gt;&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;package&lt;/span&gt; main
+
+&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#00a000&#34;&gt;main&lt;/span&gt;() {
+    fmt.&lt;span style=&#34;color:#00a000&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;Hello, World..!!\n&amp;#34;&lt;/span&gt;)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Save the file and go back to the terminal and run the following command to compile the code into a binary.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ go build
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;The previous step creates a binary named &lt;code&gt;main&lt;/code&gt; in the same directory. Simply run the executable to run the code.&lt;/li&gt;
+&lt;li&gt;If the installation had been correct, the exe will print &lt;code&gt;Hello, World..!!&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Bootstrap</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/contribution/bootstrap/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/contribution/bootstrap/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;developing-watchdog&#34;&gt;Developing Watchdog&lt;/h2&gt;
+&lt;p&gt;If you wish to work on Watchdog itself, you&#39;ll first need Go installed on your machine.
+Go version 1.15.2+ is required.&lt;/p&gt;
+&lt;p&gt;For local dev first make sure Go is properly installed, including setting up a
+&lt;a href=&#34;https://golang.org/doc/code.html#GOPATH&#34;&gt;GOPATH&lt;/a&gt;. Ensure that &lt;code&gt;$GOPATH/bin&lt;/code&gt; is in
+your path as some distributions bundle old version of build tools. Next, clone this
+repository. Watchdog uses &lt;a href=&#34;https://github.com/golang/go/wiki/Modules&#34;&gt;Go Modules&lt;/a&gt;,
+so it is recommended that you clone the repository &lt;em&gt;&lt;strong&gt;outside&lt;/strong&gt;&lt;/em&gt; of the GOPATH.
+You can then download any required build tools by bootstrapping your environment:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ make bootstrap
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;prerequisite&#34;&gt;Prerequisite&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Clone the source code&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ git clone https://github.com/groupe-edf/watchdog
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now you can build and run Watchdog by one of the following ways&lt;/p&gt;
+&lt;h2 id=&#34;build-and-run-watchdog-locally&#34;&gt;Build and run Watchdog locally&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Build Watchdog binary&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#080;font-style:italic&#34;&gt;# Fetch the dependencies&lt;/span&gt;
+$ go mod download
+&lt;span style=&#34;color:#080;font-style:italic&#34;&gt;# Build the binary&lt;/span&gt;
+$ go build -o watchdog
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Run Watchdog binary&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;./watchdog version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;making-a-change&#34;&gt;Making A Change&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Before making any significant changes, please &lt;a href=&#34;https://github.com/groupe-edf/watchdog/issues&#34;&gt;open an issue&lt;/a&gt;. Discussing your proposed changes ahead of time will make the contribution process smooth for everyone.&lt;/li&gt;
+&lt;li&gt;Once we’ve discussed your changes and you’ve got your code ready, make sure that build steps pass. Open your pull request against &lt;code&gt;develop&lt;/code&gt; branch.&lt;/li&gt;
+&lt;li&gt;To avoid build failures in CI, run&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ make lint
+$ make test-unit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This will check if the code is properly formatted, linted.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Run security and e2e tests&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ make test-security
+$ make test-integration
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Make sure your pull request has &lt;a href=&#34;https://www.conventionalcommits.org/en/v1.0.0/&#34;&gt;good commit messages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Try to squash unimportant commits and rebase your changes on to develop branch, this will make sure we have clean log of changes.&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Test</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/contribution/test/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/contribution/test/</guid>
+      <description>
+        
+        
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>

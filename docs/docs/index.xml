@@ -1,0 +1,1024 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Watchdog – Documentation</title>
+    <link>https://groupe-edf.github.io/watchdog/docs/</link>
+    <description>Recent content in Documentation on Watchdog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    
+	  <atom:link href="https://groupe-edf.github.io/watchdog/docs/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs: Conventional Commits</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/examples/commits/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/examples/commits/</guid>
+      <description>
+        
+        
+        &lt;p&gt;A good commit message should tell you what has changed and why. The how, that is, how to make these changes, does not have to be explained. Reading the code and highlighting changes via a diff is self-explanatory. For example checks if the commit messages respect the conventional validation format: &lt;a href=&#34;https://www.conventionalcommits.org/en/v1.0.0/&#34;&gt;https://www.conventionalcommits.org/en/v1.0.0/&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;version&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;1.1.0&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;hooks&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;generic&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rules&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;commit&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;conditions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;          &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;length&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;condition&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;le 120&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;commit&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;conditions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;          &lt;/span&gt;&lt;span style=&#34;color:#080;font-style:italic&#34;&gt;# Angular guidelines https://github.com/angular/angular/blob/master/CONTRIBUTING.md&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;          &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;pattern&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;condition&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;(?m)^(build|ci|docs|feat|fix|perf|refactor|style|test)\([a-z]+\):\s([a-z\.\-\s]+)&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rejection_message&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&amp;gt;&lt;span style=&#34;color:#b44;font-style:italic&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#b44;font-style:italic&#34;&gt;              Message must be formatted like type(scope): subject, type Must be one of the following:
+&lt;/span&gt;&lt;span style=&#34;color:#b44;font-style:italic&#34;&gt;              * build: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
+&lt;/span&gt;&lt;span style=&#34;color:#b44;font-style:italic&#34;&gt;              * ci: Changes to our CI configuration files and scripts (example scopes: Circle, BrowserStack, SauceLabs)
+&lt;/span&gt;&lt;span style=&#34;color:#b44;font-style:italic&#34;&gt;              * docs: Documentation only changes
+&lt;/span&gt;&lt;span style=&#34;color:#b44;font-style:italic&#34;&gt;              * feat: A new feature
+&lt;/span&gt;&lt;span style=&#34;color:#b44;font-style:italic&#34;&gt;              * fix: A bug fix
+&lt;/span&gt;&lt;span style=&#34;color:#b44;font-style:italic&#34;&gt;              * perf: A code change that improves performance
+&lt;/span&gt;&lt;span style=&#34;color:#b44;font-style:italic&#34;&gt;              * refactor: A code change that neither fixes a bug nor adds a feature
+&lt;/span&gt;&lt;span style=&#34;color:#b44;font-style:italic&#34;&gt;              * style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+&lt;/span&gt;&lt;span style=&#34;color:#b44;font-style:italic&#34;&gt;              * test: Adding missing tests or correcting existing tests&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;              
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Gitflow</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/examples/gitflow/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/examples/gitflow/</guid>
+      <description>
+        
+        
+        &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;version&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;1.1.0&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;hooks&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;generic&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;pre-receive&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rules&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;branch&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;conditions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;          &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;pattern&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;condition&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;(feature|release|hotfix)\/[a-z\d-_.]+&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rejection_message&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;Branch name must match gitflow naming&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Install</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/contribution/install/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/contribution/install/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;downloading-go-lang-installation-files&#34;&gt;Downloading Go Lang Installation Files&lt;/h2&gt;
+&lt;p&gt;Visit Go Lang’s official download page to download the installer according to your operating system. See &lt;a href=&#34;https://golang.org/dl/&#34;&gt;Downloads&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Go Lang is currently supported only on &lt;strong&gt;x64&lt;/strong&gt; based processors.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;setting-up-on-windows&#34;&gt;Setting up on Windows&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Double click the MSI installer, you just downloaded to start the Go Lang installation on your Windows system.&lt;/li&gt;
+&lt;li&gt;Follow the prompts to install the Go tools. By default, the installer puts the Go distribution in &lt;code&gt;C:\Go&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The installer should put the &lt;code&gt;C:\Go\bin&lt;/code&gt; directory in your &lt;code&gt;PATH&lt;/code&gt; environment variable. You may need to restart any open command prompts for the change to take effect.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;setting-up-on-linux&#34;&gt;Setting up on Linux&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Extract the &lt;code&gt;.tar.gz&lt;/code&gt; archive you just downloaded to &lt;code&gt;/usr/local&lt;/code&gt;, creating a Go tree in &lt;code&gt;/usr/local/go&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ sudo tar -C /usr/local -xzf go1.15.2.linux-amd64.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;Change the archive name as per requirement. go1.15.2.linux-amd64.tar.gz is the latest version available at the time of this writing.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Add &lt;code&gt;/usr/local/go/bin&lt;/code&gt; to the PATH environment variable. You can do this by adding this line to your &lt;code&gt;/etc/profile&lt;/code&gt; (for a system-wide installation) or &lt;code&gt;$HOME/.profile&lt;/code&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ &lt;span style=&#34;color:#a2f&#34;&gt;export&lt;/span&gt; &lt;span style=&#34;color:#b8860b&#34;&gt;PATH&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$PATH&lt;/span&gt;:/usr/local/go/bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;verifying-your-installation&#34;&gt;Verifying your installation&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ go version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Create a file named &lt;code&gt;main.go&lt;/code&gt; using the text editor of your choice, and copy-paste the following content into it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-golang&#34; data-lang=&#34;golang&#34;&gt;&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;package&lt;/span&gt; main
+
+&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;
+
+&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color:#00a000&#34;&gt;main&lt;/span&gt;() {
+    fmt.&lt;span style=&#34;color:#00a000&#34;&gt;Printf&lt;/span&gt;(&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;Hello, World..!!\n&amp;#34;&lt;/span&gt;)
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Save the file and go back to the terminal and run the following command to compile the code into a binary.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ go build
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;The previous step creates a binary named &lt;code&gt;main&lt;/code&gt; in the same directory. Simply run the executable to run the code.&lt;/li&gt;
+&lt;li&gt;If the installation had been correct, the exe will print &lt;code&gt;Hello, World..!!&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Release</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/deployment/release/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/deployment/release/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;docker&#34;&gt;Docker&lt;/h2&gt;
+&lt;p&gt;Create the Watchdog Docker image with the following command.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;docker build &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;  --tag groupe-edf/watchdog &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;  --file build/Dockerfile &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;  --build-arg&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;http_proxy&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$HTTPS_PROXY&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;  --build-arg&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;https_proxy&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$HTTPS_PROXY&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;  --build-arg&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;CGO_ENABLED&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;  .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Usage</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/quickstart/usage/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/quickstart/usage/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;usage-client-side&#34;&gt;Usage client-side&lt;/h2&gt;
+&lt;p&gt;On the developer side, to invoke customs hooks, the user must add a configuration file under the name of &lt;code&gt;.githooks.yml&lt;/code&gt; or &lt;code&gt;.githook.yaml&lt;/code&gt; in the root of the project.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ ll /workspaces/project-name
+  |__ docs/
+  |__ src/
+  |__ tests/
+  |__ .gitignore
+  |__ .githooks.yml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;githooksyml&#34;&gt;.githooks.yml&lt;/h2&gt;
+&lt;p&gt;In this file the developer or rather the maintainer of the project will define the different rules that will be executed in the remote Git repository. The following table describes the schema and the different attributes of the file.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;Attribut&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;Description&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;Default&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;Optional&lt;/th&gt;
+&lt;th style=&#34;text-align:right&#34;&gt;Type&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;version&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Version of the .githooks file, the tool will allow you to accept different versions of the diagram&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hooks[]&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Liste des hooks à déclencher&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.name&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Nom du hook&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.type&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Git hook type, it can have one of the values &lt;code&gt;pre-receive&lt;/code&gt;, &lt;code&gt;update&lt;/code&gt;, &lt;code&gt;post-receive&lt;/code&gt;. See &lt;a href=&#34;https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks&#34;&gt;Customizing Git - Git Hooks&lt;/a&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;pre-receive&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rejection_message&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Global rejection message&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Yes&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rules[]&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;List of custom hook rules&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.type&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Type of the rule to be triggered, it can have one of the following values &lt;code&gt;branch&lt;/code&gt;, &lt;code&gt;commit&lt;/code&gt;, &lt;code&gt;file&lt;/code&gt;, &lt;code&gt;jira&lt;/code&gt;, &lt;code&gt;security&lt;/code&gt;. See &lt;a href=&#34;#handlers&#34;&gt;Handlers&lt;/a&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.disabled&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;This attribute enables or disables the rule&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;true&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Yes&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.conditions[]&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;List of conditions that will trigger the rule. They are specific to each rule&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.condition.type&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Type of condition, the value of this attribute may vary from one rule to another&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.condition.pattern&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;It is a regular expression that describes the condition to be satisfied. See &lt;a href=&#34;https://github.com/google/re2/wiki/Syntax&#34;&gt;Syntaxe&lt;/a&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.condition.rejection_message&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Rule-specific rejection message. By default all customs hooks offer rejection messages. See &lt;a href=&#34;#issues&#34;&gt;Acceptance and rejection messages&lt;/a&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Yes&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.condition.ignore&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;This option allows you to ignore not to block the push even if the rule is not satisfied&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;false&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Yes&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;strong&gt;hook.rule.condition.skip&lt;/strong&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;A regular expression that allows the rule to be ignored if it is satisfied. See &lt;a href=&#34;https://github.com/google/re2/wiki/Syntax&#34;&gt;Syntaxe&lt;/a&gt;. Useful in the case of automatic commits generated during Merge Requests&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;Yes&lt;/td&gt;
+&lt;td style=&#34;text-align:right&#34;&gt;String&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Bootstrap</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/contribution/bootstrap/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/contribution/bootstrap/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;developing-watchdog&#34;&gt;Developing Watchdog&lt;/h2&gt;
+&lt;p&gt;If you wish to work on Watchdog itself, you&#39;ll first need Go installed on your machine.
+Go version 1.15.2+ is required.&lt;/p&gt;
+&lt;p&gt;For local dev first make sure Go is properly installed, including setting up a
+&lt;a href=&#34;https://golang.org/doc/code.html#GOPATH&#34;&gt;GOPATH&lt;/a&gt;. Ensure that &lt;code&gt;$GOPATH/bin&lt;/code&gt; is in
+your path as some distributions bundle old version of build tools. Next, clone this
+repository. Watchdog uses &lt;a href=&#34;https://github.com/golang/go/wiki/Modules&#34;&gt;Go Modules&lt;/a&gt;,
+so it is recommended that you clone the repository &lt;em&gt;&lt;strong&gt;outside&lt;/strong&gt;&lt;/em&gt; of the GOPATH.
+You can then download any required build tools by bootstrapping your environment:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-sh&#34; data-lang=&#34;sh&#34;&gt;$ make bootstrap
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;prerequisite&#34;&gt;Prerequisite&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Clone the source code&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ git clone https://github.com/groupe-edf/watchdog
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now you can build and run Watchdog by one of the following ways&lt;/p&gt;
+&lt;h2 id=&#34;build-and-run-watchdog-locally&#34;&gt;Build and run Watchdog locally&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Build Watchdog binary&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#080;font-style:italic&#34;&gt;# Fetch the dependencies&lt;/span&gt;
+$ go mod download
+&lt;span style=&#34;color:#080;font-style:italic&#34;&gt;# Build the binary&lt;/span&gt;
+$ go build -o watchdog
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Run Watchdog binary&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;./watchdog version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;making-a-change&#34;&gt;Making A Change&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Before making any significant changes, please &lt;a href=&#34;https://github.com/groupe-edf/watchdog/issues&#34;&gt;open an issue&lt;/a&gt;. Discussing your proposed changes ahead of time will make the contribution process smooth for everyone.&lt;/li&gt;
+&lt;li&gt;Once we’ve discussed your changes and you’ve got your code ready, make sure that build steps pass. Open your pull request against &lt;code&gt;develop&lt;/code&gt; branch.&lt;/li&gt;
+&lt;li&gt;To avoid build failures in CI, run&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ make lint
+$ make test-unit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This will check if the code is properly formatted, linted.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Run security and e2e tests&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ make test-security
+$ make test-integration
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Make sure your pull request has &lt;a href=&#34;https://www.conventionalcommits.org/en/v1.0.0/&#34;&gt;good commit messages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Try to squash unimportant commits and rebase your changes on to develop branch, this will make sure we have clean log of changes.&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Install</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/deployment/install/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/deployment/install/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;from-the-binary-releases&#34;&gt;From the Binary Releases&lt;/h2&gt;
+&lt;p&gt;Every &lt;a href=&#34;https://github.com/groupe-edf/watchdog/releases&#34;&gt;release&lt;/a&gt; of Watchdog provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Download your desired version&lt;/li&gt;
+&lt;li&gt;Unpack it &lt;code&gt;tar -zxvf watchdog-v1.2.0-linux-amd64.tar.gz&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Find the &lt;code&gt;watchdog&lt;/code&gt; binary in the unpacked directory, and move it to its desired destination &lt;code&gt;mv watchdog-v1.2.0-linux-amd64 /usr/local/bin/watchdog&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Make it executable &lt;code&gt;chmod +x /usr/local/bin/watchdog&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;watchdog version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Messages</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/quickstart/messages/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/quickstart/messages/</guid>
+      <description>
+        
+        
+        &lt;p&gt;The rejection messages are written in the form of a template that can be enriched with the already predefined substitution variables&lt;/p&gt;
+&lt;h2 id=&#34;variables&#34;&gt;Variables&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Variable&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Branch }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The name of the branch.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Commit.Author.Email }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Email of the author of the commit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Commit.Author.Name }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The name of the author of the commit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Commit.Subject }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The commit message.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Commit.Date }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The date of the commit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Commit.Hash }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The hash of the commit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Commit.ShortHash }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The 8 character hash of the commit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Condition.Condition }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;La condition définit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Object }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;It can have several values, for example the name of the scanned file in the manager &lt;strong&gt;File&lt;/strong&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Operator }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The operator used in the condition.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Operand }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The comparison value.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Tag }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;The name of the tag.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;{{ .Value }}&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;It can have several values, for example the size of the file in the &lt;strong&gt;File&lt;/strong&gt; manager or confidential information detected in the &lt;strong&gt;Security&lt;/strong&gt; manager.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Example&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rejection_message&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;File {{ .Object }} size {{ .Value }} greater or equal than {{ .Operand }}&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Gitlab</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/deployment/gitlab/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/deployment/gitlab/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;usage-server-side&#34;&gt;Usage server-side&lt;/h2&gt;
+&lt;p&gt;Watchdog can be configured only in the server side of the Git repository (For the moment a &lt;strong&gt;bare&lt;/strong&gt; repository), it is compatible with different Git solutions like &lt;a href=&#34;https://gitea.io/&#34;&gt;Gitea&lt;/a&gt;, &lt;a href=&#34;https://gogs.io/&#34;&gt;Gogs&lt;/a&gt;, &lt;a href=&#34;https://gitlab.com/&#34;&gt;Gitlab&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In our case we will focus on installing Watchdog on the Gitlab platform. See &lt;a href=&#34;https://docs.gitlab.com/ee/administration/server_hooks.html&#34;&gt;instructions&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;We have the possibility to install the tool in different levels of Gitlab&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Global&lt;/li&gt;
+&lt;li&gt;By group&lt;/li&gt;
+&lt;li&gt;By project&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For a global deployment, you must create one of the &lt;code&gt;pre-receive.d&lt;/code&gt;,&lt;code&gt; post-receive.d&lt;/code&gt; or &lt;code&gt;update.d&lt;/code&gt; folders in the &lt;code&gt;/opt/gitlab/embedded/service/gitlab-shell/hooks&lt;/code&gt; directory and add a script that will launch note CLI&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#080&#34;&gt;#!/bin/sh
+&lt;/span&gt;&lt;span style=&#34;color:#080&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;HOOKS&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=(&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;pre-receive&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;post-receive&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;update&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color:#b8860b&#34;&gt;HOOK_TYPE&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;$(&lt;/span&gt;&lt;span style=&#34;color:#a2f&#34;&gt;cd&lt;/span&gt; &lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;$(&lt;/span&gt;dirname &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#b68;font-weight:bold&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;BASH_SOURCE&lt;/span&gt;[0]&lt;span style=&#34;color:#b68;font-weight:bold&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;)&lt;/span&gt; &amp;gt;/dev/null 2&amp;gt;&amp;amp;&lt;span style=&#34;color:#666&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#666&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#a2f&#34;&gt;echo&lt;/span&gt; &lt;span style=&#34;color:#b68;font-weight:bold&#34;&gt;${&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;PWD&lt;/span&gt;##*/&lt;span style=&#34;color:#b68;font-weight:bold&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;while&lt;/span&gt; &lt;span style=&#34;color:#a2f&#34;&gt;read&lt;/span&gt; -r OLDREV NEWREV REFNAME; &lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;do&lt;/span&gt;
+  /usr/local/bin/watchdog analyze &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;    --docs-link&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;https://groupe-edf.github.io/watchdog/docs/&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;    --hook-type&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;pre-receive&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;    --hook-input&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$OLDREV&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$NEWREV&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$REFNAME&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;    --logs-path&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;watchdog.log&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;    --logs-level&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;info&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;\
+&lt;/span&gt;&lt;span style=&#34;color:#b62;font-weight:bold&#34;&gt;&lt;/span&gt;    --verbose&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;true&amp;#34;&lt;/span&gt;
+  &lt;span style=&#34;color:#b8860b&#34;&gt;status&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;$?&lt;/span&gt;
+  &lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#666&#34;&gt;[&lt;/span&gt; &lt;span style=&#34;color:#b8860b&#34;&gt;$status&lt;/span&gt; -eq &lt;span style=&#34;color:#666&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#666&#34;&gt;]&lt;/span&gt;; &lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;then&lt;/span&gt;
+    &lt;span style=&#34;color:#a2f&#34;&gt;exit&lt;/span&gt; &lt;span style=&#34;color:#666&#34;&gt;1&lt;/span&gt;
+  &lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;fi&lt;/span&gt;
+&lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;options&#34;&gt;Options&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Option&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--docs-link&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Allows you to define the link to the Custom Hooks documentation&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--hook-input&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;This data is automatically filled in upon receipt of a Git &lt;code&gt;git push&lt;/code&gt; package&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--hook-type&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Allows you to specify to the watchdog CLI the type of hooks it has just received to pass it to the different managers. By default &lt;code&gt;pre-receive&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--logs-path&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Allows you to define the path for writing logs. By default it is &lt;code&gt;/var/log/watchdog/watchdog.log&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--logs-level&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Allows to define the level of logs to write, can take one of the following values: &lt;code&gt;debug&lt;/code&gt;, &lt;code&gt;error&lt;/code&gt;, &lt;code&gt;fatal&lt;/code&gt;, &lt;code&gt;info&lt;/code&gt;, &lt;code&gt;panic&lt;/code&gt;, &lt;code&gt;trace&lt;/code&gt; and &lt;code&gt;warning&lt;/code&gt;. By default it is &lt;code&gt;info&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--verbose&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Allows you to view more information about running Custom Hooks in the Developer Console. Default &lt;code&gt;true&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--help&lt;/code&gt;, &lt;code&gt;-h&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Show help/usage&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;--version&lt;/code&gt;, &lt;code&gt;-v&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Print version&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The &lt;code&gt;WATCHDOG_*&lt;/code&gt; environment variables are used to pass the adjustment parameters of certain services&lt;/p&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Output</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/quickstart/output/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/quickstart/output/</guid>
+      <description>
+        
+        
+        &lt;p&gt;When the developer pushes his changes to the remote repository, the watchdog analysis of the various commits will return successfully with a detailed list of low severity issues.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;remote:
+remote: -----BEGIN REJECTION MESSAGES-----
+remote: GL-HOOK-ERR: &lt;span style=&#34;color:#b8860b&#34;&gt;severity&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;low &lt;span style=&#34;color:#b8860b&#34;&gt;handler&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;file &lt;span style=&#34;color:#b8860b&#34;&gt;condition&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;extension &lt;span style=&#34;color:#b8860b&#34;&gt;commit&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;eda373cc &lt;span style=&#34;color:#b8860b&#34;&gt;message&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&amp;#39;*.exe&amp;#39; files are not allowed&amp;#34;&lt;/span&gt;
+remote: -----END REJECTION MESSAGES-----
+remote:
+remote:
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#########################################&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#                                       #&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#  Your push was successfully accepted  #&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#                                       #&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#########################################&lt;/span&gt;
+remote:
+remote: Operation took 43.319478ms
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Either fail with a detailed list of high severity issues&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;remote:
+remote: -----BEGIN REJECTION MESSAGES-----
+remote: GL-HOOK-ERR: &lt;span style=&#34;color:#b8860b&#34;&gt;severity&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;high &lt;span style=&#34;color:#b8860b&#34;&gt;handler&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;file &lt;span style=&#34;color:#b8860b&#34;&gt;condition&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;extension &lt;span style=&#34;color:#b8860b&#34;&gt;commit&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;eda373cc &lt;span style=&#34;color:#b8860b&#34;&gt;message&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&amp;#39;*.exe&amp;#39; files are not allowed&amp;#34;&lt;/span&gt;
+remote: -----END REJECTION MESSAGES-----
+remote:
+remote:
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;####################################################&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#                                                  #&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#  Your push was rejected because previous errors  #&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;#                                                  #&lt;/span&gt;
+remote: &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;####################################################&lt;/span&gt;
+remote:
+remote: Operation took 43.319478ms
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;format&#34;&gt;Format&lt;/h2&gt;
+&lt;h3 id=&#34;logfmt&#34;&gt;logfmt&lt;/h3&gt;
+&lt;p&gt;The default output format of the messages is [logfmt] (&lt;a href=&#34;https://brandur.org/logfmt&#34;&gt;https://brandur.org/logfmt&lt;/a&gt;) prefixed by &lt;code&gt;GL-HOOK-ERR:&lt;/code&gt; to have the possibility of uploading these messages on the Gitlab graphical interface in the case of a direct modification of the code on Gitlab.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#b8860b&#34;&gt;severity&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;high &lt;span style=&#34;color:#b8860b&#34;&gt;handler&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;file &lt;span style=&#34;color:#b8860b&#34;&gt;condition&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;extension &lt;span style=&#34;color:#b8860b&#34;&gt;commit&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;eda373cc &lt;span style=&#34;color:#b8860b&#34;&gt;message&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;&amp;#39;*.exe&amp;#39; files are not allowed&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;severity&lt;/strong&gt; Issue severity &lt;code&gt;high&lt;/code&gt;, &lt;code&gt;medium&lt;/code&gt; or &lt;code&gt;low&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;handler&lt;/strong&gt; Name of the handler that detected the problem&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;condition&lt;/strong&gt; Name of the condition that detected the problem&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;commit&lt;/strong&gt; The current hash of the commit (On 8 characters)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;message&lt;/strong&gt; Issue description&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Only high severity issues block commits from being persisted in the Git repository.&lt;/p&gt;
+&lt;h3 id=&#34;json&#34;&gt;json&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#666&#34;&gt;[&lt;/span&gt;
+  &lt;span style=&#34;color:#666&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;author&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;Habib MAALEM&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;commit&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;9560bbeb3b93d9a6d545133dea3e26e0f1fd7a66&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;condition&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;secret&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;email&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;habib.maalem@gmail.com&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;handler&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;security&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;leaks&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#666&#34;&gt;[&lt;/span&gt;
+      &lt;span style=&#34;color:#666&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;file&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;src/main/resources/rsa_server.key&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;line_number&amp;#34;&lt;/span&gt;: 1,
+        &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;rule&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;ASYMMETRIC_PRIVATE_KEY&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;severity&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;MAJOR&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;tags&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#666&#34;&gt;[&lt;/span&gt;
+          &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;key&amp;#34;&lt;/span&gt;
+        &lt;span style=&#34;color:#666&#34;&gt;]&lt;/span&gt;
+      &lt;span style=&#34;color:#666&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color:#666&#34;&gt;]&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;message&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;Secrets, token and passwords are forbidden, `src/main/resources/rsa_server.key:----***********************`&amp;#34;&lt;/span&gt;,
+    &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;severity&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;low&amp;#34;&lt;/span&gt;
+  &lt;span style=&#34;color:#666&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color:#666&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Test</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/contribution/test/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/contribution/test/</guid>
+      <description>
+        
+        
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Logrotate</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/deployment/logrotate/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/deployment/logrotate/</guid>
+      <description>
+        
+        
+        &lt;p&gt;logrotate is designed to ease administration of systems that generate large numbers of log files. It allows automatic rotation, compression, removal, and mailing of log files. Each log file may be handled daily, weekly, monthly, or when it grows too large.&lt;/p&gt;
+&lt;p&gt;The logs are saved in &lt;code&gt;/var/log/watchdog/*.Log&lt;/code&gt;, here is an example of a logrotate configuration&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/var/log/watchdog/*.log {
+    daily
+    rotate 8
+    size 500M
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 440 root root
+}
+&lt;/code&gt;&lt;/pre&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Skip</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/quickstart/skip/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/quickstart/skip/</guid>
+      <description>
+        
+        
+        &lt;p&gt;Developers have the option of skipping checks on certain commits with the expression &lt;code&gt;[skip hooks.rule.condition]&lt;/code&gt;. The expression is valid at&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Rule, for example: Ignore security rules of type &lt;code&gt;Secret&lt;/code&gt; &lt;strong&gt;[skip hooks.security.secret]&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Handler, for example: Skip all &lt;code&gt;security&lt;/code&gt; rules &lt;strong&gt;[skip hooks.security]&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;All Handlers &lt;strong&gt;[skip hooks]&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;example&#34;&gt;Example&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ git commit -am &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;chore: add dummy configuration file [skip hooks.security.secret]&amp;#34;&lt;/span&gt;
+$ git commit -am &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;chore: add dummy configuration file [skip hooks.security]&amp;#34;&lt;/span&gt;
+$ git commit -am &lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;chore: add dummy configuration file [skip hooks]&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Or even better with &lt;a href=&#34;https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt&#34;&gt;Push Options&lt;/a&gt; to keep git history clean &lt;strong&gt;Under development&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ git push -o security.secrets.skip
+$ git push -o hooks.skip&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;security.secrets,tag.semver&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#080;font-style:italic&#34;&gt;# Comma separated handler.rule&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Promtail</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/deployment/promtail/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/deployment/promtail/</guid>
+      <description>
+        
+        
+        &lt;p&gt;Promtail is configured in a YAML file (usually referred to as config.yaml) which contains information on the Promtail server, where positions are stored, and how to scrape logs from files.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;server&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;http_listen_port&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;9080&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;grpc_listen_port&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;positions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;filename&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;/tmp/positions.yaml&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;clients&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;url&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;http://localhost:3100/loki/api/v1/push&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;scrape_configs&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;job_name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;watchdog&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;static_configs&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;targets&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- localhost&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;labels&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;job&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;watchdog&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;__path__&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;/var/log/watchdog/watchdog.log&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Branch Handler</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/handlers/branch/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/handlers/branch/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;regular-expression&#34;&gt;Regular Expression&lt;/h2&gt;
+&lt;p&gt;This is a generic rule where you can use regular expressions to define the naming conventions for branches. See &lt;a href=&#34;https://github.com/google/re2/wiki/Syntax&#34;&gt;Syntax&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;version&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;1.0.0&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;hooks&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;global&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;pre-receive&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rules&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;branch&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;conditions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;          &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;pattern&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;condition&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;(feature|release|hotfix)\/[a-z\d-_.]+&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rejection_message&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;Branch `{{ .Branch }}` must match Gitflow naming convention&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Commit Handler</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/handlers/commit/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/handlers/commit/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;regular-expression&#34;&gt;Regular Expression&lt;/h2&gt;
+&lt;p&gt;This is a generic rule where you can use regular expressions to define conditions to accept or reject commit messages. See &lt;a href=&#34;https://github.com/google/re2/wiki/Syntax&#34;&gt;Syntax&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;version&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;1.0.0&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;hooks&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;global&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rules&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;commit&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;conditions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;          &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;pattern&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;condition&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;(?m)^(build|ci|docs|feat|fix|perf|refactor|style|test)\([a-z]+\):\s([a-z\.\-\s]+)&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;skip&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;Merge commit&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;commit-message-length&#34;&gt;Commit message length&lt;/h2&gt;
+&lt;p&gt;This rule forces users not to exceed a certain length of the commit message.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;version&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;1.0.0&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;hooks&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;global&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rules&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;commit&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;conditions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;          &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;length&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;condition&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;le 20&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rejection_message&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;Commit message should not exceed &amp;#39;{{ .Operand }}&amp;#39; characters&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In the &lt;code&gt;condition&lt;/code&gt; attribute we can use one of the following predicates&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Predicate&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;eq&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;eqal&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;ne&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;not equal&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;lt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;lower than&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;le&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;lower than or equal&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;ge&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;greater than or equal&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;gt&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;greater than&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;email&#34;&gt;Email&lt;/h2&gt;
+&lt;p&gt;It is a generic rule of type regular expression which allows to define conditions on the emails of the users to accept or refuse the commits. See &lt;a href=&#34;https://github.com/google/re2/wiki/Syntax&#34;&gt;Syntax&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;version&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;1.0.0&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;hooks&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;global&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rules&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;commit&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;conditions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;          &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;email&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;condition&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;[a-zA-Z\-]+@acme.com&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rejection_message&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;Author email &amp;#39;{{ .Commit.Author.Email }}&amp;#39; is not valid email address&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: File Handler</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/handlers/file/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/handlers/file/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;extension&#34;&gt;Extension&lt;/h2&gt;
+&lt;p&gt;This rule allows developers to be prohibited from committing files that have certain extensions.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;version&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;1.0.0&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;hooks&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;files&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;pre-receive&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rules&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;file&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;conditions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;          &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;extension&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rejection_message&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#39;*.{{ .Condition.Condition }}&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;files are not allowed&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;condition&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;exe&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;size&#34;&gt;Size&lt;/h2&gt;
+&lt;p&gt;This rule is used to prevent developers from committing files that exceed the size defined in the condition.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;version&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;1.0.0&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;hooks&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;files&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rules&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;file&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;conditions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;          &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;size&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;condition&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;lt 5mb&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rejection_message&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;File {{ .Object }} size {{ .Value }} greater or equal than {{ .Operand }}&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Currently only the &lt;code&gt;lt&lt;/code&gt; operator is supported. the size is defined in natural language and in English and in lowercase, example:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;lt 5mb&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lt 5 megabytes&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lt 512 kb&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To fix this, move media files (.mp4, .mp3, .jpg, .png) from repositories that are only “supposed” to contain text to a repository hold media files that humans can’t read. The job of (git-lfs (Large File System))[https://wilsonmar.github.io/git-hooks/#git-lfs] is to move and replace binary files with a (texual) link to binary repositories.&lt;/p&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Jira Handler</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/handlers/jira/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/handlers/jira/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;issue&#34;&gt;Issue&lt;/h2&gt;
+&lt;p&gt;This rule allows to check if the commit message contains a reference of the associated Jira ticket, this condition can be ignored with the &lt;code&gt;skip: TECH&lt;/code&gt; attribute.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;version&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;1.0.0&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;hooks&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;global&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rules&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;jira&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;conditions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;          &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;issue&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;skip&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;TECH&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;            &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rejection_message&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;Commit message is missing the JIRA Issue JIRA-123&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Security Handler</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/handlers/security/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/handlers/security/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;secrets&#34;&gt;Secrets&lt;/h2&gt;
+&lt;p&gt;This rule allows you to analyze the presence of sensitive and confidential information in the content of commits files, currently the rule allows you to scan.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;AWS Access Key&lt;/li&gt;
+&lt;li&gt;Authentification basique&lt;/li&gt;
+&lt;li&gt;Google Access Token&lt;/li&gt;
+&lt;li&gt;URL de connexion MySQL, Redis, PostgreSQL&lt;/li&gt;
+&lt;li&gt;Private Key&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;version&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;1.0.0&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;hooks&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;global&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rules&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;security&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;conditions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;secret&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rejection_message&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;Secrets, token and passwords are forbidden, `{{ .Object }}:{{ .Value }}`&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;skip&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;.*.json|tests/.*&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;providers&#34;&gt;Providers&lt;/h2&gt;
+&lt;p&gt;List of supported providers&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;Domain&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;Platform/API&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;Key Type&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;Target Regular Expression&lt;/th&gt;
+&lt;th style=&#34;text-align:left&#34;&gt;Source&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Cloud&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Amazon Web Services&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Access Key ID&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;AKIA[0-9A-Z]{16}&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Cloud&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Amazon Web Services&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Secret Key&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;[0-9a-zA-Z/+]{40}&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Web&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;URI&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Basic Authentication&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;(http\|https)://[^{}[[:space:]]]+:([^{}[[:space:]]]+)@&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;a href=&#34;https://tools.ietf.org/html/rfc7617&#34;&gt;The &#39;Basic&#39; HTTP Authentication Scheme&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Web&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;NPM&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Base64&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;_auth[[:space:]]*=[[:space:]]*(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==\|[A-Za-z0-9+\\/]{3}=\|[A-Za-z0-9+\\/]{4})&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;a href=&#34;https://tools.ietf.org/html/rfc3548&#34;&gt;The Base16, Base32, and Base64 Data Encodings&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Cloud&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Google Cloud Platform&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;OAuth 2.0&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Cloud&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Google Cloud Platform&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;API Key&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;[A-Za-z0-9_]{21}--[A-Za-z0-9_]{8}&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Database&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;MySQL&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Basic Authentication&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;mysql://[^{}[[:space:]]]+:([^{}\[[:space:]]]+)@&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Database&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Redis&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Basic Authentication&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;(redis\|rediss\|redis-socket\|redis-sentinel)://[^{}[[:space:]]]+:([^{}[[:space:]]]+)@&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Communication&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Slack&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;API Key&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;xox.-[0-9]{12}-[0-9]{12}-[0-9a-zA-Z]{24}&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Communication&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Twilio&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;API Key&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;55[0-9a-fA-F]{32}&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Social Media&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Twitter&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;Access Token&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;code&gt;[1-9][0-9]+-[0-9a-zA-Z]{40}&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:left&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Tag Handler</title>
+      <link>https://groupe-edf.github.io/watchdog/docs/handlers/tag/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://groupe-edf.github.io/watchdog/docs/handlers/tag/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;semver&#34;&gt;SemVer&lt;/h2&gt;
+&lt;p&gt;This rule ensures that Tags pushed by developers respect the naming conventions described by &lt;code&gt;Semantic Versioning&lt;/code&gt; V2.0.0. See &lt;a href=&#34;https://semver.org/&#34;&gt;https://semver.org/&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;background-color:#f8f8f8;-moz-tab-size:2;-o-tab-size:2;tab-size:2&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;version&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;&lt;span style=&#34;color:#b44&#34;&gt;&amp;#34;1.0.0&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;hooks&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;  &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;name&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;global&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rules&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;    &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;tag&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;conditions&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;      &lt;/span&gt;- &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;type&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;semver&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#bbb&#34;&gt;        &lt;/span&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;rejection_message&lt;/span&gt;:&lt;span style=&#34;color:#bbb&#34;&gt; &lt;/span&gt;Tag version `{{ .Tag }}` must respect semantic versionning v2.0.0 https://semver.org/&lt;span style=&#34;color:#bbb&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+  </channel>
+</rss>
