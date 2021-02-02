@@ -47,8 +47,9 @@ func NewReport(writer io.Writer, options *config.Options, set *util.Set) (err er
 			Issues:             set.List(),
 			ErrorMessagePrefix: options.ErrorMessagePrefix,
 		})
+	default:
+		return errors.New("Unsupported output format")
 	}
-	return errors.New("Unsupported output format")
 }
 
 // Report output issues report

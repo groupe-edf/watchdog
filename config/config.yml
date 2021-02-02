@@ -41,7 +41,7 @@ concurrent: 4
 # output file for analysis report
 output:
 # report format
-output_format: json
+output_format: txt
 # coming soon
 plugins_directory:
 # enable or disable profiling, for development purpose
