@@ -12,6 +12,7 @@ require (
 	github.com/google/go-cmp v0.5.0 // indirect
 	github.com/google/go-querystring v1.0.0
 	github.com/google/uuid v1.1.2
+	github.com/gookit/color v1.3.8
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20201106050909-4977a11b4351 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect

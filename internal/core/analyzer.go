@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/gookit/color"
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
@@ -162,12 +163,12 @@ func (analyzer *Analyzer) analyze(ctx context.Context, gitHooks *hook.GitHooks, 
 		}
 	}
 	analyzer.Issues.Add(issues)
-	statusMessage := util.Colorize(util.Green, config.CheckMark)
+	commitHash := color.Green.Sprint(commit.Hash.String()[:8])
 	if len(issues) > 0 {
-		statusMessage = util.Colorize(util.Red, config.BallotX)
+		commitHash = color.Red.Sprint(commit.Hash.String()[:8])
 	}
 	elapsed := time.Since(scanTimeStart)
-	fmt.Printf("|_ %v · %v · %v (%v)\n", commit.Hash.String()[:8], strings.Split(commit.Message, "\n")[0], statusMessage, elapsed)
+	fmt.Printf("|_ %v · %v · (%v)\n", commitHash, strings.Split(commit.Message, "\n")[0], elapsed)
 	return ctx.Err()
 }
 
