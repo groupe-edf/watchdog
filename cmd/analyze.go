@@ -8,6 +8,7 @@ import (
 	"os/signal"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/gookit/color"
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
@@ -35,11 +36,7 @@ var (
 			var info *hook.Info
 			options, err = config.NewOptions(viper.GetViper())
 			if err != nil {
-				fmt.Printf("Unable to decode into config struct, %v", err)
-				os.Exit(0)
-			}
-			if err := options.Validate(); err != nil {
-				fmt.Printf("Unable to decode into config struct, %v", err)
+				color.Red.Printf("unable to decode into config struct, %v", err)
 				os.Exit(0)
 			}
 			if options.Banner {
@@ -77,19 +74,13 @@ var (
 				"user_id":        util.GetUserID(ctx),
 			}).Debugf("repository `%v` successfully fetched", options.URI)
 			if err != nil {
-				fmt.Println(util.Colorize(util.Red, err.Error()))
+				color.Red.Printf("error fetching repository `%v`", err)
 				logger.WithFields(logging.Fields{
 					"correlation_id": util.GetRequestID(ctx),
 					"user_id":        util.GetUserID(ctx),
-				}).Debugf("error fetching repository `%v`", err)
+				}).Fatalf("error fetching repository `%v`", err)
 			}
 			analyzer.SetRepository(repository)
-			if err != nil {
-				logger.WithFields(logging.Fields{
-					"correlation_id": util.GetRequestID(ctx),
-					"user_id":        util.GetUserID(ctx),
-				}).Warning(err)
-			}
 			// Loading .githooks.yml file
 			if options.HookFile != "" {
 				// External .githooks.yml
@@ -99,7 +90,7 @@ var (
 				}).Debugf("loading external hooks file %v", options.HookFile)
 				hooks, err = hook.LoadGitHooks(options.HookFile)
 				if err != nil {
-					fmt.Printf("Error loading git hooks %v", err)
+					color.Red.Printf("error loading git hooks %v", err)
 					os.Exit(0)
 				}
 			} else {
@@ -107,7 +98,7 @@ var (
 				var commit *object.Commit
 				info, err = hook.ParseInfo(repository, options.HookInput)
 				if err != nil && err != hook.ErrNoHookData {
-					fmt.Printf("Error parsing hook info %v", err)
+					color.Red.Printf("error parsing hook info %v", err)
 					logger.WithFields(logging.Fields{
 						"correlation_id": util.GetRequestID(ctx),
 						"user_id":        util.GetUserID(ctx),
@@ -126,6 +117,7 @@ var (
 					}
 					commit, err = repository.CommitObject(reference.Hash())
 					if err != nil {
+						color.Red.Println(err.Error())
 						logger.WithFields(logging.Fields{
 							"commit":         commit.Hash.String(),
 							"correlation_id": util.GetRequestID(ctx),
@@ -135,7 +127,7 @@ var (
 				}
 				hooks, err = hook.ExtractConfigFile(ctx, commit)
 				if err != nil && !errors.Is(err, hook.ErrFileNotFound) {
-					fmt.Println(util.Colorize(util.Red, err.Error()))
+					color.Red.Println(err.Error())
 					logger.WithFields(logging.Fields{
 						"commit":         commit.Hash.String(),
 						"correlation_id": util.GetRequestID(ctx),
@@ -171,7 +163,7 @@ var (
 				commits, err := util.FetchCommits(repository, info, options.HookType)
 				fmt.Println()
 				if err != nil {
-					fmt.Println(util.Colorize(util.Red, err.Error()))
+					color.Red.Println(err.Error())
 					logger.WithFields(logging.Fields{
 						"correlation_id": util.GetRequestID(ctx),
 						"user_id":        util.GetUserID(ctx),

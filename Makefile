@@ -30,17 +30,17 @@ GO_CLEAN=$(GO) clean
 GO_GET=GO111MODULE=off $(GO) get -u
 GO_RUN=$(GO) run
 GO_TEST=$(GO) test -v
+GOOS=$(shell $(GO) env GOOS)
 
 GIT_COMMIT=$(shell git rev-parse HEAD)
 GIT_SHA=$(shell git rev-parse --short HEAD)
 GIT_TAG=$(shell git describe --tags --abbrev=0 --exact-match 2>/dev/null)
 GIT_DIRTY=$(shell test -n "`git status --porcelain`" && echo "dirty" || echo "clean")
 
-BINARY_NAME=$(shell echo $${PWD\#\#*/})
+BINARY_NAME=$(notdir $(CURDIR))
 PLUGIN_DIRECTORY=pkg/modules
 PLUGIN_OUTPUT=plugins
 PLUGIN_EXTENSION=so
-SHELL=/bin/bash
 TARGET=target
 
 BINARY_VERSION ?= ${GIT_TAG}
@@ -60,9 +60,11 @@ LDFLAGS += -X github.com/groupe-edf/watchdog/internal/version.Commit=$(GIT_COMMI
 LDFLAGS += -X github.com/groupe-edf/watchdog/internal/version.Sha=$(GIT_SHA)
 LDFLAGS_TEST := ${LDFLAGS} -X github.com/groupe-edf/watchdog/pkg/config.LogPath=watchdog.log
 
-ifeq (${GOOS}, windows)
+ifeq ($(GOOS), windows)
+	export CGO_ENABLED=1
 	BINARY_OUTPUT := $(TARGET)/bin/${BINARY_NAME}.exe
 else
+	GO_TEST := $(GO_TEST) -race
 	BINARY_OUTPUT := $(TARGET)/bin/${BINARY_NAME}
 endif
 
@@ -85,7 +87,7 @@ bootstrap: ## Install all development and ci tools
 
 build: ## Build watchdog CLI
 	$(GO_BUILD) -o $(BINARY_NAME) -v -o $(BINARY_OUTPUT) -ldflags="$(LDFLAGS)"
-	@echo "${GREEN}> Build completed successfully${RESET}"
+	@echo "${GREEN}> Build completed successfully in $(BINARY_OUTPUT)${RESET}"
 
 build-plugins: $(PLUGIN_DIRECTORY)/*.go
 	$(GO_BUILD) -buildmode=plugin -o $(PLUGIN_OUTPUT)/$(basename $(<F)).$(PLUGIN_EXTENSION) ./$^
@@ -167,7 +169,7 @@ COVERAGE_PROFILE=$(TARGET)/coverage.txt
 RUN=.
 test-unit:
 	@mkdir -p $(TARGET)
-	$(GO_TEST) -race -coverprofile=$(COVERAGE_PROFILE) -covermode=atomic ./... -run $(RUN)
+	$(GO_TEST) -coverprofile=$(COVERAGE_PROFILE) -covermode=atomic ./... -run $(RUN)
 
 tidy:
 	@$(GO) mod tidy

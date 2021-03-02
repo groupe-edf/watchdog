@@ -48,7 +48,7 @@ func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.C
 				if len(matches) == 0 {
 					// Check if we can skip this rule
 					if !commitHandler.canSkip(ctx, commit.Message, condition) {
-						issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Message `{{- .Commit.Message -}}` does't satisfy condition"))
+						issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Message `{{- .Commit.Message -}}` does not satisfy condition"))
 					}
 				}
 			case "length":
@@ -117,7 +117,7 @@ func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.C
 			case "email":
 				matches := regexp.MustCompile(condition.Condition).FindStringSubmatch(commit.Author.Email)
 				if len(matches) == 0 {
-					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "User email `{{ .Commit.Author.Email }}` does't satisfy condition"))
+					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "User email `{{ .Commit.Author.Email }}` does not satisfy condition"))
 				}
 			default:
 				commitHandler.Logger.WithFields(logging.Fields{

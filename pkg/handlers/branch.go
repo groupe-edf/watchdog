@@ -45,7 +45,7 @@ func (branchHandler *BranchHandler) Handle(ctx context.Context, commit *object.C
 				// User created new branch, check naming convention
 				matches := regexp.MustCompile(condition.Condition).FindAllString(data.Branch, -1)
 				if len(matches) == 0 {
-					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Branch name `{{ .Branch }}` does't satisfy condition"))
+					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Branch name `{{ .Branch }}` does not satisfy condition"))
 				}
 			case "protected":
 				// Reject push if the user want to delete a protected branch

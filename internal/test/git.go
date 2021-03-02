@@ -3,9 +3,9 @@ package test
 import (
 	"bytes"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"time"
 
@@ -180,7 +180,7 @@ func (suite *GitSuite) ResetLastCommit() error {
 
 // SetUp initialize bare and clone git repository
 func (suite *GitSuite) SetUp() error {
-	suite.tempDirectory = filepath.Join(suite.RootDirectory, "/target")
+	suite.tempDirectory = filepath.Join(suite.RootDirectory, "target")
 	err := suite.SetUpBareRepository()
 	if err != nil {
 		return err
@@ -271,11 +271,25 @@ func (suite *GitSuite) installPreReceiveHook() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	template, _ := ioutil.ReadFile(path.Join(suite.RootDirectory, "/test/data/pre-receive"))
-	preReceiveHook := []byte(fmt.Sprintf(string(template), path.Join(suite.RootDirectory, "/target/bin/watchdog"), suite.OutputFormat))
-	err = ioutil.WriteFile(filepath.Join(hooks, "pre-receive"), preReceiveHook, 0777)
+	preReceivePath := filepath.Join(suite.RootDirectory, "test", "data", "pre-receive")
+	preReceiveTemplate, _ := ioutil.ReadFile(preReceivePath)
+	t := template.Must(template.New("").Parse(string(preReceiveTemplate)))
+	preReceiveFile, err := os.Create(filepath.Join(hooks, "pre-receive"))
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	data := struct {
+		Binary       template.URL
+		OutputFormat string
+	}{
+		template.URL(filepath.Join(suite.RootDirectory, "target", "bin", "watchdog")),
+		suite.OutputFormat,
+	}
+	err = t.Execute(os.Stdout, data)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	preReceiveFile.Close()
 }

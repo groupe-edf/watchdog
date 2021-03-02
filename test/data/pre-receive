@@ -1,14 +1,14 @@
 #!/bin/sh
 export GL_USERNAME=""
 while read -r OldRev NewRev RefName; do
-  %s analyze \
+  "{{ .Binary }}" analyze \
     --docs-link="https://groupe-edf.github.io/watchdog" \
     --hook-type="pre-receive" \
     --hook-input="$OldRev $NewRev $RefName" \
     --verbose="true" \
     --logs-path="watchdog.log" \
     --logs-level="debug" \
-    --output-format="%s" \
+    --output-format="{{ .OutputFormat }}" \
     --security.reveal-secrets=4
   status=$?
   if [ $status -eq 1 ]; then

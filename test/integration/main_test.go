@@ -59,7 +59,7 @@ func TestDefaultRules(t *testing.T) {
 
 func setUpAll() {
 	_, directory, _, _ := runtime.Caller(0)
-	RootDirectory = filepath.Join(filepath.Dir(directory), "../..")
+	RootDirectory = filepath.Dir(path.Join(directory, "..", ".."))
 	err := os.Chdir(RootDirectory)
 	if err != nil {
 		fmt.Printf("Could not change directory %v", err)
