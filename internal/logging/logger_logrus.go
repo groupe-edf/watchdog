@@ -2,6 +2,7 @@ package logging
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -19,9 +20,11 @@ func NewLogrusLogger(options Options) Interface {
 	if options.LogsPath != "" {
 		logFile, err := os.OpenFile(filepath.Clean(options.LogsPath), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
 		if err != nil {
-			logger.Fatalf("Failed to open log file: %v", err)
+			logger.Fatalf("failed to open log file: %v", err)
 		}
 		logger.SetOutput(logFile)
+	} else {
+		logger.SetOutput(ioutil.Discard)
 	}
 	if options.LogsFormat == "json" {
 		logger.SetFormatter(&logrus.JSONFormatter{

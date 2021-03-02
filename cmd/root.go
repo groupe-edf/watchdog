@@ -35,7 +35,7 @@ func init() {
 	rootCommand.PersistentFlags().String("docs-link", "", "link to documentation")
 	rootCommand.PersistentFlags().String("logs-format", "json", "logging level")
 	rootCommand.PersistentFlags().String("logs-level", "info", "logging level")
-	rootCommand.PersistentFlags().String("logs-path", "/var/log/watchdog/watchdog.log", "path to logs")
+	rootCommand.PersistentFlags().String("logs-path", "", "path to logs")
 	rootCommand.PersistentFlags().String("output", "", "path to output file")
 	rootCommand.PersistentFlags().String("output-format", "text", "report format")
 	rootCommand.PersistentFlags().String("plugins-directory", "plugins", "path to plugins directory")

@@ -8,11 +8,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	// LogsPath default log file location
-	LogsPath = "/var/log/watchdog/watchdog.log"
-)
-
 // Options options data structure
 type Options struct {
 	AuthBasicToken     string               `mapstructure:"auth-basic-token"`
@@ -58,9 +53,6 @@ func (options *Options) Validate() error {
 	if options.URI == "" {
 		directory, _ := os.Getwd()
 		options.URI = directory
-	}
-	if options.LogsPath == "" {
-		options.LogsPath = LogsPath
 	}
 	if options.Concurrent == 0 {
 		options.Concurrent = runtime.NumCPU()
