@@ -5,7 +5,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
@@ -65,7 +64,7 @@ func setUpAll() {
 		fmt.Printf("Could not change directory %v", err)
 		os.Exit(1)
 	}
-	versionFile, _ := ioutil.ReadFile(filepath.Join(RootDirectory, "VERSION"))
+	versionFile, _ := os.ReadFile(filepath.Join(RootDirectory, "VERSION"))
 	Version = strings.TrimSpace(string(versionFile))
 	RulesDirectory = RootDirectory + "/test/data/rules"
 	make := exec.Command("make", "build-test")

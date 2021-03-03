@@ -3,7 +3,6 @@ package test
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -15,7 +14,7 @@ import (
 
 // CreateDummyFile create a dummy file
 func CreateDummyFile(t *testing.T, size int64) []byte {
-	file, err := ioutil.TempFile(os.TempDir(), "")
+	file, err := os.CreateTemp(os.TempDir(), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -33,7 +32,7 @@ func CreateDummyFile(t *testing.T, size int64) []byte {
 
 // LoadGolden load golden file
 func LoadGolden(t *testing.T, goldenFile string) string {
-	content, err := ioutil.ReadFile(filepath.Clean(goldenFile) + ".golden")
+	content, err := os.ReadFile(filepath.Clean(goldenFile) + ".golden")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -42,7 +41,7 @@ func LoadGolden(t *testing.T, goldenFile string) string {
 
 // LoadInput load input file
 func LoadInput(t *testing.T, inputFile string) []string {
-	content, err := ioutil.ReadFile(filepath.Clean(inputFile))
+	content, err := os.ReadFile(filepath.Clean(inputFile))
 	if err != nil {
 		t.Fatal(err)
 	}

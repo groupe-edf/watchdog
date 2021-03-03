@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -20,7 +20,7 @@ var (
 
 // LoadGitHooks load and return Configuration struct
 func LoadGitHooks(filePath string) (*GitHooks, error) {
-	content, err := ioutil.ReadFile(filepath.Clean(filePath))
+	content, err := os.ReadFile(filepath.Clean(filePath))
 	if err != nil {
 		return nil, ErrFileNotFound
 	}

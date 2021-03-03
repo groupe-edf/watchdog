@@ -1,7 +1,7 @@
 package hook
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"testing"
@@ -15,7 +15,7 @@ const (
 
 func TestMain(m *testing.M) {
 	log.SetFlags(0)
-	log.SetOutput(ioutil.Discard)
+	log.SetOutput(io.Discard)
 	os.Exit(m.Run())
 }
 

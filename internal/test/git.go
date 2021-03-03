@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -194,7 +193,7 @@ func (suite *GitSuite) SetUp() error {
 
 // SetUpBareRepository create new bare repository
 func (suite *GitSuite) SetUpBareRepository() error {
-	barePath, err := ioutil.TempDir("", "repository.git")
+	barePath, err := os.MkdirTemp("", "repository.git")
 	if err != nil {
 		return err
 	}
@@ -210,7 +209,7 @@ func (suite *GitSuite) SetUpBareRepository() error {
 
 // SetUpCloneRepository clone git repository
 func (suite *GitSuite) SetUpCloneRepository() error {
-	clonePath, err := ioutil.TempDir("", "repository")
+	clonePath, err := os.MkdirTemp("", "repository")
 	if err != nil {
 		return err
 	}
@@ -236,7 +235,7 @@ func (suite *GitSuite) addFile(commitMessage string, signature *object.Signature
 		return plumbing.ZeroHash, err
 	}
 	for _, file := range files {
-		err = ioutil.WriteFile(filepath.Join(suite.ClonePath, file.FileName), file.FileContent, 0777)
+		err = os.WriteFile(filepath.Join(suite.ClonePath, file.FileName), file.FileContent, 0777)
 		if err != nil {
 			return plumbing.ZeroHash, err
 		}
@@ -272,9 +271,14 @@ func (suite *GitSuite) installPreReceiveHook() {
 		os.Exit(1)
 	}
 	preReceivePath := filepath.Join(suite.RootDirectory, "test", "data", "pre-receive")
-	preReceiveTemplate, _ := ioutil.ReadFile(preReceivePath)
+	preReceiveTemplate, _ := os.ReadFile(preReceivePath)
 	t := template.Must(template.New("").Parse(string(preReceiveTemplate)))
 	preReceiveFile, err := os.Create(filepath.Join(hooks, "pre-receive"))
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	err = os.Chmod(filepath.Join(hooks, "pre-receive"), 0700)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -286,7 +290,7 @@ func (suite *GitSuite) installPreReceiveHook() {
 		template.URL(filepath.Join(suite.RootDirectory, "target", "bin", "watchdog")),
 		suite.OutputFormat,
 	}
-	err = t.Execute(os.Stdout, data)
+	err = t.Execute(preReceiveFile, data)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

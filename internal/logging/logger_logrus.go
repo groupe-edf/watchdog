@@ -2,7 +2,7 @@ package logging
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -24,7 +24,7 @@ func NewLogrusLogger(options Options) Interface {
 		}
 		logger.SetOutput(logFile)
 	} else {
-		logger.SetOutput(ioutil.Discard)
+		logger.SetOutput(io.Discard)
 	}
 	if options.LogsFormat == "json" {
 		logger.SetFormatter(&logrus.JSONFormatter{
