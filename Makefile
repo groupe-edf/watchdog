@@ -164,7 +164,7 @@ test-integration:
 	$(GO_TEST) --tags=$(TAGS) ./test/integration/... -run $(RUN)
 
 test-security:
-	@gosec -exclude=G101,G104,G204,G306,G307 -fmt=json -out=gosec.json ./...
+	@gosec -exclude=G101,G104,G203,G204,G302,G306,G307 -fmt=json ./...
 
 COVERAGE_PROFILE=$(TARGET)/coverage.txt
 RUN=.

@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-version: [1.15.x]
+        go-version: [1.16.x]
         platform: [ubuntu-latest]
     name: test-${{ matrix.go-version }}
     runs-on: ${{ matrix.platform }}
@@ -19,4 +19,4 @@ jobs:
       - name: Static Application Security Tools (SAST)
         uses: securego/gosec@master
         with:
-          args: -exclude=G101,G104,G204,G306,G307 -fmt=json -out=gosec.json ./...
+          args: -exclude=G101,G104,G203,G204,G302,G306,G307 -fmt=json -no-fail ./...
