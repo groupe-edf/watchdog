@@ -12,7 +12,9 @@ builds:
     - -X github.com/groupe-edf/watchdog/internal/version.Commit={{.FullCommit}}
     - -X github.com/groupe-edf/watchdog/internal/version.Sha={{.ShortCommit}}
   goos:
+    - darwin
     - linux
+    - windows
   goarch:
     - amd64
   mod_timestamp: "{{ .CommitTimestamp }}"
@@ -22,6 +24,8 @@ changelog:
 
 checksum:
   name_template: "{{ .ProjectName }}_checksums.txt"
+
+dist: target
 
 nfpms:
   - homepage: https://github.com/groupe-edf/watchdog

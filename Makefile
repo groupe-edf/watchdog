@@ -28,6 +28,7 @@ GO ?= go
 GO_BUILD=$(GO) build
 GO_CLEAN=$(GO) clean
 GO_GET=GO111MODULE=off $(GO) get -u
+GO_INSTALL=$(GO) install
 GO_RUN=$(GO) run
 GO_TEST=$(GO) test -v
 GOOS=$(shell $(GO) env GOOS)
@@ -76,7 +77,7 @@ all: lint test build
 bootstrap: ## Install all development and ci tools
 	$(GO_GET) github.com/client9/misspell/cmd/misspell
 	$(GO_GET) github.com/git-chglog/git-chglog/cmd/git-chglog
-	$(GO_GET) github.com/golangci/golangci-lint/cmd/golangci-lint@v1.31.0
+	$(GO_GET) github.com/golangci/golangci-lint/cmd/golangci-lint
 	$(GO_GET) github.com/pressly/sup/cmd/sup
 	$(GO_GET) github.com/securego/gosec/v2/cmd/gosec
 	$(GO_GET) gitlab.com/gitlab-org/release-cli/cmd/release-cli
