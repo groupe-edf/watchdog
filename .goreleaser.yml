@@ -1,22 +1,27 @@
+archives:
+- format_overrides:
+  - goos: windows
+    format: zip
+
 before:
   hooks:
-    - make clean
+  - make clean
 
 builds:
 - env:
-    - CGO_ENABLED=0
+  - CGO_ENABLED=0
   ldflags:
-    - -s -w
-    - -X github.com/groupe-edf/watchdog/internal/version.Version={{.Tag}}
-    - -X github.com/groupe-edf/watchdog/internal/version.BuildDate={{.Date}}
-    - -X github.com/groupe-edf/watchdog/internal/version.Commit={{.FullCommit}}
-    - -X github.com/groupe-edf/watchdog/internal/version.Sha={{.ShortCommit}}
+  - -s -w
+  - -X github.com/groupe-edf/watchdog/internal/version.Version={{.Tag}}
+  - -X github.com/groupe-edf/watchdog/internal/version.BuildDate={{.Date}}
+  - -X github.com/groupe-edf/watchdog/internal/version.Commit={{.FullCommit}}
+  - -X github.com/groupe-edf/watchdog/internal/version.Sha={{.ShortCommit}}
   goos:
-    - darwin
-    - linux
-    - windows
+  - darwin
+  - linux
+  - windows
   goarch:
-    - amd64
+  - amd64
   mod_timestamp: "{{ .CommitTimestamp }}"
 
 changelog:
@@ -28,17 +33,17 @@ checksum:
 dist: target
 
 nfpms:
-  - homepage: https://github.com/groupe-edf/watchdog
-    maintainer: Habib MAALEM <habib.maalem@gmail.com>
-    description: Git server-side Custom Hooks
-    vendor: watchdog
-    license: GPL
-    formats:
-      - apk
-      - deb
-      - rpm
-    empty_folders:
-    - /var/log/watchdog
+- homepage: https://github.com/groupe-edf/watchdog
+  maintainer: Habib MAALEM <habib.maalem@gmail.com>
+  description: Git server-side Custom Hooks
+  vendor: watchdog
+  license: GPL
+  formats:
+  - apk
+  - deb
+  - rpm
+  empty_folders:
+  - /var/log/watchdog
 
 project_name: watchdog
 

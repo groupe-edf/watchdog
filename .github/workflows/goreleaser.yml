@@ -18,10 +18,11 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.x
+          go-version: 1.16.x
       - name: Generate CHANGELOG.md
         run: |
-          GO111MODULE=off go get -u github.com/git-chglog/git-chglog/cmd/git-chglog
+          cd; GO111MODULE=on go get -u github.com/git-chglog/git-chglog/cmd/git-chglog
+          cd $GITHUB_WORKSPACE
           git-chglog --config .ci/git-chglog.yml --output=CHANGELOG.md $(git describe --tags $(git rev-list --tags --max-count=1))
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
