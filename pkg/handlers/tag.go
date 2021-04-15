@@ -42,12 +42,13 @@ func (tagHandler *TagHandler) Handle(ctx context.Context, commit *object.Commit,
 				"user_id":        util.GetUserID(ctx),
 			}).Debug("processing tag rule")
 			switch condition.Type {
-			case "semver":
+			case hook.ConditionSemVer:
 				version, err := semver.NewVersion(data.Tag)
 				fmt.Println(err, version)
 				if err != nil {
 					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Tag version `{{ .Tag }}` must respect semantic versionning v2.0.0 https://semver.org/"))
 				}
+			case hook.ConditionPattern:
 			default:
 				tagHandler.Logger.WithFields(logging.Fields{
 					"tag":            data.Tag,

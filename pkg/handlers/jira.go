@@ -48,7 +48,7 @@ func (jiraHandler *JiraHandler) Handle(ctx context.Context, commit *object.Commi
 				"user_id":        util.GetUserID(ctx),
 			}).Debug("processing jira analysis")
 			switch condition.Type {
-			case "issue":
+			case hook.ConditionIssue:
 				// Check if commit message contains issue reference
 				matches := regexp.MustCompile(issueReferencePattern).FindStringSubmatch(commit.Message)
 				if len(matches) == 0 {

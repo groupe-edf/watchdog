@@ -41,13 +41,13 @@ func (branchHandler *BranchHandler) Handle(ctx context.Context, commit *object.C
 				"user_id":        util.GetUserID(ctx),
 			}).Debug("processing branch rule")
 			switch condition.Type {
-			case "pattern":
+			case hook.ConditionPattern:
 				// User created new branch, check naming convention
 				matches := regexp.MustCompile(condition.Condition).FindAllString(data.Branch, -1)
 				if len(matches) == 0 {
 					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Branch name `{{ .Branch }}` does not satisfy condition"))
 				}
-			case "protected":
+			case hook.ConditionProtected:
 				// Reject push if the user want to delete a protected branch
 				if branchHandler.Info.RefType == "heads" {
 					matches := regexp.MustCompile(condition.Condition).FindStringSubmatch(data.Branch)

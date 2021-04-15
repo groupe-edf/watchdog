@@ -14,13 +14,6 @@ import (
 	"github.com/groupe-edf/watchdog/internal/util"
 )
 
-const (
-	// ConditionExtension file extension condition
-	ConditionExtension hook.ConditionType = "extension"
-	// ConditionSize file size condition
-	ConditionSize hook.ConditionType = "size"
-)
-
 // FileHandler handle committed files
 type FileHandler struct {
 	core.AbstractHandler
@@ -62,7 +55,7 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 				"user_id":        util.GetUserID(ctx),
 			}).Debug("processing file analysis")
 			switch condition.Type {
-			case ConditionExtension:
+			case hook.ConditionExtension:
 				for _, file := range files {
 					fileHandler.Logger.Debugf("Checking file %v", file.Name)
 					matches := regexp.MustCompile("(.+)."+condition.Condition).FindAllString(file.Name, -1)
@@ -70,7 +63,7 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 						issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "*.{{ .Condition.Condition }} files are not allowed"))
 					}
 				}
-			case ConditionSize:
+			case hook.ConditionSize:
 				matches := regexp.MustCompile(string(`(?i)(lt)\s*([0-9\s*mb|kb]+)`)).FindStringSubmatch(condition.Condition)
 				if len(matches) < 3 {
 					fileHandler.Logger.Errorf("Invalid file size condition %v", condition.Condition)

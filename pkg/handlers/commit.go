@@ -42,7 +42,7 @@ func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.C
 				"user_id":        util.GetUserID(ctx),
 			}).Debug("processing commit rule")
 			switch condition.Type {
-			case "pattern":
+			case hook.ConditionPattern:
 				commitHandler.Logger.Debugf("Commit pattern `%v`", condition.Condition)
 				matches := regexp.MustCompile(condition.Condition).FindAllString(commit.Message, -1)
 				if len(matches) == 0 {
@@ -51,7 +51,7 @@ func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.C
 						issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Message `{{- .Commit.Message -}}` does not satisfy condition"))
 					}
 				}
-			case "length":
+			case hook.ConditionLength:
 				// TODO: dynamically check operation
 				predicates := make(map[string]string)
 				predicates["eq"] = "!="
@@ -114,7 +114,7 @@ func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.C
 						"user_id":        util.GetUserID(ctx),
 					}).Warningf("unknown operation %v for length condition", matches[1])
 				}
-			case "email":
+			case hook.ConditionEmail:
 				matches := regexp.MustCompile(condition.Condition).FindStringSubmatch(commit.Author.Email)
 				if len(matches) == 0 {
 					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "User email `{{ .Commit.Author.Email }}` does not satisfy condition"))

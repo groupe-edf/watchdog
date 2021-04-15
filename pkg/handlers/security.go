@@ -13,15 +13,6 @@ import (
 	"github.com/groupe-edf/watchdog/internal/util"
 )
 
-const (
-	// ConditionIP ip condition
-	ConditionIP hook.ConditionType = "ip"
-	// ConditionSecret secret condition
-	ConditionSecret hook.ConditionType = "secret"
-	// ConditionSignature secret condition
-	ConditionSignature hook.ConditionType = "signature"
-)
-
 // SecurityHandler handle committed secrets, passwords and tokens
 type SecurityHandler struct {
 	core.AbstractHandler
@@ -52,7 +43,7 @@ func (securityHandler *SecurityHandler) Handle(ctx context.Context, commit *obje
 				"user_id":        util.GetUserID(ctx),
 			}).Debug("processing security analysis")
 			switch condition.Type {
-			case ConditionSecret:
+			case hook.ConditionSecret:
 				if securityHandler.scanner == nil {
 					// Create a new regex scanner
 					securityHandler.scanner = security.NewRegexScanner(securityHandler.Logger, securityHandler.Options)
@@ -83,8 +74,8 @@ func (securityHandler *SecurityHandler) Handle(ctx context.Context, commit *obje
 				}
 				return issues, err
 			// TODO: implement ip and signature hooks
-			case ConditionIP:
-			case ConditionSignature:
+			case hook.ConditionIP:
+			case hook.ConditionSignature:
 			default:
 				securityHandler.Logger.WithFields(logging.Fields{
 					"commit":         commit.Hash.String(),
