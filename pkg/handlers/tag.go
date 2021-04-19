@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"context"
-	"fmt"
+	"regexp"
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -43,12 +43,16 @@ func (tagHandler *TagHandler) Handle(ctx context.Context, commit *object.Commit,
 			}).Debug("processing tag rule")
 			switch condition.Type {
 			case hook.ConditionSemVer:
-				version, err := semver.NewVersion(data.Tag)
-				fmt.Println(err, version)
+				_, err := semver.NewVersion(data.Tag)
 				if err != nil {
-					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Tag version `{{ .Tag }}` must respect semantic versionning v2.0.0 https://semver.org/"))
+					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Tag `{{ .Tag }}` must respect semantic versionning v2.0.0 https://semver.org/"))
 				}
 			case hook.ConditionPattern:
+				tagHandler.Logger.Debugf("Tag pattern `%v`", condition.Condition)
+				matches := regexp.MustCompile(condition.Condition).FindAllString(data.Tag, -1)
+				if len(matches) == 0 {
+					issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "Tag `{{ .Tag }}` does not satisfy condition"))
+				}
 			default:
 				tagHandler.Logger.WithFields(logging.Fields{
 					"tag":            data.Tag,

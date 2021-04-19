@@ -1,0 +1,8 @@
+version: "develop"
+hooks:
+  - name: global
+    rules:
+    - type: tag
+      conditions:
+      - type: pattern
+        condition: release-[a-z\d-_.]+
