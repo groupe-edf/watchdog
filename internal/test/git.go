@@ -284,10 +284,12 @@ func (suite *GitSuite) installPreReceiveHook() {
 		os.Exit(1)
 	}
 	data := struct {
-		Binary       template.URL
-		OutputFormat string
+		Binary            template.URL
+		ConfigurationFile string
+		OutputFormat      string
 	}{
 		template.URL(filepath.Join(suite.RootDirectory, "target", "bin", "watchdog")),
+		filepath.Join(suite.RootDirectory, "test", "data", "config.yml"),
 		suite.OutputFormat,
 	}
 	err = t.Execute(preReceiveFile, data)

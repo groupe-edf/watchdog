@@ -2,6 +2,10 @@ version: "1.0.0"
 hooks:
   - name: general
     rules:
+      - type: branch
+        conditions:
+          - type: pattern
+            condition: (feature|release|hotfix)\/[a-z\d-_.]+
       - type: commit
         conditions:
         - type: length
