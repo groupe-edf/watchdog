@@ -102,7 +102,7 @@ type RevListOptions struct {
 
 // RevList is native implemetation of git rev-list command
 func RevList(repository *git.Repository, info *hook.Info) (object.CommitIter, error) {
-	fmt.Printf("Running analysis on %s:", Colorize(Green, info.Ref))
+	fmt.Printf("Running analysis on %s:", Colorize(Green, info.Ref.String()))
 	var err error
 	opts := RevListOptions{}
 	if info.OldRev != nil {

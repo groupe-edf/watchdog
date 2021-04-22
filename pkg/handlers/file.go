@@ -20,7 +20,7 @@ type FileHandler struct {
 }
 
 // GetType return handler type
-func (fileHandler *FileHandler) GetType() string {
+func (fileHandler *FileHandler) GetType() core.HandlerType {
 	return core.HandlerTypeCommits
 }
 
@@ -60,7 +60,8 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 					fileHandler.Logger.Debugf("Checking file %v", file.Name)
 					matches := regexp.MustCompile("(.+)."+condition.Condition).FindAllString(file.Name, -1)
 					if len(matches) != 0 {
-						issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "*.{{ .Condition.Condition }} files are not allowed"))
+						data.Object = file.Name
+						issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "{{ .Object }} : *.{{ .Condition.Condition }} files are not allowed"))
 					}
 				}
 			case hook.ConditionSize:

@@ -6,6 +6,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,7 +22,8 @@ func TestMain(m *testing.M) {
 
 func TestParseHookAction(t *testing.T) {
 	assert := assert.New(t)
-	info := Info{}
-	action := ParseHookAction(info)
-	assert.Equal(action, "branch.push")
+	info := Info{
+		Ref: plumbing.ReferenceName("refs/heads/master"),
+	}
+	assert.Equal(info.Action, "branch.push")
 }

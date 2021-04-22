@@ -20,7 +20,7 @@ type SecurityHandler struct {
 }
 
 // GetType return handler type
-func (securityHandler *SecurityHandler) GetType() string {
+func (securityHandler *SecurityHandler) GetType() core.HandlerType {
 	return core.HandlerTypeCommits
 }
 

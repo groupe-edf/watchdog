@@ -19,17 +19,17 @@ type BranchHandler struct {
 }
 
 // GetType return handler type
-func (branchHandler *BranchHandler) GetType() string {
+func (branchHandler *BranchHandler) GetType() core.HandlerType {
 	return core.HandlerTypeRefs
 }
 
 // Handle chencking branch naming convention
 func (branchHandler *BranchHandler) Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error) {
 	// Handler must run only on branch changes
-	if rule.Type == hook.TypeBranch && branchHandler.Info.RefType == "heads" {
+	if rule.Type == hook.TypeBranch && branchHandler.Info.Ref.IsBranch() {
 		for _, condition := range rule.Conditions {
 			data := issue.Data{
-				Branch:    branchHandler.Info.RefName,
+				Branch:    branchHandler.Info.Ref.Short(),
 				Commit:    branchHandler.Info.NewRev,
 				Condition: condition,
 			}
@@ -49,13 +49,11 @@ func (branchHandler *BranchHandler) Handle(ctx context.Context, commit *object.C
 				}
 			case hook.ConditionProtected:
 				// Reject push if the user want to delete a protected branch
-				if branchHandler.Info.RefType == "heads" {
-					matches := regexp.MustCompile(condition.Condition).FindStringSubmatch(data.Branch)
-					if len(matches) > 0 {
-						// User try to delete protected branch
-						if branchHandler.Info.NewRev.Hash == plumbing.ZeroHash {
-							issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "You can't delete protected branch {{ .Branch }}"))
-						}
+				matches := regexp.MustCompile(condition.Condition).FindStringSubmatch(data.Branch)
+				if len(matches) > 0 {
+					// User try to delete protected branch
+					if branchHandler.Info.NewRev.Hash == plumbing.ZeroHash {
+						issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "You can't delete protected branch {{ .Branch }}"))
 					}
 				}
 			default:

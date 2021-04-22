@@ -28,7 +28,7 @@ type JiraHandler struct {
 }
 
 // GetType return handler type
-func (jiraHandler *JiraHandler) GetType() string {
+func (jiraHandler *JiraHandler) GetType() core.HandlerType {
 	return core.HandlerTypeCommits
 }
 

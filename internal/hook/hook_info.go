@@ -31,7 +31,8 @@ const (
 
 var (
 	// ErrNoHookData no hook data error
-	ErrNoHookData = errors.New("Hook data is mandatory")
+	ErrNoHookData      = errors.New("Hook data is mandatory")
+	ErrInvalidHookData = errors.New("invalid hook input")
 	// HookTypes that are supported by Watchdog
 	HookTypes = [...]string{
 		"pre-receive",
@@ -49,26 +50,59 @@ type Hooks struct {
 
 // Info git hook data structure
 type Info struct {
-	Action   string
-	NewRev   *object.Commit // New object name to be stored in the ref. When you delete a ref, this equals 40 zeroes.
-	OldRev   *object.Commit // Old object name stored in the ref. When you create a new ref, this equals 40 zeroes.
-	Ref      string         // The full name of the ref.
-	RefType  string         // One of : heads / remotes / tags
-	RefName  string
-	RepoName string
-	RepoPath string
+	Action     string
+	NewRev     *object.Commit         // New object name to be stored in the ref. When you delete a ref, this equals 40 zeroes.
+	OldRev     *object.Commit         // Old object name stored in the ref. When you create a new ref, this equals 40 zeroes.
+	Ref        plumbing.ReferenceName // The full name of the ref.
+	RefType    string                 // One of : heads / remotes / tags
+	RepoName   string
+	RepoPath   string
+	repository *git.Repository
 }
 
-// GetBranchName return the branche name
-func (info *Info) GetBranchName() string {
-	return info.RefName
+// ParseHookInput parse git hook input data and return Info object
+// format: <old-value> SP <new-value> SP <ref-name> LF to models.Info
+func (info *Info) ParseHookInput(input io.Reader) error {
+	reader := bufio.NewReader(input)
+	line, _, err := reader.ReadLine()
+	if err != nil {
+		return err
+	}
+	chunks := strings.Split(strings.TrimSpace(string(line)), " ")
+	if len(chunks) != 3 {
+		return ErrInvalidHookData
+	}
+	info.Ref = plumbing.ReferenceName(chunks[2])
+	refChunks := strings.Split(chunks[2], "/")
+	info.RefType = refChunks[1]
+	oldRevHash := plumbing.NewHash(chunks[0])
+	if oldRevHash != plumbing.ZeroHash {
+		commit, err := info.repository.CommitObject(oldRevHash)
+		if err != nil {
+			return err
+		}
+		info.OldRev = commit
+	}
+	newRevHash, err := info.repository.ResolveRevision(plumbing.Revision(chunks[1]))
+	if err != nil {
+		return err
+	}
+	if *newRevHash != plumbing.ZeroHash {
+		commit, err := info.repository.CommitObject(*newRevHash)
+		if err != nil {
+			return err
+		}
+		info.NewRev = commit
+	}
+	info.parseHookAction()
+	return nil
 }
 
 // ParseHookAction return hook action
-func ParseHookAction(info Info) string {
+func (info *Info) parseHookAction() {
 	action := "push"
 	context := "branch"
-	if info.RefType == "tags" {
+	if info.Ref.IsTag() {
 		context = "tag"
 	}
 	if info.OldRev == nil && info.NewRev != nil {
@@ -76,60 +110,19 @@ func ParseHookAction(info Info) string {
 	} else if info.OldRev != nil && info.NewRev == nil {
 		action = "delete"
 	}
-	return fmt.Sprintf("%s.%s", context, action)
+	info.Action = fmt.Sprintf("%s.%s", context, action)
 }
 
-// ParseInfo parse hook <old-value> SP <new-value> SP <ref-name> LF to models.Info
-func ParseInfo(repository *git.Repository, input string) (*Info, error) {
-	if input == "" {
-		return nil, ErrNoHookData
-	}
-	info, err := ReadHookInput(repository, strings.NewReader(input))
+func ParseInfo(repository *git.Repository) (*Info, error) {
+	directory, err := os.Getwd()
 	if err != nil {
 		return nil, err
+	}
+	info := &Info{
+		Action:     "branch.push",
+		RepoName:   filepath.Base(directory),
+		RepoPath:   directory,
+		repository: repository,
 	}
 	return info, nil
-}
-
-// ReadHookInput parse git hook input data and return Info object
-func ReadHookInput(repository *git.Repository, input io.Reader) (*Info, error) {
-	reader := bufio.NewReader(input)
-	line, _, err := reader.ReadLine()
-	if err != nil {
-		return nil, err
-	}
-	chunks := strings.Split(strings.TrimSpace(string(line)), " ")
-	if len(chunks) != 3 {
-		return nil, fmt.Errorf("invalid hook input")
-	}
-	refchunks := strings.Split(chunks[2], "/")
-	dir, _ := os.Getwd()
-	info := Info{
-		Ref:      chunks[2],
-		RefType:  refchunks[1],
-		RepoName: filepath.Base(dir),
-		RepoPath: dir,
-	}
-	oldRevHash := plumbing.NewHash(chunks[0])
-	if oldRevHash != plumbing.ZeroHash {
-		commit, err := repository.CommitObject(oldRevHash)
-		if err != nil {
-			return nil, err
-		}
-		info.OldRev = commit
-	}
-	newRevHash, err := repository.ResolveRevision(plumbing.Revision(chunks[1]))
-	if err != nil {
-		return nil, err
-	}
-	if *newRevHash != plumbing.ZeroHash {
-		commit, err := repository.CommitObject(*newRevHash)
-		if err != nil {
-			return nil, err
-		}
-		info.NewRev = commit
-	}
-	info.RefName = strings.Join(refchunks[2:], "/")
-	info.Action = ParseHookAction(info)
-	return &info, nil
 }

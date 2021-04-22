@@ -13,9 +13,11 @@ import (
 	"github.com/groupe-edf/watchdog/internal/logging"
 )
 
+type HandlerType string
+
 const (
 	// HandlerTypeCommits Handler of type 'commits'
-	HandlerTypeCommits = "commits"
+	HandlerTypeCommits HandlerType = "commits"
 	// HandlerTypeRefs Handler of type 'refs'
 	HandlerTypeRefs = "refs"
 )
@@ -23,7 +25,7 @@ const (
 // Handler hook handler interface
 type Handler interface {
 	GetRepository() *git.Repository
-	GetType() string
+	GetType() HandlerType
 	Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error)
 	SetInfo(info *hook.Info)
 	SetLogger(logger logging.Interface)

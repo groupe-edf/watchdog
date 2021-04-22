@@ -19,7 +19,7 @@ type CommitHandler struct {
 }
 
 // GetType return handler type
-func (commitHandler *CommitHandler) GetType() string {
+func (commitHandler *CommitHandler) GetType() core.HandlerType {
 	return core.HandlerTypeCommits
 }
 

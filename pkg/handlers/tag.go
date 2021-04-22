@@ -19,7 +19,7 @@ type TagHandler struct {
 }
 
 // GetType return handler type
-func (tagHandler *TagHandler) GetType() string {
+func (tagHandler *TagHandler) GetType() core.HandlerType {
 	return core.HandlerTypeRefs
 }
 
@@ -27,12 +27,12 @@ func (tagHandler *TagHandler) GetType() string {
 func (tagHandler *TagHandler) Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error) {
 	// Handler must run only on tag changes
 	// TODO: check only heads refs
-	if rule.Type == hook.TypeTag && tagHandler.Info.RefType == "tags" {
+	if rule.Type == hook.TypeTag && tagHandler.Info.Ref.IsTag() {
 		for _, condition := range rule.Conditions {
 			data := issue.Data{
 				Condition: condition,
 				Commit:    tagHandler.Info.NewRev,
-				Tag:       tagHandler.Info.RefName,
+				Tag:       tagHandler.Info.Ref.Short(),
 			}
 			tagHandler.Logger.WithFields(logging.Fields{
 				"tag":            data.Tag,
