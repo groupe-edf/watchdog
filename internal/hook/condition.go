@@ -16,7 +16,7 @@ const (
 	ConditionLength ConditionType = "length"
 	// ConditionPattern pattern condition
 	ConditionPattern ConditionType = "pattern"
-	// ConditionPattern protected condition
+	// ConditionProtected protected condition
 	ConditionProtected ConditionType = "protected"
 	// ConditionSecret secret condition
 	ConditionSecret ConditionType = "secret"

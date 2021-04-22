@@ -13,6 +13,7 @@ import (
 	"github.com/groupe-edf/watchdog/internal/logging"
 )
 
+// HandlerType handler type
 type HandlerType string
 
 const (

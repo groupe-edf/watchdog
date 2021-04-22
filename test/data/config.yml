@@ -3,7 +3,7 @@ docs_link: https://groupe-edf.github.io/watchdog/docs/
 error_message_prefix: "GL-HOOK-ERR: "
 logs_level: info
 logs_format: json
-logs_path: /var/log/watchdog/watchdog.log
+logs_path: watchdog.log
 concurrent: 4
 output_format: text
 security:

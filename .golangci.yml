@@ -4,8 +4,7 @@ run:
 linters:
   enable-all: true
   disable:
-    - wsl
-    - lll
+    - exhaustive
     - funlen
     - gci
     - gochecknoglobals
@@ -19,9 +18,10 @@ linters:
     - goimports
     - gomnd
     - gosec
+    - lll
     - maligned
     - nestif
     - nlreturn
     - noctx
     - scopelint
-    - stylecheck
+    - wsl

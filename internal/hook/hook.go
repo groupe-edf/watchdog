@@ -25,7 +25,7 @@ func (gitHooks *GitHooks) Validate() error {
 		return err
 	}
 	if !gitHooksVersion.LessThan(*watchDogVersion) && !gitHooksVersion.Equal(*watchDogVersion) {
-		return fmt.Errorf("Unsupported .githooks.yml version %s by watchdog v%s", gitHooksVersion.String(), version.Version)
+		return fmt.Errorf("unsupported .githooks.yml version %s by watchdog v%s", gitHooksVersion.String(), version.Version)
 	}
 	return nil
 }

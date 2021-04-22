@@ -25,5 +25,5 @@ func TestParseHookAction(t *testing.T) {
 	info := Info{
 		Ref: plumbing.ReferenceName("refs/heads/master"),
 	}
-	assert.Equal(info.Action, "branch.push")
+	assert.Equal("branch.push", info.GetAction())
 }

@@ -31,7 +31,8 @@ const (
 
 var (
 	// ErrNoHookData no hook data error
-	ErrNoHookData      = errors.New("Hook data is mandatory")
+	ErrNoHookData = errors.New("Hook data is mandatory")
+	// ErrInvalidHookData invalid hook input
 	ErrInvalidHookData = errors.New("invalid hook input")
 	// HookTypes that are supported by Watchdog
 	HookTypes = [...]string{
@@ -94,12 +95,11 @@ func (info *Info) ParseHookInput(input io.Reader) error {
 		}
 		info.NewRev = commit
 	}
-	info.parseHookAction()
 	return nil
 }
 
-// ParseHookAction return hook action
-func (info *Info) parseHookAction() {
+// GetAction return hook action
+func (info *Info) GetAction() string {
 	action := "push"
 	context := "branch"
 	if info.Ref.IsTag() {
@@ -110,9 +110,10 @@ func (info *Info) parseHookAction() {
 	} else if info.OldRev != nil && info.NewRev == nil {
 		action = "delete"
 	}
-	info.Action = fmt.Sprintf("%s.%s", context, action)
+	return fmt.Sprintf("%s.%s", context, action)
 }
 
+// ParseInfo parse info for the current working directory
 func ParseInfo(repository *git.Repository) (*Info, error) {
 	directory, err := os.Getwd()
 	if err != nil {

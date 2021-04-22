@@ -48,7 +48,7 @@ func NewReport(writer io.Writer, options *config.Options, set *util.Set) (err er
 			ErrorMessagePrefix: options.ErrorMessagePrefix,
 		})
 	default:
-		return errors.New("Unsupported output format")
+		return errors.New("unsupported output format")
 	}
 }
 

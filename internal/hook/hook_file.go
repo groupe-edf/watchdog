@@ -15,7 +15,7 @@ var (
 	// ConfigFilename Git hooks configuration filename to be parsed
 	ConfigFilename = ".githooks.yml"
 	// ErrFileNotFound File not found error
-	ErrFileNotFound = errors.New("Configuration file .githooks.(yaml|yml) not found")
+	ErrFileNotFound = errors.New("configuration file .githooks.(yaml|yml) not found")
 )
 
 // LoadGitHooks load and return Configuration struct
@@ -44,7 +44,7 @@ func ExtractConfigFile(ctx context.Context, commit *object.Commit) (gitHooks *Gi
 func LoadGitHooksFromRaw(fileContent string) (*GitHooks, error) {
 	var hooks = &GitHooks{}
 	if err := yaml.Unmarshal([]byte(fileContent), hooks); err != nil {
-		return nil, fmt.Errorf("Unable to decode into struct, %v", err)
+		return nil, fmt.Errorf("unable to decode into struct, %v", err)
 	}
 	if err := hooks.Validate(); err != nil {
 		return nil, err
