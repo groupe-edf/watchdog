@@ -63,15 +63,18 @@ func NewIssue(handlerType hook.HandlerType, conditionType hook.ConditionType, da
 	var message bytes.Buffer
 	t := template.Must(template.New("").Funcs(FunctionsMap).Parse(messageTemplate))
 	_ = t.Execute(&message, data)
-	return Issue{
-		Author:    data.Commit.Author.Name,
-		Commit:    data.Commit.Hash.String(),
+	issue := Issue{
 		Condition: conditionType,
-		Email:     data.Commit.Author.Email,
 		Handler:   handlerType,
 		Message:   message.String(),
 		Severity:  severity,
 	}
+	if data.Commit != nil {
+		issue.Author = data.Commit.Author.Name
+		issue.Commit = data.Commit.Hash.String()
+		issue.Email = data.Commit.Author.Email
+	}
+	return issue
 }
 
 // HideSecret hide leaks in text
