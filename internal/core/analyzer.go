@@ -46,6 +46,7 @@ func (analyzer *Analyzer) Analyze(ctx context.Context, commitIter object.CommitI
 			"correlation_id": util.GetRequestID(ctx),
 			"user_id":        util.GetUserID(ctx),
 		}).Debugf("%v handlers found and %v hooks found", len(analyzer.Handlers), len(analyzer.GitHooks.Hooks))
+		analyzer.handleRef(ctx)
 		var wg sync.WaitGroup
 		for {
 			commit, err := commitIter.Next()
@@ -151,6 +152,9 @@ func (analyzer *Analyzer) analyze(ctx context.Context, gitHooks *hook.GitHooks, 
 				"user_id":        util.GetUserID(ctx),
 			}).Debug("processing hook rule")
 			for _, handler := range analyzer.Handlers {
+				if handler.GetType() != HandlerTypeCommits {
+					continue
+				}
 				select {
 				case <-ctx.Done():
 					return ctx.Err()
@@ -170,6 +174,26 @@ func (analyzer *Analyzer) analyze(ctx context.Context, gitHooks *hook.GitHooks, 
 	elapsed := time.Since(scanTimeStart)
 	fmt.Printf("|_ %v · %v · (%v)\n", commitHash, strings.Split(commit.Message, "\n")[0], elapsed)
 	return ctx.Err()
+}
+
+func (analyzer *Analyzer) handleRef(ctx context.Context) {
+	issues := make([]issue.Issue, 0)
+	for _, hook := range analyzer.GitHooks.Hooks {
+		for _, rule := range hook.Rules {
+			analyzer.Logger.WithFields(logging.Fields{
+				"correlation_id": util.GetRequestID(ctx),
+				"rule":           rule.Type,
+				"user_id":        util.GetUserID(ctx),
+			}).Debug("processing hook rule")
+			for _, handler := range analyzer.Handlers {
+				if handler.GetType() == HandlerTypeRefs {
+					issuesSlice, _ := handler.Handle(ctx, nil, rule)
+					issues = append(issues, issuesSlice...)
+				}
+			}
+		}
+	}
+	analyzer.Issues.Add(issues)
 }
 
 // NewAnalyzer instantiate new analyzer

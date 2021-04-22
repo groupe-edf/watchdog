@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/gookit/color"
@@ -81,6 +82,14 @@ var (
 				}).Fatalf("error fetching repository `%v`", err)
 			}
 			analyzer.SetRepository(repository)
+			// Get project informations
+			info, err = hook.ParseInfo(repository)
+			if err != nil {
+				logger.WithFields(logging.Fields{
+					"correlation_id": util.GetRequestID(ctx),
+					"user_id":        util.GetUserID(ctx),
+				}).Fatal(err)
+			}
 			// Loading .githooks.yml file
 			if options.HookFile != "" {
 				// External .githooks.yml
@@ -96,16 +105,17 @@ var (
 			} else {
 				// Versionned .githooks.yml
 				var commit *object.Commit
-				info, err = hook.ParseInfo(repository, options.HookInput)
-				if err != nil && err != hook.ErrNoHookData {
-					color.Red.Printf("error parsing hook info %v", err)
-					logger.WithFields(logging.Fields{
-						"correlation_id": util.GetRequestID(ctx),
-						"user_id":        util.GetUserID(ctx),
-					}).Fatal(err)
+				if options.HookInput != "" {
+					err := info.ParseHookInput(strings.NewReader(options.HookInput))
+					if err != nil {
+						color.Red.Printf("error parsing hook info %v", err)
+						logger.WithFields(logging.Fields{
+							"correlation_id": util.GetRequestID(ctx),
+							"user_id":        util.GetUserID(ctx),
+						}).Fatal(err)
+					}
 				}
-				if info != nil {
-					analyzer.SetInfo(info)
+				if info.NewRev != nil {
 					commit = info.NewRev
 				} else {
 					reference, err := repository.Head()
@@ -115,6 +125,7 @@ var (
 							"user_id":        util.GetUserID(ctx),
 						}).Fatal(err)
 					}
+					info.Ref = reference.Name()
 					commit, err = repository.CommitObject(reference.Hash())
 					if err != nil {
 						color.Red.Println(err.Error())
@@ -135,6 +146,7 @@ var (
 					}).Fatalf("error when extracting config file %v", err)
 				}
 			}
+			analyzer.SetInfo(info)
 			// No .githooks.yml file was referenced, create default one if we have global default handlers in configuration
 			if hooks == nil && len(options.Handlers) > 0 {
 				hooks = &hook.GitHooks{
