@@ -70,10 +70,6 @@ var (
 			analyzer.SetLogger(logger)
 			// Loading git repository
 			repository, err := util.LoadRepository(ctx, options)
-			logger.WithFields(logging.Fields{
-				"correlation_id": util.GetRequestID(ctx),
-				"user_id":        util.GetUserID(ctx),
-			}).Debugf("repository `%v` successfully fetched", options.URI)
 			if err != nil {
 				color.Red.Printf("error fetching repository `%v`", err)
 				logger.WithFields(logging.Fields{
@@ -81,6 +77,10 @@ var (
 					"user_id":        util.GetUserID(ctx),
 				}).Fatalf("error fetching repository `%v`", err)
 			}
+			logger.WithFields(logging.Fields{
+				"correlation_id": util.GetRequestID(ctx),
+				"user_id":        util.GetUserID(ctx),
+			}).Debugf("repository `%v` successfully fetched", options.URI)
 			analyzer.SetRepository(repository)
 			// Get project informations
 			info, err = hook.ParseInfo(repository)
@@ -111,6 +111,7 @@ var (
 						color.Red.Printf("error parsing hook info %v", err)
 						logger.WithFields(logging.Fields{
 							"correlation_id": util.GetRequestID(ctx),
+							"hook_input":     options.HookInput,
 							"user_id":        util.GetUserID(ctx),
 						}).Fatal(err)
 					}

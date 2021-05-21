@@ -89,7 +89,7 @@ func LoadRepository(ctx context.Context, options *config.Options) (*git.Reposito
 
 // ParseGitPushOptions parse git push options
 func ParseGitPushOptions() {
-	// TODO: implement this
+	// TODO: implement git push options
 }
 
 // RevListOptions defines the rules of rev-list func
