@@ -61,7 +61,9 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 					matches := regexp.MustCompile("(.+)."+condition.Condition).FindAllString(file.Name, -1)
 					if len(matches) != 0 {
 						data.Object = file.Name
-						issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "{{ .Object }} : *.{{ .Condition.Condition }} files are not allowed"))
+						if !fileHandler.canSkip(ctx, file.Name, condition) {
+							issues = append(issues, issue.NewIssue(rule.Type, condition.Type, data, issue.SeverityHigh, "{{ .Object }} : *.{{ .Condition.Condition }} files are not allowed"))
+						}
 					}
 				}
 			case hook.ConditionSize:
@@ -117,4 +119,19 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 // CheckExtension check file extension
 func (fileHandler *FileHandler) CheckExtension(fileName string, fileExtension string) (result bool, err error) {
 	return true, nil
+}
+
+func (fileHandler *FileHandler) canSkip(ctx context.Context, fileName string, condition hook.Condition) bool {
+	if condition.Skip != "" {
+		matches := regexp.MustCompile(condition.Skip).FindStringSubmatch(fileName)
+		if len(matches) > 0 {
+			fileHandler.Logger.WithFields(logging.Fields{
+				"condition":      condition.Type,
+				"correlation_id": util.GetRequestID(ctx),
+				"user_id":        util.GetUserID(ctx),
+			}).Infof("rule ignored due to skip condition `%v`", condition.Skip)
+			return true
+		}
+	}
+	return false
 }
