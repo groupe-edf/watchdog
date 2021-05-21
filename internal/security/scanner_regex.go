@@ -90,7 +90,7 @@ func (scanner *RegexScanner) SatisfyRules(commit *object.Commit, filePath string
 			"commit":    commit.Hash.String(),
 			"file":      filePath,
 			"rule":      "security",
-		}).Debugf("Searching for `%v`", rule.Description)
+		}).Debugf("searching for `%v`", rule.Description)
 		if rule.File != nil && rule.File.FindString(filePath) == "" {
 			continue
 		}
@@ -101,14 +101,14 @@ func (scanner *RegexScanner) SatisfyRules(commit *object.Commit, filePath string
 				offender := content[match[0]:match[1]]
 				groups := rule.Regexp.FindStringSubmatch(offender)
 				names := rule.Regexp.SubexpNames()
-				for i, group := range groups {
-					if i != 0 && names[i] == "secret" {
+				for index, group := range groups {
+					if index != 0 && names[index] == "secret" {
 						offender = group
 						break
 					}
 				}
 				if len(rule.Entropies) > 0 && !scanner.validateEntropy(groups, rule) {
-					scanner.Logger.Debugf("Entropy not satisfied on secret %s", offender)
+					scanner.Logger.Debugf("entropy not satisfied on secret %s", offender)
 					continue
 				}
 				if scanner.checkFalsePositive(filePath, line, offender) != IsPositive {
@@ -116,7 +116,7 @@ func (scanner *RegexScanner) SatisfyRules(commit *object.Commit, filePath string
 						"condition": "secret",
 						"commit":    commit.Hash.String(),
 						"rule":      "security",
-					}).Warningf("False positive secret %s", offender)
+					}).Warningf("false positive secret %s", offender)
 					continue
 				}
 				file, _ := commit.File(filePath)
@@ -188,12 +188,14 @@ func NewRegexScanner(logger logging.Interface, options *config.Options) *RegexSc
 	if len(options.Security.Rules) > 0 {
 		var defaultRules []Rule
 		for _, rule := range options.Security.Rules {
-			defaultRules = append(defaultRules, Rule{
-				Description: rule.Description,
-				File:        regexp.MustCompile(rule.File),
-				Regexp:      regexp.MustCompile(rule.Regexp),
-				Severity:    Severity(rule.Severity),
-			})
+			logger.WithFields(logging.Fields{
+				"condition": "secret",
+				"rule":      "security",
+			}).Infof("adding secret rule %s", rule.Description)
+			defaultRule := NewRule(rule.Description, rule.File, rule.Regexp, rule.Severity, rule.Tags)
+			if defaultRule != nil {
+				defaultRules = append(defaultRules, *defaultRule)
+			}
 		}
 		if options.Security.MergeRules {
 			rules = append(rules, defaultRules...)

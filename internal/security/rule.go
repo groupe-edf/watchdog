@@ -139,3 +139,16 @@ type Rule struct {
 	Severity    Severity
 	Tags        []string
 }
+
+func NewRule(description string, file string, pattern string, severity string, tags []string) *Rule {
+	rule := &Rule{
+		Description: description,
+		Regexp:      regexp.MustCompile(pattern),
+		Severity:    Severity(severity),
+		Tags:        tags,
+	}
+	if file != "" {
+		rule.File = regexp.MustCompile(file)
+	}
+	return rule
+}
