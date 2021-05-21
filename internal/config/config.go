@@ -16,7 +16,7 @@ type Options struct {
 	Contact            string               `mapstructure:"contact"`
 	Handlers           map[string]hook.Rule `mapstructure:"handlers"`
 	DocsLink           string               `mapstructure:"docs-link"`
-	ErrorMessagePrefix string               `mapstructure:"error-message-prefix"`
+	ErrorMessagePrefix string               `mapstructure:"error_message_prefix"`
 	HookFile           string               `mapstructure:"hook-file"`
 	HookInput          string               `mapstructure:"hook-input"`
 	HookType           string               `mapstructure:"hook-type"`
@@ -30,7 +30,7 @@ type Options struct {
 	Output           string `mapstructure:"output"`
 	OutputFormat     string `mapstructure:"output-format"`
 	PluginsDirectory string `mapstructure:"plugins-directory"`
-	Security         `mapstructure:"security"`
+	*Security        `mapstructure:"security"`
 	Verbose          bool   `mapstructure:"verbose"`
 	URI              string `mapstructure:"uri"`
 }
@@ -56,6 +56,16 @@ func (options *Options) Validate() error {
 	}
 	if options.Concurrent == 0 {
 		options.Concurrent = runtime.NumCPU()
+	}
+	if options.Security != nil && len(options.Security.Rules) > 0 {
+		for index, rule := range options.Security.Rules {
+			if rule.Description == "" || rule.Regexp == "" {
+				options.Security.Rules = append(options.Security.Rules[:index], options.Security.Rules[index+1:]...)
+			}
+			if rule.Severity == "" {
+				rule.Severity = "INFO"
+			}
+		}
 	}
 	return nil
 }
