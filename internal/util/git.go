@@ -19,6 +19,7 @@ import (
 	"github.com/go-git/go-git/v5/storage"
 	"github.com/go-git/go-git/v5/storage/filesystem"
 	"github.com/go-git/go-git/v5/storage/memory"
+	"github.com/groupe-edf/watchdog/internal/backend"
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/hook"
 )
@@ -92,19 +93,11 @@ func ParseGitPushOptions() {
 	// TODO: implement git push options
 }
 
-// RevListOptions defines the rules of rev-list func
-type RevListOptions struct {
-	// OldRev is the first reference hash to link
-	OldRev plumbing.Hash
-	// NewRev is the second reference hash to link
-	NewRev plumbing.Hash
-}
-
 // RevList is native implemetation of git rev-list command
 func RevList(repository *git.Repository, info *hook.Info) (object.CommitIter, error) {
 	fmt.Printf("Running analysis on %s:", Colorize(Green, info.Ref.String()))
 	var err error
-	opts := RevListOptions{}
+	opts := backend.RevListOptions{}
 	if info.OldRev != nil {
 		opts.OldRev = info.OldRev.Hash
 	}

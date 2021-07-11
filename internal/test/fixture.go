@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/groupe-edf/watchdog/internal/issue"
+	"github.com/groupe-edf/watchdog/internal/models"
 )
 
 // CreateDummyFile create a dummy file
@@ -49,9 +49,9 @@ func LoadInput(t *testing.T, inputFile string) []string {
 }
 
 // ParseIssues parse integration test output
-func ParseIssues(output string, format string) []issue.Issue {
+func ParseIssues(output string, format string) []models.Issue {
 	fmt.Print(output)
-	issues := make([]issue.Issue, 0)
+	issues := make([]models.Issue, 0)
 	slices := regexp.MustCompile(`(?s)([\-]{5}[A-Z ]+[\-]{5})(.+)([\-]{5}[A-Z ]+[\-]{5})`).FindStringSubmatch(output)
 	if len(slices) > 0 {
 		switch format {
@@ -60,10 +60,12 @@ func ParseIssues(output string, format string) []issue.Issue {
 			for _, line := range lines {
 				matches := regexp.MustCompile(`(?m)([a-z]+)=(?:(?:"(.*)")|(?:(?:([^\s]+)[\s])))`).FindAllStringSubmatch(line, -1)
 				if len(matches) == 5 {
-					issues = append(issues, issue.Issue{
-						Commit:   matches[3][3],
+					issues = append(issues, models.Issue{
+						Commit: models.Commit{
+							Hash: matches[3][3],
+						},
 						Message:  matches[4][2],
-						Severity: issue.ParseScore(matches[0][3]),
+						Severity: models.ParseScore(matches[0][3]),
 					})
 				}
 			}

@@ -1,4 +1,4 @@
-// +build integration commit
+//go:build integration || commit
 
 package main
 
@@ -13,6 +13,7 @@ import (
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/issue"
+	"github.com/groupe-edf/watchdog/internal/models"
 	helpers "github.com/groupe-edf/watchdog/internal/test"
 	"github.com/stretchr/testify/assert"
 )
@@ -33,23 +34,23 @@ See merge request groupe-edf/watchdog#16`
 		name             string
 		commitSubject    string
 		pattern          string
-		severity         issue.Score
+		severity         models.Score
 		rejectionMessage string
 		skip             string
 	}{
-		{"Standard", "Initial commit", defaultPattern, issue.SeverityLow, "", ""},
-		{"CharacterEncoding", "Ajouter un pipeline d'intégration", defaultPattern, issue.SeverityLow, "", ""},
-		{"ConventionalCommit", "feat(scope): add new feature", conventionalCommitPattern, issue.SeverityLow, "", ""},
-		{"MultilineCommit", multilineMessage, defaultPattern, issue.SeverityLow, "", ""},
-		{"UnconventionalCommit", "This is SPARTA", conventionalCommitPattern, issue.SeverityHigh, "Message must be formatted like type(scope): subject", ""},
-		{"SkipPattern", "Merge branch 'feature/add-gitignore-file' into 'master'", conventionalCommitPattern, issue.SeverityLow, "", "Merge branch"},
+		{"Standard", "Initial commit", defaultPattern, models.SeverityLow, "", ""},
+		{"CharacterEncoding", "Ajouter un pipeline d'intégration", defaultPattern, models.SeverityLow, "", ""},
+		{"ConventionalCommit", "feat(scope): add new feature", conventionalCommitPattern, models.SeverityLow, "", ""},
+		{"MultilineCommit", multilineMessage, defaultPattern, models.SeverityLow, "", ""},
+		{"UnconventionalCommit", "This is SPARTA", conventionalCommitPattern, models.SeverityHigh, "Message must be formatted like type(scope): subject", ""},
+		{"SkipPattern", "Merge branch 'feature/add-gitignore-file' into 'master'", conventionalCommitPattern, models.SeverityLow, "", "Merge branch"},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			gitHooksFile := fmt.Sprintf(goldenFile, test.pattern, test.rejectionMessage, test.skip)
 			buffer, err := Suite.PushFile("master", ".githooks.yml", []byte(gitHooksFile), test.commitSubject, nil)
 			issues := helpers.ParseIssues(buffer.String(), OutputFormat)
-			if test.severity != issue.SeverityLow {
+			if test.severity != models.SeverityLow {
 				assert.Error(err)
 				assert.Equal(1, len(issues))
 				assert.Equal(test.severity, issues[0].Severity)
@@ -73,24 +74,24 @@ func TestCommitLengthRule(t *testing.T) {
 		commitSubject    string
 		operator         string
 		length           string
-		severity         issue.Score
+		severity         models.Score
 		rejectionMessage string
 	}{
-		{"EqualError", "Initial commit", "eq", "32", issue.SeverityHigh, "Commit message not equal to {{ .Operand }}"},
-		{"EqualSuccess", "Initial commit", "eq", "14", issue.SeverityLow, ""},
-		{"GreaterOrEqual", "Initial commit", "ge", "32", issue.SeverityHigh, "Commit message longer or equal than {{ .Operand }}"},
-		{"GreaterThan", "Initial commit", "gt", "32", issue.SeverityHigh, "Commit message longer than {{ .Operand }}"},
-		{"LowerOrEqual", "Initial commit", "le", "8", issue.SeverityHigh, "Commit message shorter or equal than {{ .Operand }}"},
-		{"LowerThan", "Initial commit", "lt", "8", issue.SeverityHigh, "Commit message shorter than {{ .Operand }}"},
-		{"NotEqualError", "Initial commit", "ne", "14", issue.SeverityHigh, "Commit message equal to {{ .Operand }}"},
-		{"NotEqualSuccess", "Initial commit", "ne", "32", issue.SeverityLow, ""},
+		{"EqualError", "Initial commit", "eq", "32", models.SeverityHigh, "Commit message not equal to {{ .Operand }}"},
+		{"EqualSuccess", "Initial commit", "eq", "14", models.SeverityLow, ""},
+		{"GreaterOrEqual", "Initial commit", "ge", "32", models.SeverityHigh, "Commit message longer or equal than {{ .Operand }}"},
+		{"GreaterThan", "Initial commit", "gt", "32", models.SeverityHigh, "Commit message longer than {{ .Operand }}"},
+		{"LowerOrEqual", "Initial commit", "le", "8", models.SeverityHigh, "Commit message shorter or equal than {{ .Operand }}"},
+		{"LowerThan", "Initial commit", "lt", "8", models.SeverityHigh, "Commit message shorter than {{ .Operand }}"},
+		{"NotEqualError", "Initial commit", "ne", "14", models.SeverityHigh, "Commit message equal to {{ .Operand }}"},
+		{"NotEqualSuccess", "Initial commit", "ne", "32", models.SeverityLow, ""},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			gitHooksFile := fmt.Sprintf(goldenFile, test.operator+" "+test.length, test.rejectionMessage)
 			buffer, err := Suite.PushFile("master", ".githooks.yml", []byte(gitHooksFile), test.commitSubject, nil)
 			issues := helpers.ParseIssues(buffer.String(), OutputFormat)
-			if test.severity != issue.SeverityLow {
+			if test.severity != models.SeverityLow {
 				assert.Error(err)
 				assert.Equal(ErrorPreReceiveHookDeclined, err)
 				assert.Equal(1, len(issues))
@@ -124,7 +125,7 @@ func TestCommitEmailRule(t *testing.T) {
 	assert.Error(err)
 	assert.Equal(ErrorPreReceiveHookDeclined, err)
 	assert.Equal(1, len(issues))
-	assert.Equal(issue.SeverityHigh, issues[0].Severity)
+	assert.Equal(models.SeverityHigh, issues[0].Severity)
 	assert.Equal("Author email 'habib.maalem@gmail.com' is not valid email address", issues[0].Message)
 	Suite.ResetLastCommit()
 }

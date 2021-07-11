@@ -2,8 +2,7 @@ package core
 
 import (
 	"context"
-	"fmt"
-	"io"
+	"errors"
 	"reflect"
 	"strings"
 	"sync"
@@ -11,64 +10,64 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/gookit/color"
 	"github.com/groupe-edf/watchdog/internal/config"
+	"github.com/groupe-edf/watchdog/internal/core/handlers"
+	"github.com/groupe-edf/watchdog/internal/core/loaders"
 	"github.com/groupe-edf/watchdog/internal/hook"
-	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/logging"
+	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/security"
 	"github.com/groupe-edf/watchdog/internal/util"
 )
 
 // Analyzer git commits analyzer
 type Analyzer struct {
-	GitHooks   *hook.GitHooks
-	Handlers   []Handler
+	Handlers   []handlers.Handler
 	Info       *hook.Info
 	Issues     *util.Set
+	Loader     loaders.Loader
 	Logger     logging.Interface
 	Options    *config.Options
+	Policies   []models.Policy
 	Repository *git.Repository
+	Whitelist  models.Whitelist
+	context    context.Context
 }
 
 // Analyze execute analysis
-func (analyzer *Analyzer) Analyze(ctx context.Context, commitIter object.CommitIter) error {
-	analyzer.Logger.WithFields(logging.Fields{
-		"correlation_id": util.GetRequestID(ctx),
-		"repository":     analyzer.Options.URI,
-		"user_id":        util.GetUserID(ctx),
-	}).Info("starting analysis")
-	ctx, cancel := context.WithCancel(ctx)
+func (analyzer *Analyzer) Analyze(commitIter object.CommitIter, analyzeChan chan models.AnalysisResult) error {
+	defer close(analyzeChan)
+	if len(analyzer.Handlers) == 0 {
+		return errors.New("at least one handler must be defined")
+	}
+	if analyzer.context == nil {
+		analyzer.context = context.Background()
+	}
+	ctx, cancel := context.WithCancel(analyzer.context)
 	defer cancel()
-	defer commitIter.Close()
-	maxWorkers := make(chan struct{}, analyzer.Options.Concurrent)
-	if len(analyzer.GitHooks.Hooks) > 0 {
-		analyzer.Logger.WithFields(logging.Fields{
-			"correlation_id": util.GetRequestID(ctx),
-			"user_id":        util.GetUserID(ctx),
-		}).Debugf("%v handlers found and %v hooks found", len(analyzer.Handlers), len(analyzer.GitHooks.Hooks))
-		analyzer.handleRef(ctx)
+	if len(analyzer.Policies) > 0 {
 		var wg sync.WaitGroup
-		for {
-			commit, err := commitIter.Next()
-			if err == object.ErrUnsupportedObject {
-				continue
-			}
-			if err == io.EOF {
-				break
-			}
+		// struct{} is the smallest data type available in Go
+		maxWorkers := make(chan struct{}, 4)
+		var currentCommit chan *object.Commit = make(chan *object.Commit)
+		totalCommit := 0
+		go func() error {
+			defer close(currentCommit)
+			err := commitIter.ForEach(func(commit *object.Commit) error {
+				totalCommit++
+				currentCommit <- commit
+				return nil
+			})
+			commitIter.Close()
+			return err
+		}()
+		for commit := range currentCommit {
 			wg.Add(1)
 			maxWorkers <- struct{}{}
 			go func(commit *object.Commit) {
 				defer wg.Done()
 				defer func() { <-maxWorkers }()
-				err := analyzer.analyze(ctx, analyzer.GitHooks, commit)
-				if err != nil {
-					analyzer.Logger.WithFields(logging.Fields{
-						"commit":         commit.Hash.String(),
-						"correlation_id": util.GetRequestID(ctx),
-						"user_id":        util.GetUserID(ctx),
-					}).Error(err)
-				}
+				_ = analyzer.analyze(ctx, commit, analyzeChan)
 			}(commit)
 		}
 		wg.Wait()
@@ -77,15 +76,20 @@ func (analyzer *Analyzer) Analyze(ctx context.Context, commitIter object.CommitI
 		analyzer.Logger.WithFields(logging.Fields{
 			"correlation_id": util.GetRequestID(ctx),
 			"user_id":        util.GetUserID(ctx),
-		}).Info("there is no hooks in .githooks.yml file")
+		}).Info("no policies were found")
 	}
 	return nil
+}
+
+// Context returns underlying context
+func (analyzer *Analyzer) Context() context.Context {
+	return analyzer.context
 }
 
 // HasErrors check id set has issues with high severity
 func (analyzer *Analyzer) HasErrors() bool {
 	for _, item := range analyzer.Issues.List() {
-		if item.Severity == issue.SeverityHigh {
+		if item.Severity == models.SeverityHigh {
 			return true
 		}
 	}
@@ -93,10 +97,10 @@ func (analyzer *Analyzer) HasErrors() bool {
 }
 
 // RegisterHandler register git hook handler
-func (analyzer *Analyzer) RegisterHandler(ctx context.Context, handler Handler) {
+func (analyzer *Analyzer) RegisterHandler(handler handlers.Handler) {
 	analyzer.Logger.WithFields(logging.Fields{
-		"correlation_id": util.GetRequestID(ctx),
-		"user_id":        util.GetUserID(ctx),
+		"correlation_id": util.GetRequestID(analyzer.context),
+		"user_id":        util.GetUserID(analyzer.context),
 	}).Debugf("registring handler `%v`", reflect.TypeOf(handler))
 	handler.SetLogger(analyzer.Logger)
 	if analyzer.Info != nil {
@@ -105,24 +109,6 @@ func (analyzer *Analyzer) RegisterHandler(ctx context.Context, handler Handler) 
 	handler.SetOptions(analyzer.Options)
 	handler.SetRepository(analyzer.Repository)
 	analyzer.Handlers = append(analyzer.Handlers, handler)
-}
-
-// SetHooks set hooks
-func (analyzer *Analyzer) SetHooks(hooks *hook.GitHooks) {
-	if len(analyzer.Options.Handlers) > 0 {
-		for handler, rule := range analyzer.Options.Handlers {
-			if rule.Disabled {
-				continue
-			}
-			hooks.Hooks[0].Rules = append(hooks.Hooks[0].Rules, &hook.Rule{
-				Conditions:  rule.Conditions,
-				Description: rule.Description,
-				Disabled:    rule.Disabled,
-				Type:        hook.HandlerType(handler),
-			})
-		}
-	}
-	analyzer.GitHooks = hooks
 }
 
 // SetInfo set hooks
@@ -135,61 +121,68 @@ func (analyzer *Analyzer) SetLogger(logger logging.Interface) {
 	analyzer.Logger = logger
 }
 
+// SetPolicies set policies
+func (analyzer *Analyzer) SetPolicies(policies []models.Policy) {
+	analyzer.Policies = policies
+}
+
 // SetRepository set repository
 func (analyzer *Analyzer) SetRepository(repository *git.Repository) {
 	analyzer.Repository = repository
 }
 
-func (analyzer *Analyzer) analyze(ctx context.Context, gitHooks *hook.GitHooks, commit *object.Commit) error {
+func (analyzer *Analyzer) analyze(ctx context.Context, commit *object.Commit, analyzeChan chan models.AnalysisResult) error {
 	scanTimeStart := time.Now()
-	issues := make([]issue.Issue, 0)
-	for _, hook := range gitHooks.Hooks {
-		for _, rule := range hook.Rules {
-			analyzer.Logger.WithFields(logging.Fields{
-				"commit":         commit.Hash.String(),
-				"correlation_id": util.GetRequestID(ctx),
-				"rule":           rule.Type,
-				"user_id":        util.GetUserID(ctx),
-			}).Debug("processing hook rule")
-			for _, handler := range analyzer.Handlers {
-				if handler.GetType() != HandlerTypeCommits {
-					continue
-				}
-				select {
-				case <-ctx.Done():
-					return ctx.Err()
-				default:
-					// Prevent from blocking.
-				}
-				issuesSlice, _ := handler.Handle(ctx, commit, rule)
-				issues = append(issues, issuesSlice...)
+	issues := make([]models.Issue, 0)
+	for _, policy := range analyzer.Policies {
+		analyzer.Logger.WithFields(logging.Fields{
+			"commit":         commit.Hash.String(),
+			"correlation_id": util.GetRequestID(ctx),
+			"rule":           policy.Type,
+			"user_id":        util.GetUserID(ctx),
+		}).Debug("processing hook rule")
+		for _, handler := range analyzer.Handlers {
+			if handler.GetType() != handlers.HandlerTypeCommits {
+				continue
 			}
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			default: // Prevent from blocking.
+			}
+			issuesSlice, err := handler.Handle(ctx, commit, policy, analyzer.Whitelist)
+			if err != nil {
+				return err
+			}
+			issues = append(issues, issuesSlice...)
 		}
 	}
-	analyzer.Issues.Add(issues)
-	commitHash := color.Green.Sprint(commit.Hash.String()[:8])
-	if len(issues) > 0 {
-		commitHash = color.Red.Sprint(commit.Hash.String()[:8])
-	}
 	elapsed := time.Since(scanTimeStart)
-	fmt.Printf("|_ %v · %v · (%v)\n", commitHash, strings.Split(commit.Message, "\n")[0], elapsed)
+	analyzeChan <- models.AnalysisResult{
+		Commit: models.Commit{
+			Author:  commit.Author.Name,
+			Email:   commit.Author.Email,
+			Hash:    commit.Hash.String(),
+			Message: strings.TrimSuffix(commit.Message, "\n"),
+		},
+		ElapsedTime: elapsed,
+		Issues:      issues,
+	}
 	return ctx.Err()
 }
 
 func (analyzer *Analyzer) handleRef(ctx context.Context) {
-	issues := make([]issue.Issue, 0)
-	for _, hook := range analyzer.GitHooks.Hooks {
-		for _, rule := range hook.Rules {
-			analyzer.Logger.WithFields(logging.Fields{
-				"correlation_id": util.GetRequestID(ctx),
-				"rule":           rule.Type,
-				"user_id":        util.GetUserID(ctx),
-			}).Debug("processing hook rule")
-			for _, handler := range analyzer.Handlers {
-				if handler.GetType() == HandlerTypeRefs {
-					issuesSlice, _ := handler.Handle(ctx, nil, rule)
-					issues = append(issues, issuesSlice...)
-				}
+	issues := make([]models.Issue, 0)
+	for _, policy := range analyzer.Policies {
+		analyzer.Logger.WithFields(logging.Fields{
+			"correlation_id": util.GetRequestID(ctx),
+			"rule":           policy.Type,
+			"user_id":        util.GetUserID(ctx),
+		}).Debug("processing hook rule")
+		for _, handler := range analyzer.Handlers {
+			if handler.GetType() == handlers.HandlerTypeRefs {
+				issuesSlice, _ := handler.Handle(ctx, nil, policy, analyzer.Whitelist)
+				issues = append(issues, issuesSlice...)
 			}
 		}
 	}
@@ -197,11 +190,40 @@ func (analyzer *Analyzer) handleRef(ctx context.Context) {
 }
 
 // NewAnalyzer instantiate new analyzer
-func NewAnalyzer(hooks *hook.GitHooks, options *config.Options) (*Analyzer, error) {
-	analyzer := &Analyzer{
-		GitHooks: hooks,
-		Options:  options,
-		Issues:   util.NewSet(),
+func NewAnalyzer(
+	ctx context.Context,
+	loader loaders.Loader,
+	logger logging.Interface,
+	options *config.Options,
+	whitelist models.Whitelist,
+) (*Analyzer, error) {
+	if ctx == nil {
+		ctx = context.Background()
 	}
+	policies, err := loader.LoadPolicies(ctx)
+	if err != nil {
+		return nil, err
+	}
+	analyzer := &Analyzer{
+		Options:   options,
+		Issues:    util.NewSet(),
+		Logger:    logger,
+		Policies:  policies,
+		Whitelist: whitelist,
+		context:   ctx,
+	}
+	// Register handlers
+	analyzer.RegisterHandler(&handlers.BranchHandler{})
+	analyzer.RegisterHandler(&handlers.CommitHandler{})
+	analyzer.RegisterHandler(&handlers.FileHandler{})
+	analyzer.RegisterHandler(&handlers.JiraHandler{})
+	rules, err := loader.LoadRules(ctx)
+	if err != nil {
+		return nil, err
+	}
+	analyzer.RegisterHandler(&handlers.SecurityHandler{
+		Scanner: security.NewRegexScanner(logger, rules, whitelist),
+	})
+	analyzer.RegisterHandler(&handlers.TagHandler{})
 	return analyzer, nil
 }

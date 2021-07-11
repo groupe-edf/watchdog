@@ -11,6 +11,7 @@ import (
 	"text/template"
 
 	"github.com/groupe-edf/watchdog/internal/issue"
+	"github.com/groupe-edf/watchdog/internal/models"
 	helpers "github.com/groupe-edf/watchdog/internal/test"
 	"github.com/stretchr/testify/assert"
 )
@@ -56,7 +57,7 @@ func TestSecretRules(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.Provider, func(t *testing.T) {
 			var files []helpers.File
-			var issues = make([]issue.Issue, 0)
+			var issues = make([]models.Issue, 0)
 			files = append(files, helpers.File{
 				FileName:    ".githooks.yml",
 				FileContent: []byte(gitHooksFile),
@@ -71,7 +72,7 @@ func TestSecretRules(t *testing.T) {
 				assert.Equal(ErrorPreReceiveHookDeclined, err)
 				assert.NotEmpty(issues[0].Leaks)
 				assert.Equal(test.Issue.Rule, issues[0].Leaks[0].Rule)
-				assert.Equal(issue.SeverityHigh, issues[0].Severity)
+				assert.Equal(models.SeverityHigh, issues[0].Severity)
 				var message bytes.Buffer
 				t := template.Must(template.New("").Funcs(issue.FunctionsMap).Parse(rejectionMessage))
 				_ = t.Execute(&message, issue.Data{
@@ -125,7 +126,7 @@ func TestSecretRulesWithIgnore(t *testing.T) {
 	issues := helpers.ParseIssues(buffer.String(), OutputFormat)
 	assert.NoError(err)
 	assert.Equal(3, len(issues))
-	assert.Equal(issue.SeverityLow, issues[0].Severity)
+	assert.Equal(models.SeverityLow, issues[0].Severity)
 }
 
 func TestSkipWithGitPushOption(t *testing.T) {

@@ -1,11 +1,6 @@
 package security
 
-import (
-	"regexp"
-)
-
-// Severity rule severity
-type Severity string
+import "github.com/groupe-edf/watchdog/internal/models"
 
 const (
 	// BaiscAuthenticationPattern common pattern for basic authentication URl
@@ -23,132 +18,81 @@ const (
 	PasswordPrefixPattern string = "(?:(?:pass(?:w(?:or)?d)?)|(?:p(?:s)?w(?:r)?d)|secret)"
 	// SecretKeyPrefixPattern token used to recognize secrets
 	SecretKeyPrefixPattern string = "(?:(?:a(?:ws|ccess|p(?:i|p(?:lication)?)))|private|se(?:nsitive|cret))"
-	// SeverityBlocker blocker severity
-	SeverityBlocker Severity = "BLOCKER"
-	// SeverityCritical critical severity
-	SeverityCritical Severity = "CRITICAL"
-	// SeverityInfo info severity
-	SeverityInfo Severity = "INFO"
-	// SeverityMajor major severity
-	SeverityMajor Severity = "MAJOR"
-	// SeverityMinor minor severity
-	SeverityMinor Severity = "MINOR"
 )
 
 var (
-	rules = []Rule{
+	rules = []models.Rule{
 		{
 			Description: "ASYMMETRIC_PRIVATE_KEY",
-			Regexp:      regexp.MustCompile(string(`(\-){5}BEGIN[[:blank:]]*?(RSA|OPENSSH|DSA|EC|PGP)?[[:blank:]]*?PRIVATE[[:blank:]]KEY[[:blank:]]*?(BLOCK)?(\-){5}.*`)),
+			Pattern:     string(`(\-){5}BEGIN[[:blank:]]*?(RSA|OPENSSH|DSA|EC|PGP)?[[:blank:]]*?PRIVATE[[:blank:]]KEY[[:blank:]]*?(BLOCK)?(\-){5}.*`),
 			Tags:        []string{"key"},
-			Severity:    SeverityMajor,
+			Severity:    models.SeverityMajor,
 		},
 		{
 			Description: "AWS_ACCESS_KEY",
-			Regexp:      regexp.MustCompile("(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}"),
+			Pattern:     "(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}",
 			Tags:        []string{"aws"},
-			Severity:    SeverityMajor,
+			Severity:    models.SeverityMajor,
 		},
 		{
 			Description: "AWS_SECRET_KEY",
-			Regexp:      regexp.MustCompile(string(`(?i)aws(.{0,20})?(?-i)['\"][0-9a-zA-Z\/+]{40}['\"]`)),
+			Pattern:     string(`(?i)aws(.{0,20})?(?-i)['\"][0-9a-zA-Z\/+]{40}['\"]`),
 			Tags:        []string{"aws"},
-			Severity:    SeverityBlocker,
+			Severity:    models.SeverityBlocker,
 		},
 		{
 			Description: "BASE_64",
-			Regexp:      regexp.MustCompile("(?i)['\"]?((?:[_]?auth(?:Token|orization:[[:blank:]]Basic)?)['\"]?[[:blank:]=:]{1})[[:blank:]]*['\"]?" + Base64Pattern + "['\"]?"),
+			Pattern:     "(?i)['\"]?((?:[_]?auth(?:Token|orization:[[:blank:]]Basic)?)['\"]?[[:blank:]=:]{1})[[:blank:]]*['\"]?" + Base64Pattern + "['\"]?",
 			Tags:        []string{"authentication", "base64"},
-			Severity:    SeverityMinor,
+			Severity:    models.SeverityMinor,
 		},
 		{
 			Description: "CONFIDENTIAL",
-			Regexp:      regexp.MustCompile("(?i)CONFIDENTIAL"),
-			Severity:    SeverityInfo,
+			Pattern:     "(?i)CONFIDENTIAL",
+			Severity:    models.SeverityInfo,
 		},
 		{
 			Description: "CONNECTION_STRING",
-			Regexp:      regexp.MustCompile("(?i)" + ConnectionString),
-			Severity:    SeverityMajor,
+			Pattern:     "(?i)" + ConnectionString,
+			Severity:    models.SeverityMajor,
 		},
 		{
 			Description: "ENTROPY",
-			File:        regexp.MustCompile("(?i).*.sql$"),
-			Entropies: []Entropy{
+			File:        "(?i).*.sql$",
+			Entropies: []models.Entropy{
 				{
 					MaxThreshold: 8.0,
 					MinThreshold: 4.0,
 				},
 			},
-			Regexp:   regexp.MustCompile(string(`[0-9a-zA-Z-_!{}$.\/=]{8,120}`)),
+			Pattern:  string(`[0-9a-zA-Z-_!{}$.\/=]{8,120}`),
 			Tags:     []string{"entropy"},
-			Severity: SeverityInfo,
+			Severity: models.SeverityInfo,
 		},
 		{
 			Description: "HTPASSWD",
-			File:        regexp.MustCompile("(?i).htpasswd$"),
-			Regexp:      regexp.MustCompile("(?i)[0-9a-zA-Z-_!{}$.=]{4,120}:" + PasswordPattern),
-			Severity:    SeverityMinor,
+			File:        "(?i).htpasswd$",
+			Pattern:     "(?i)[0-9a-zA-Z-_!{}$.=]{4,120}:" + PasswordPattern,
+			Severity:    models.SeverityMinor,
 		},
 		{
 			Description: "PASSWORD",
-			Regexp:      regexp.MustCompile("(?im)['\"]?" + PasswordPrefixPattern + "['\"]?[[:blank:]]{0,20}[=:]{1,3}?[[:blank:]]{0,20}[@]?" + "['\"]?" + PasswordPattern + "((?:['\"]?(?:[;,])?)?$|[[:blank:]])"),
+			Pattern:     "(?im)['\"]?" + PasswordPrefixPattern + "['\"]?[[:blank:]]{0,20}[=:]{1,3}?[[:blank:]]{0,20}[@]?" + "['\"]?" + PasswordPattern + "((?:['\"]?(?:[;,])?)?$|[[:blank:]])",
 			Tags:        []string{"password"},
-			Severity:    SeverityMajor,
+			Severity:    models.SeverityMajor,
 		},
 		{
 			Description: "PASSWORD_XML",
-			File:        regexp.MustCompile("(?i)(.*.xml)$"),
-			Regexp:      regexp.MustCompile("(?i)<" + PasswordPrefixPattern + ">(?P<secret>.{5,256})</" + PasswordPrefixPattern + ">"),
+			File:        "(?i)(.*.xml)$",
+			Pattern:     "(?i)<" + PasswordPrefixPattern + ">(?P<secret>.{5,256})</" + PasswordPrefixPattern + ">",
 			Tags:        []string{"password"},
-			Severity:    SeverityMajor,
+			Severity:    models.SeverityMajor,
 		},
 		{
 			Description: "SECRET_KEY",
-			Regexp:      regexp.MustCompile("(?im)" + SecretKeyPrefixPattern + "?[[:space:]_-]?(?:key|token)[[:space:]]{0,20}[=:]{1,2}[[:space:]]{0,20}['\"]?" + PasswordPattern + "(?:[[:space:];'\",]|$)"),
+			Pattern:     "(?im)" + SecretKeyPrefixPattern + "?[[:space:]_-]?(?:key|token)[[:space:]]{0,20}[=:]{1,2}[[:space:]]{0,20}['\"]?" + PasswordPattern + "(?:[[:space:];'\",]|$)",
 			Tags:        []string{"token", "key"},
-			Severity:    SeverityMajor,
+			Severity:    models.SeverityMajor,
 		},
 	}
 )
-
-// AllowList list of allowed items
-type AllowList struct {
-	Commits     []string
-	Description string
-	Files       []*regexp.Regexp
-	Paths       []*regexp.Regexp
-	Regexes     []*regexp.Regexp
-}
-
-// Entropy sata struct
-type Entropy struct {
-	MinThreshold float64
-	MaxThreshold float64
-	Group        int
-}
-
-// Rule data struct
-type Rule struct {
-	AllowList   AllowList
-	Description string
-	Entropies   []Entropy
-	File        *regexp.Regexp
-	Path        *regexp.Regexp
-	Regexp      *regexp.Regexp
-	Severity    Severity
-	Tags        []string
-}
-
-func NewRule(description string, file string, pattern string, severity string, tags []string) *Rule {
-	rule := &Rule{
-		Description: description,
-		Regexp:      regexp.MustCompile(pattern),
-		Severity:    Severity(severity),
-		Tags:        tags,
-	}
-	if file != "" {
-		rule.File = regexp.MustCompile(file)
-	}
-	return rule
-}

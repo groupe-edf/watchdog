@@ -1,0 +1,22 @@
+--- Drop tables
+DROP TABLE IF EXISTS access_tokens;
+DROP TABLE IF EXISTS analytics;
+DROP TABLE IF EXISTS analytics_rollups;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS integrations;
+DROP TABLE IF EXISTS jobs;
+DROP TABLE IF EXISTS policies;
+DROP TABLE IF EXISTS policies_conditions;
+DROP TABLE IF EXISTS repositories;
+DROP TABLE IF EXISTS repositories_analyzes;
+DROP TABLE IF EXISTS repositories_issues;
+DROP TABLE IF EXISTS repositories_leaks;
+DROP TABLE IF EXISTS repositories_statistics;
+DROP TABLE IF EXISTS rules;
+DROP TABLE IF EXISTS rules_allowed_entries;
+DROP TABLE IF EXISTS rules_entropies;
+DROP TABLE IF EXISTS settings;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS whitelist;
+DROP FUNCTION analytics_aggregation();
+DROP FUNCTION incremental_rollup_window(TEXT);

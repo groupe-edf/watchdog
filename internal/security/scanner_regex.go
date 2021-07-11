@@ -1,89 +1,93 @@
 package security
 
 import (
-	"bufio"
-	"io"
-	"path/filepath"
+	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
+	"github.com/go-git/go-git/v5/plumbing/format/diff"
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/logging"
+	"github.com/groupe-edf/watchdog/internal/models"
 )
 
 // IsFalsePositiveFunc function to check false positive secrets
 type IsFalsePositiveFunc func(file string, line string, secret string) int
-
-const (
-	// IsPositive string is secret
-	IsPositive int = iota
-	// IsFile string is a path
-	IsFile
-	// IsFunction string is function
-	IsFunction
-	// IsPlaceholder string is placeholder
-	IsPlaceholder
-	// IsVariable string is variable
-	IsVariable
-	// PerCharThreshold entropy per character threshold
-	PerCharThreshold = 3
-)
 
 var (
 	falsePostiveHeuristics = []IsFalsePositiveFunc{
 		// Check if is dynamic variable
 		IsFalsePositive,
 	}
-	// SupportedLanguages list of supported languages
-	SupportedLanguages = []string{"go", "groovy", "java", "js", "py"}
 )
 
 // RegexScanner data struct
 type RegexScanner struct {
-	Logger  logging.Interface
-	Options Options
-	Rules   []Rule
+	Logger    logging.Interface
+	Rules     []models.Rule
+	Whitelist models.Whitelist
 }
 
-// AddAllowedFiles add files to allowed list
-func (scanner *RegexScanner) AddAllowedFiles(files *regexp.Regexp) {
-	scanner.Options.AllowList.Files = append(scanner.Options.AllowList.Files, files)
-}
-
-// Scan scan commit
-func (scanner *RegexScanner) Scan(commit *object.Commit) (leaks []Leak, err error) {
-	fileIter, err := commit.Files()
-	if err != nil {
-		return leaks, err
+// Scan scan commit and return list of leaks if found
+func (scanner *RegexScanner) Scan(commit *object.Commit) (leaks []models.Leak, err error) {
+	if len(commit.ParentHashes) == 0 {
+		return
 	}
-	err = fileIter.ForEach(func(file *object.File) error {
-		isBinary, err := file.IsBinary()
-		if isBinary {
-			return nil
-		} else if err != nil {
-			return err
+	parent, err := commit.Parent(0)
+	if err != nil {
+		return
+	}
+	patch, err := parent.Patch(commit)
+	if err != nil {
+		return
+	}
+	patchContent := patch.String()
+	for _, filePatch := range patch.FilePatches() {
+		if filePatch.IsBinary() {
+			continue
 		}
-		// Check global allow list
-		if len(scanner.Options.AllowList.Files) != 0 {
-			for _, fileRegex := range scanner.Options.AllowList.Files {
-				if fileRegex.FindString(file.Name) != "" {
-					return nil
+		_, to := filePatch.Files()
+		if len(scanner.Whitelist.Files) != 0 && to != nil {
+			for _, fileRegex := range scanner.Whitelist.Files {
+				if regexp.MustCompile(fileRegex).FindString(to.Path()) != "" {
+					return
 				}
 			}
 		}
-		fileContent, err := file.Contents()
-		if err != nil {
-			return err
+		for _, chunk := range filePatch.Chunks() {
+			if chunk.Type() != diff.Delete {
+				lineLookup := make(map[string]bool)
+				for _, rule := range scanner.Rules {
+					offenders := rule.Scan(chunk.Content())
+					if len(offenders) == 0 {
+						continue
+					}
+					leaks = append(leaks, models.Leak{
+						Author:     commit.Author.Name,
+						CommitHash: commit.Hash.String(),
+						CreatedAt:  commit.Author.When,
+						File:       to.Path(),
+						Line:       offenders[0].Line,
+						LineNumber: scanner.getLineNumber(offenders[0].Offender, offenders[0].Line, patchContent, to.Path(), lineLookup),
+						Offender:   offenders[0].Offender,
+						Rule:       rule,
+						Tags:       rule.Tags,
+						SecretHash: models.GenerateHash(to.Path(), commit.Hash.String(), offenders[0].Offender),
+						Severity:   rule.Severity,
+					})
+				}
+			}
 		}
-		leaks = append(leaks, scanner.SatisfyRules(commit, file.Name, fileContent)...)
-		return nil
-	})
+	}
 	return leaks, err
 }
 
-// SatisfyRules check all security rules
-func (scanner *RegexScanner) SatisfyRules(commit *object.Commit, filePath string, content string) (leaks []Leak) {
+func (scanner *RegexScanner) SetWhitelist(whitelist models.Whitelist) {
+	scanner.Whitelist = whitelist
+}
+
+func (scanner *RegexScanner) satisfyRules(commit *object.Commit, filePath string, content string) (leaks []models.Leak) {
 	for _, rule := range scanner.Rules {
 		scanner.Logger.WithFields(logging.Fields{
 			"condition": "secret",
@@ -91,16 +95,17 @@ func (scanner *RegexScanner) SatisfyRules(commit *object.Commit, filePath string
 			"file":      filePath,
 			"rule":      "security",
 		}).Debugf("searching for `%v`", rule.Description)
-		if rule.File != nil && rule.File.FindString(filePath) == "" {
+		if rule.File != "" && regexp.MustCompile(rule.File).FindString(filePath) == "" {
 			continue
 		}
-		matches := rule.Regexp.FindAllIndex([]byte(content), -1)
+		pattern := regexp.MustCompile(rule.Pattern)
+		matches := pattern.FindAllIndex([]byte(content), -1)
 		if len(matches) != 0 {
 			for _, match := range matches {
 				line := scanner.extractLine(match[0], match[1], content)
 				offender := content[match[0]:match[1]]
-				groups := rule.Regexp.FindStringSubmatch(offender)
-				names := rule.Regexp.SubexpNames()
+				groups := pattern.FindStringSubmatch(offender)
+				names := pattern.SubexpNames()
 				for index, group := range groups {
 					if index != 0 && names[index] == "secret" {
 						offender = group
@@ -119,15 +124,16 @@ func (scanner *RegexScanner) SatisfyRules(commit *object.Commit, filePath string
 					}).Warningf("false positive secret %s", offender)
 					continue
 				}
-				file, _ := commit.File(filePath)
-				reader, _ := file.Reader()
-				leaks = append(leaks, Leak{
+				leaks = append(leaks, models.Leak{
+					Author:     commit.Author.Name,
+					CommitHash: commit.Hash.String(),
+					CreatedAt:  commit.Author.When,
 					File:       filePath,
 					Line:       line,
-					LineNumber: scanner.getLineNumber(line, reader),
 					Offender:   offender,
-					Rule:       rule.Description,
+					Rule:       rule,
 					Tags:       rule.Tags,
+					SecretHash: models.GenerateHash(filePath, line, offender),
 					Severity:   rule.Severity,
 				})
 			}
@@ -159,19 +165,38 @@ func (scanner *RegexScanner) extractLine(start int, end int, content string) str
 	return content[start:end]
 }
 
-func (scanner *RegexScanner) getLineNumber(line string, reader io.Reader) (lineNumber int) {
-	bufferScanner := bufio.NewScanner(reader)
-	lineNumber = 1
-	for bufferScanner.Scan() {
-		if line == bufferScanner.Text() {
-			break
-		}
-		lineNumber++
+func (scanner *RegexScanner) getLineNumber(offender string, line string, patchContent string, filePath string, lineLookup map[string]bool) (lineNumber int) {
+	i := strings.Index(patchContent, fmt.Sprintf("\n+++ b/%s", filePath))
+	filePatchContent := patchContent[i+1:]
+	i = strings.Index(filePatchContent, "diff --git")
+	if i != -1 {
+		filePatchContent = filePatchContent[:i]
 	}
-	return lineNumber
+	chunkStartLine := 0
+	currLine := 0
+	for _, patchLine := range strings.Split(filePatchContent, "\n") {
+		if strings.HasPrefix(patchLine, "@@") {
+			i := strings.Index(patchLine, "+")
+			pairs := strings.Split(strings.Split(patchLine[i+1:], " @@")[0], ",")
+			chunkStartLine, _ = strconv.Atoi(pairs[0])
+			currLine = -1
+		}
+		if strings.HasPrefix(patchLine, "-") {
+			currLine--
+		}
+		if strings.HasPrefix(patchLine, "+") && strings.Contains(patchLine, line) {
+			lineNumber := chunkStartLine + currLine
+			if _, ok := lineLookup[fmt.Sprintf("%s%s%d%s", offender, line, lineNumber, filePath)]; !ok {
+				lineLookup[fmt.Sprintf("%s%s%d%s", offender, line, lineNumber, filePath)] = true
+				return lineNumber
+			}
+		}
+		currLine++
+	}
+	return 1
 }
 
-func (scanner *RegexScanner) validateEntropy(groups []string, rule Rule) bool {
+func (scanner *RegexScanner) validateEntropy(groups []string, rule models.Rule) bool {
 	for _, condition := range rule.Entropies {
 		if len(groups) > condition.Group {
 			entropy := ShannonEntropy(groups[condition.Group])
@@ -184,82 +209,10 @@ func (scanner *RegexScanner) validateEntropy(groups []string, rule Rule) bool {
 }
 
 // NewRegexScanner create new regular expression
-func NewRegexScanner(logger logging.Interface, options *config.Options) *RegexScanner {
-	if len(options.Security.Rules) > 0 {
-		var defaultRules []Rule
-		for _, rule := range options.Security.Rules {
-			logger.WithFields(logging.Fields{
-				"condition": "secret",
-				"rule":      "security",
-			}).Infof("adding secret rule %s", rule.Description)
-			defaultRule := NewRule(rule.Description, rule.File, rule.Regexp, rule.Severity, rule.Tags)
-			if defaultRule != nil {
-				defaultRules = append(defaultRules, *defaultRule)
-			}
-		}
-		if options.Security.MergeRules {
-			rules = append(rules, defaultRules...)
-		} else {
-			rules = defaultRules
-		}
-	}
+func NewRegexScanner(logger logging.Interface, rules []models.Rule, whitelist models.Whitelist) *RegexScanner {
 	return &RegexScanner{
-		Logger: logger,
-		Options: Options{
-			AllowList: AllowList{
-				Description: "Default allowed files",
-			},
-		},
-		Rules: rules,
+		Logger:    logger,
+		Rules:     rules,
+		Whitelist: whitelist,
 	}
-}
-
-// IsFalsePositive check if secret is a false positive
-func IsFalsePositive(filePath string, line string, secret string) int {
-	// Secret is a variable
-	if strings.HasPrefix(secret, "$") && !strings.Contains(secret[2:], "$") {
-		return IsVariable
-	}
-	// Secret is a placeholder
-	if strings.Contains(secret, "{{") || strings.Contains(secret, "}}") {
-		return IsPlaceholder
-	}
-	// Secret is a placeholder
-	if strings.HasPrefix(secret, "{") && strings.HasSuffix(secret, "}") {
-		if len(secret) < 32 {
-			return IsPlaceholder
-		}
-	}
-	// Secret is a placeholder
-	if strings.HasPrefix(secret, "${") && strings.HasSuffix(secret, "}") {
-		return IsPlaceholder
-	}
-	extension := filepath.Ext(filePath)
-	openBrackets := strings.Count(secret, "(")
-	closeBrackets := strings.Count(secret, ")")
-	// Secret is method or function
-	if IsSupportedLanguage(extension) {
-		if openBrackets >= 1 {
-			if openBrackets == closeBrackets {
-				return IsFunction
-			}
-		}
-		if strings.Count(line, "\""+secret+"\"") < 1 {
-			return IsVariable
-		}
-	}
-	if strings.HasSuffix(secret, ";") {
-		return IsVariable
-	}
-	return IsPositive
-}
-
-// IsSupportedLanguage check if extension is suported
-func IsSupportedLanguage(language string) bool {
-	for _, supported := range SupportedLanguages {
-		if language == "."+supported {
-			return true
-		}
-	}
-	return false
 }

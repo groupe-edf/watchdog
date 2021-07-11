@@ -1,9 +1,6 @@
-version: "develop"
-hooks:
-  - name: global
-    rules:
-      - type: commit
-        conditions:
-          - type: length
-            condition: %s
-            rejection_message: %s
+- conditions:
+  - type: length
+    condition: %s
+    rejection_message: %s
+  enabled: true
+  type: commit

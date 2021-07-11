@@ -60,8 +60,7 @@ func GetUserID(ctx context.Context) string {
 }
 
 // InitializeContext initialize context
-func InitializeContext() context.Context {
-	ctx := context.Background()
+func InitializeContext(ctx context.Context) context.Context {
 	userID := os.Getenv("GL_USERNAME")
 	if userID == "" {
 		userID = "UNKNOWN"

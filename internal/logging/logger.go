@@ -1,10 +1,14 @@
 package logging
 
+import "io"
+
 // Options logger options
 type Options struct {
-	LogsFormat string
-	LogsLevel  string
-	LogsPath   string
+	LogsFormat       string
+	LogsLevel        string
+	LogsOutput       io.Writer
+	LogsPath         string
+	LogsReportCaller bool
 }
 
 // Interface logger interface
@@ -27,6 +31,6 @@ type Interface interface {
 type Fields map[string]interface{}
 
 // New return default logger
-func New(options Options) Interface {
+func New(options Options) *LogrusLogger {
 	return NewLogrusLogger(options)
 }

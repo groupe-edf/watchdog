@@ -1,7 +1,6 @@
 package util
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,8 +19,7 @@ func TestCreateRequest(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var endpoint = fmt.Sprintf("/rest/api/latest/issue/WAL-1")
-	request, err := jiraClient.CreateRequest("GET", endpoint, nil)
+	request, err := jiraClient.CreateRequest("GET", "/rest/api/latest/issue/WAL-1", nil)
 	assert.NoError(err)
 	assert.NotEmpty(request)
 }

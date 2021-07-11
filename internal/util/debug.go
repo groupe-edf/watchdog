@@ -46,7 +46,7 @@ func ItemExists(arrayType interface{}, item interface{}) bool {
 }
 
 // PrintBanner Print watchdog banner
-func PrintBanner(ctx context.Context, options *config.Options) error {
+func PrintBanner(options *config.Options) error {
 	t, err := template.New("watchdog").Parse(config.Banner)
 	if err != nil {
 		return err

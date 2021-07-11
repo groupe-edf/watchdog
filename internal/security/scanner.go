@@ -1,20 +1,14 @@
 package security
 
 import (
-	"regexp"
-
 	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/groupe-edf/watchdog/internal/models"
 )
-
-// Options scanner options
-type Options struct {
-	AllowList AllowList
-}
 
 // Scanner scanner interface
 type Scanner interface {
-	AddAllowedFiles(files *regexp.Regexp)
-	Scan(commit *object.Commit) (leaks []Leak, err error)
+	Scan(commit *object.Commit) (leaks []models.Leak, err error)
+	SetWhitelist(whitelist models.Whitelist)
 }
 
 // VerifiedScanner verify secret

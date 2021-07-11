@@ -3,12 +3,12 @@ package util
 import (
 	"sync"
 
-	"github.com/groupe-edf/watchdog/internal/issue"
+	"github.com/groupe-edf/watchdog/internal/models"
 )
 
 // Set struct
 type Set struct {
-	items []issue.Issue
+	items []models.Issue
 	sync.RWMutex
 }
 
@@ -21,12 +21,12 @@ type ConcurrentSliceItem struct {
 // NewSet create new thread safe set
 func NewSet() *Set {
 	return &Set{
-		items: make([]issue.Issue, 0),
+		items: make([]models.Issue, 0),
 	}
 }
 
 // Add add
-func (s *Set) Add(items []issue.Issue) {
+func (s *Set) Add(items []models.Issue) {
 	s.Lock()
 	defer s.Unlock()
 	s.items = append(s.items, items...)
@@ -36,7 +36,7 @@ func (s *Set) Add(items []issue.Issue) {
 func (s *Set) Clear() {
 	s.Lock()
 	defer s.Unlock()
-	s.items = make([]issue.Issue, 0)
+	s.items = make([]models.Issue, 0)
 }
 
 // Len returns the number of items in a set.
@@ -45,7 +45,7 @@ func (s *Set) Len() int {
 }
 
 // List returns a slice of all items
-func (s *Set) List() []issue.Issue {
+func (s *Set) List() []models.Issue {
 	s.RLock()
 	defer s.RUnlock()
 	return s.items

@@ -1,7 +1,6 @@
 package hook
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -28,7 +27,7 @@ func LoadGitHooks(filePath string) (*GitHooks, error) {
 }
 
 // ExtractConfigFile extract .githooks.yml file from Git bare repository
-func ExtractConfigFile(ctx context.Context, commit *object.Commit) (gitHooks *GitHooks, err error) {
+func ExtractConfigFile(commit *object.Commit) (gitHooks *GitHooks, err error) {
 	file, err := commit.File(ConfigFilename)
 	if err != nil {
 		return nil, ErrFileNotFound

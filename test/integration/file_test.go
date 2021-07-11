@@ -12,6 +12,7 @@ import (
 
 	"github.com/c2h5oh/datasize"
 	"github.com/groupe-edf/watchdog/internal/issue"
+	"github.com/groupe-edf/watchdog/internal/models"
 	helpers "github.com/groupe-edf/watchdog/internal/test"
 	"github.com/stretchr/testify/assert"
 )
@@ -38,7 +39,7 @@ func TestFileExtensionNotAllowedRule(t *testing.T) {
 	assert.Error(err)
 	assert.Equal(ErrorPreReceiveHookDeclined, err)
 	assert.Equal(1, len(issues))
-	assert.Equal(issue.SeverityHigh, issues[0].Severity)
+	assert.Equal(models.SeverityHigh, issues[0].Severity)
 	assert.Equal("'*.exe' files are not allowed", issues[0].Message)
 	Suite.ResetLastCommit()
 }
@@ -53,11 +54,11 @@ func TestFileSizeExceededRule(t *testing.T) {
 		operator         string
 		size             string
 		fileSize         string
-		severity         issue.Score
+		severity         models.Score
 		rejectionMessage string
 	}{
-		{"LowerThanSuccess", "lt", "5mb", "2mb", issue.SeverityLow, ""},
-		{"LowerThanError", "lt", "5mb", "10mb", issue.SeverityHigh, "File {{ .Object }} size {{ .Value }} greater or equal than {{ .Operand }}"},
+		{"LowerThanSuccess", "lt", "5mb", "2mb", models.SeverityLow, ""},
+		{"LowerThanError", "lt", "5mb", "10mb", models.SeverityHigh, "File {{ .Object }} size {{ .Value }} greater or equal than {{ .Operand }}"},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
@@ -82,11 +83,11 @@ func TestFileSizeExceededRule(t *testing.T) {
 			}
 			buffer, err := Suite.CommitAndPush("master", files, "Add database dependency driver postgresql.jar", nil)
 			issues := helpers.ParseIssues(buffer.String(), OutputFormat)
-			if test.severity != issue.SeverityLow {
+			if test.severity != models.SeverityLow {
 				assert.Error(err)
 				assert.Equal(ErrorPreReceiveHookDeclined, err)
 				assert.Equal(1, len(issues))
-				assert.Equal(issue.SeverityHigh, issues[0].Severity)
+				assert.Equal(models.SeverityHigh, issues[0].Severity)
 				var message bytes.Buffer
 				tmpl := template.Must(template.New("").Parse(test.rejectionMessage))
 				if err := tmpl.Execute(&message, issue.Data{

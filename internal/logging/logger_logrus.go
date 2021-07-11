@@ -12,11 +12,11 @@ import (
 )
 
 // NewLogrusLogger create new logrus logger
-func NewLogrusLogger(options Options) Interface {
+func NewLogrusLogger(options Options) *LogrusLogger {
 	logger := logrus.New()
 	logLevel, _ := logrus.ParseLevel(options.LogsLevel)
 	logger.SetLevel(logLevel)
-	logger.SetReportCaller(true)
+	logger.SetReportCaller(options.LogsReportCaller)
 	if options.LogsPath != "" {
 		logFile, err := os.OpenFile(filepath.Clean(options.LogsPath), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
 		if err != nil {
@@ -24,7 +24,11 @@ func NewLogrusLogger(options Options) Interface {
 		}
 		logger.SetOutput(logFile)
 	} else {
-		logger.SetOutput(io.Discard)
+		if options.LogsOutput != nil {
+			logger.SetOutput(options.LogsOutput)
+		} else {
+			logger.SetOutput(io.Discard)
+		}
 	}
 	if options.LogsFormat == "json" {
 		logger.SetFormatter(&logrus.JSONFormatter{
@@ -35,23 +39,23 @@ func NewLogrusLogger(options Options) Interface {
 			},
 		})
 	}
-	return &logrusLogger{logger}
+	return &LogrusLogger{logger}
 }
 
 // Logrus logger adapter
-type logrusLogger struct {
+type LogrusLogger struct {
 	*logrus.Logger
 }
 
 // WithField append field to log entry
-func (logger logrusLogger) WithField(key string, value interface{}) Interface {
+func (logger LogrusLogger) WithField(key string, value interface{}) Interface {
 	return logrusEntry{
 		Entry: logger.Logger.WithField(key, value),
 	}
 }
 
 // WithFields append fields to log entry
-func (logger *logrusLogger) WithFields(fields Fields) Interface {
+func (logger *LogrusLogger) WithFields(fields Fields) Interface {
 	return logrusEntry{
 		Entry: logger.Logger.WithFields(map[string]interface{}(fields)),
 	}

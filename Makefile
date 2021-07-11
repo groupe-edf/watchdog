@@ -10,6 +10,7 @@
 	lint \
 	publish \
 	run \
+	serve \
 	test \
 	todo
 
@@ -75,26 +76,25 @@ $(TARGET):
 all: lint test build
 
 bootstrap: ## Install all development and ci tools
-	$(GO_GET) github.com/client9/misspell/cmd/misspell
-	$(GO_GET) github.com/git-chglog/git-chglog/cmd/git-chglog
-	$(GO_GET) github.com/golangci/golangci-lint/cmd/golangci-lint
-	$(GO_GET) github.com/pressly/sup/cmd/sup
-	$(GO_GET) github.com/securego/gosec/v2/cmd/gosec
-	$(GO_GET) gitlab.com/gitlab-org/release-cli/cmd/release-cli
-	$(GO_GET) golang.org/x/tools/cmd/cover
-	$(GO_GET) golang.org/x/tools/cmd/godoc
-	$(GO_GET) golang.org/x/tools/cmd/goimports
-	$(GO_GET) golang.org/x/lint/golint
+	$(GO_INSTALL) github.com/client9/misspell/cmd/misspell@latest
+	$(GO_INSTALL) github.com/git-chglog/git-chglog/cmd/git-chglog@latest
+	$(GO_INSTALL) github.com/go-swagger/go-swagger/cmd/swagger@latest
+	$(GO_INSTALL) github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	$(GO_INSTALL) github.com/securego/gosec/v2/cmd/gosec@latest
+	$(GO_INSTALL) golang.org/x/tools/cmd/cover@latest
+	$(GO_INSTALL) golang.org/x/tools/cmd/godoc@latest
+	$(GO_INSTALL) golang.org/x/tools/cmd/goimports@latest
+	$(GO_INSTALL) golang.org/x/lint/golint@latest
 
 build: ## Build watchdog CLI
-	$(GO_BUILD) -o $(BINARY_NAME) -v -o $(BINARY_OUTPUT) -ldflags="$(LDFLAGS)"
+	$(GO_BUILD) -o $(BINARY_NAME) -v -o $(BINARY_OUTPUT) -ldflags="$(LDFLAGS)" ./cmd/watchdog-cli
 	@echo "${GREEN}> Build completed successfully in $(BINARY_OUTPUT)${RESET}"
 
 build-plugins: $(PLUGIN_DIRECTORY)/*.go
 	$(GO_BUILD) -buildmode=plugin -o $(PLUGIN_OUTPUT)/$(basename $(<F)).$(PLUGIN_EXTENSION) ./$^
 
 build-test:
-	$(GO_BUILD) -o $(BINARY_NAME) -v -o $(BINARY_OUTPUT) -ldflags="$(LDFLAGS_TEST)"
+	$(GO_BUILD) -o $(BINARY_NAME) -v -o $(BINARY_OUTPUT) -ldflags="$(LDFLAGS_TEST)" ./cmd/watchdog-cli
 
 changelog:
 	# https://keepachangelog.com/en/1.0.0/
@@ -150,11 +150,25 @@ release-snapshot:
 
 URI=
 run: ## Run watchdog locally to analyze repostiory `make run URI="https://github.com/groupe-edf/watchdog"`
-	$(GO_RUN) -ldflags="$(LDFLAGS)" . analyze \
+	@$(GO_RUN) -ldflags="$(LDFLAGS)" ./cmd/watchdog-cli analyze \
 		--config config/config.yml \
 		--logs-path /var/log/watchdog/watchdog.log \
+		--policies-file .watchdog.yml \
 		--uri "$(URI)"
 	@echo "${GREEN}> Repository successfully analyzed${RESET}"
+
+serve: ## Serve watchdog
+	$(GO_RUN) -ldflags="$(LDFLAGS)" ./cmd/watchdog-server serve \
+		--config config/config.yml
+	@echo "${GREEN}> Repository successfully analyzed${RESET}"
+
+swagger-generate:
+	export SWAGGER_GENERATE_EXTENSION=false
+	@swagger generate spec --output swagger.json --scan-models
+
+swagger: swagger-generate  ## Serve a spec and swagger or redoc documentation ui
+	@swagger serve swagger.json --no-open --port=4444 --flavor=swagger
+
 
 test: test-unit test-integration test-security clean
 

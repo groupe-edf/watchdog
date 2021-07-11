@@ -10,7 +10,7 @@ import (
 	"text/template"
 
 	"github.com/groupe-edf/watchdog/internal/config"
-	"github.com/groupe-edf/watchdog/internal/issue"
+	"github.com/groupe-edf/watchdog/internal/models"
 	"github.com/groupe-edf/watchdog/internal/util"
 )
 
@@ -24,7 +24,7 @@ var text = `
 
 // ReportData report data
 type ReportData struct {
-	Issues             []issue.Issue
+	Issues             []models.Issue
 	ErrorMessagePrefix string
 }
 

@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  database:
+    container_name: database
+    image: postgres
+    environment:
+      POSTGRES_DB: watchdog
+      POSTGRES_USER: watchdog
+      POSTGRES_PASSWORD: watchdog
+    ports:
+    - 5432:5432
+    volumes:
+    - database-data:/var/lib/postgresql/data/
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    ports:
+    - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+  openldap:
+    container_name: openldap
+    image: docker.io/bitnami/openldap:2.5
+    ports:
+      - 1389:1389
+      - 1636:1636
+    environment:
+      - LDAP_ADMIN_USERNAME=watchdog
+      - LDAP_ADMIN_PASSWORD=watchdog
+      - LDAP_USERS=habib.maalem@gmail.com
+      - LDAP_PASSWORDS=watchdog
+    volumes:
+      - openldap_data:/bitnami/openldap
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+volumes:
+  database-data:
+  openldap_data:

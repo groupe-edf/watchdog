@@ -6,23 +6,21 @@ import (
 	"text/template"
 	"unicode/utf8"
 
-	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/groupe-edf/watchdog/internal/hook"
-	"github.com/groupe-edf/watchdog/internal/security"
+	"github.com/groupe-edf/watchdog/internal/models"
 )
 
 var (
 	// FunctionsMap helper functions
 	FunctionsMap = template.FuncMap{
-		"Hide": HideSecret,
+		"hide": HideSecret,
 	}
 )
 
 // Data data to be used for message rendering
 type Data struct {
 	Branch    string
-	Commit    *object.Commit
-	Condition hook.Condition
+	Commit    models.Commit
+	Condition models.Condition
 	Object    string
 	Operator  string
 	Operand   string
@@ -30,32 +28,10 @@ type Data struct {
 	Value     string
 }
 
-// Issue analysis issue
-type Issue struct {
-	Author    string             `json:"author"`
-	Commit    string             `json:"commit"`
-	Condition hook.ConditionType `json:"condition"`
-	Email     string             `json:"email"`
-	Handler   hook.HandlerType   `json:"handler"`
-	Leaks     []security.Leak    `json:"leaks,omitempty"`
-	Message   string             `json:"message"`
-	Severity  Score              `json:"severity"`
-}
-
-// WithLeak attach leaks to issue
-func (issue *Issue) WithLeak(leak security.Leak) {
-	issue.Leaks = append(issue.Leaks, leak)
-}
-
-// WithLeaks attach leaks to issue
-func (issue *Issue) WithLeaks(leaks []security.Leak) {
-	issue.Leaks = leaks
-}
-
 // NewIssue create new issue
-func NewIssue(handlerType hook.HandlerType, conditionType hook.ConditionType, data Data, severity Score, messageTemplate string) Issue {
+func NewIssue(policy models.Policy, conditionType models.ConditionType, data Data, severity models.Score, messageTemplate string) models.Issue {
 	if data.Condition.Ignore {
-		severity = SeverityLow
+		severity = models.SeverityLow
 	}
 	if data.Condition.RejectionMessage != "" {
 		messageTemplate = data.Condition.RejectionMessage
@@ -63,16 +39,19 @@ func NewIssue(handlerType hook.HandlerType, conditionType hook.ConditionType, da
 	var message bytes.Buffer
 	t := template.Must(template.New("").Funcs(FunctionsMap).Parse(messageTemplate))
 	_ = t.Execute(&message, data)
-	issue := Issue{
-		Condition: conditionType,
-		Handler:   handlerType,
-		Message:   message.String(),
-		Severity:  severity,
-	}
-	if data.Commit != nil {
-		issue.Author = data.Commit.Author.Name
-		issue.Commit = data.Commit.Hash.String()
-		issue.Email = data.Commit.Author.Email
+	issue := models.Issue{
+		Commit:        data.Commit,
+		ConditionType: conditionType,
+		Policy:        policy,
+		PolicyType:    policy.Type,
+		Message:       message.String(),
+		Offender: &models.Offender{
+			Object:   data.Object,
+			Operand:  data.Operand,
+			Operator: data.Operator,
+			Value:    data.Value,
+		},
+		Severity: severity,
 	}
 	return issue
 }

@@ -1,0 +1,6 @@
+{
+  "settings": {
+    "enable_signup": true,
+    "enable_oauth_signup": false
+  }
+}

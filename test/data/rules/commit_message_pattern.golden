@@ -1,10 +1,9 @@
-version: "develop"
-hooks:
-  - name: global
-    rules:
-      - type: commit
-        conditions:
-          - type: pattern
-            condition: %s
-            rejection_message: "%s"
-            skip: %s
+- conditions:
+  - type: pattern
+    condition: %s
+    rejection_message: %s
+    skip: %s
+  display_name: Conventional commit
+  enabled: true
+  name: commit_policy
+  type: commit
