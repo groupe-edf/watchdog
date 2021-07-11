@@ -18,12 +18,12 @@ var (
 
 // BuildInfo build informations
 type BuildInfo struct {
-	BuildDate string
-	GitCommit string
-	GoVersion string
-	Commit    string
-	Platform  string
-	Version   string
+	BuildDate string `json:"build_date"`
+	GitCommit string `json:"git_commit"`
+	GoVersion string `json:"go_version"`
+	Commit    string `json:"commit"`
+	Platform  string `json:"platform"`
+	Version   string `json:"version"`
 }
 
 // ToJSON return build info in JSON format

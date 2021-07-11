@@ -32,6 +32,7 @@ type Data struct {
 
 // Issue analysis issue
 type Issue struct {
+	ID        string             `json:"id,omitempty"`
 	Author    string             `json:"author"`
 	Commit    string             `json:"commit"`
 	Condition hook.ConditionType `json:"condition"`

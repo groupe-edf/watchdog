@@ -7,7 +7,6 @@ import (
 
 	"github.com/c2h5oh/datasize"
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/logging"
@@ -16,12 +15,12 @@ import (
 
 // FileHandler handle committed files
 type FileHandler struct {
-	core.AbstractHandler
+	AbstractHandler
 }
 
 // GetType return handler type
-func (fileHandler *FileHandler) GetType() core.HandlerType {
-	return core.HandlerTypeCommits
+func (fileHandler *FileHandler) GetType() HandlerType {
+	return HandlerTypeCommits
 }
 
 // Handle checking files with defined rules
@@ -40,7 +39,7 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 			fileHandler.Logger.Fatalf("error when loading commit files, %v", err)
 		}
 		for _, condition := range rule.Conditions {
-			if canSkip := core.CanSkip(commit, rule.Type, condition.Type); canSkip {
+			if canSkip := CanSkip(commit, rule.Type, condition.Type); canSkip {
 				continue
 			}
 			data := issue.Data{

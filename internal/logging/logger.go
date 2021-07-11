@@ -1,10 +1,14 @@
 package logging
 
+import "io"
+
 // Options logger options
 type Options struct {
-	LogsFormat string
-	LogsLevel  string
-	LogsPath   string
+	LogsFormat       string
+	LogsLevel        string
+	LogsOutput       io.Writer
+	LogsPath         string
+	LogsReportCaller bool
 }
 
 // Interface logger interface

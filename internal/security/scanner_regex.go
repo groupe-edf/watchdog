@@ -184,10 +184,10 @@ func (scanner *RegexScanner) validateEntropy(groups []string, rule Rule) bool {
 }
 
 // NewRegexScanner create new regular expression
-func NewRegexScanner(logger logging.Interface, options *config.Options) *RegexScanner {
-	if len(options.Security.Rules) > 0 {
+func NewRegexScanner(logger logging.Interface, options *config.Security) *RegexScanner {
+	if len(options.Rules) > 0 {
 		var defaultRules []Rule
-		for _, rule := range options.Security.Rules {
+		for _, rule := range options.Rules {
 			logger.WithFields(logging.Fields{
 				"condition": "secret",
 				"rule":      "security",
@@ -197,7 +197,7 @@ func NewRegexScanner(logger logging.Interface, options *config.Options) *RegexSc
 				defaultRules = append(defaultRules, *defaultRule)
 			}
 		}
-		if options.Security.MergeRules {
+		if options.MergeRules {
 			rules = append(rules, defaultRules...)
 		} else {
 			rules = defaultRules

@@ -6,7 +6,6 @@
 bin
 dist
 node_modules
-public
 sonar-scanner-*
 target
 vendor
@@ -20,6 +19,5 @@ CHANGELOG.md
 coverage.*
 cucumber.json
 gosec.json
-package*.json
 report.*
 unit-tests.xml

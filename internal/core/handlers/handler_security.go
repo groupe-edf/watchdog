@@ -5,7 +5,6 @@ import (
 	"regexp"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/logging"
@@ -15,20 +14,20 @@ import (
 
 // SecurityHandler handle committed secrets, passwords and tokens
 type SecurityHandler struct {
-	core.AbstractHandler
+	AbstractHandler
 	scanner security.Scanner
 }
 
 // GetType return handler type
-func (securityHandler *SecurityHandler) GetType() core.HandlerType {
-	return core.HandlerTypeCommits
+func (securityHandler *SecurityHandler) GetType() HandlerType {
+	return HandlerTypeCommits
 }
 
 // Handle checking files for secrets
 func (securityHandler *SecurityHandler) Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error) {
 	if rule.Type == hook.TypeSecurity {
 		for _, condition := range rule.Conditions {
-			if canSkip := core.CanSkip(commit, rule.Type, condition.Type); canSkip {
+			if canSkip := CanSkip(commit, rule.Type, condition.Type); canSkip {
 				continue
 			}
 			data := issue.Data{
@@ -46,7 +45,7 @@ func (securityHandler *SecurityHandler) Handle(ctx context.Context, commit *obje
 			case hook.ConditionSecret:
 				if securityHandler.scanner == nil {
 					// Create a new regex scanner
-					securityHandler.scanner = security.NewRegexScanner(securityHandler.Logger, securityHandler.Options)
+					securityHandler.scanner = security.NewRegexScanner(securityHandler.Logger, securityHandler.Options.Security)
 					if condition.Skip != "" {
 						securityHandler.scanner.AddAllowedFiles(regexp.MustCompile(condition.Skip))
 					}

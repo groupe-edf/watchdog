@@ -13,6 +13,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/gookit/color"
 	"github.com/groupe-edf/watchdog/internal/config"
+	"github.com/groupe-edf/watchdog/internal/core/handlers"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/logging"
@@ -22,7 +23,7 @@ import (
 // Analyzer git commits analyzer
 type Analyzer struct {
 	GitHooks   *hook.GitHooks
-	Handlers   []Handler
+	Handlers   []handlers.Handler
 	Info       *hook.Info
 	Issues     *util.Set
 	Logger     logging.Interface
@@ -93,7 +94,7 @@ func (analyzer *Analyzer) HasErrors() bool {
 }
 
 // RegisterHandler register git hook handler
-func (analyzer *Analyzer) RegisterHandler(ctx context.Context, handler Handler) {
+func (analyzer *Analyzer) RegisterHandler(ctx context.Context, handler handlers.Handler) {
 	analyzer.Logger.WithFields(logging.Fields{
 		"correlation_id": util.GetRequestID(ctx),
 		"user_id":        util.GetUserID(ctx),
@@ -152,7 +153,7 @@ func (analyzer *Analyzer) analyze(ctx context.Context, gitHooks *hook.GitHooks, 
 				"user_id":        util.GetUserID(ctx),
 			}).Debug("processing hook rule")
 			for _, handler := range analyzer.Handlers {
-				if handler.GetType() != HandlerTypeCommits {
+				if handler.GetType() != handlers.HandlerTypeCommits {
 					continue
 				}
 				select {
@@ -186,7 +187,7 @@ func (analyzer *Analyzer) handleRef(ctx context.Context) {
 				"user_id":        util.GetUserID(ctx),
 			}).Debug("processing hook rule")
 			for _, handler := range analyzer.Handlers {
-				if handler.GetType() == HandlerTypeRefs {
+				if handler.GetType() == handlers.HandlerTypeRefs {
 					issuesSlice, _ := handler.Handle(ctx, nil, rule)
 					issues = append(issues, issuesSlice...)
 				}
@@ -197,11 +198,18 @@ func (analyzer *Analyzer) handleRef(ctx context.Context) {
 }
 
 // NewAnalyzer instantiate new analyzer
-func NewAnalyzer(hooks *hook.GitHooks, options *config.Options) (*Analyzer, error) {
+func NewAnalyzer(ctx context.Context, hooks *hook.GitHooks, options *config.Options) (*Analyzer, error) {
 	analyzer := &Analyzer{
 		GitHooks: hooks,
 		Options:  options,
 		Issues:   util.NewSet(),
 	}
+	// Register handlers
+	analyzer.RegisterHandler(ctx, &handlers.BranchHandler{})
+	analyzer.RegisterHandler(ctx, &handlers.CommitHandler{})
+	analyzer.RegisterHandler(ctx, &handlers.FileHandler{})
+	analyzer.RegisterHandler(ctx, &handlers.JiraHandler{})
+	analyzer.RegisterHandler(ctx, &handlers.SecurityHandler{})
+	analyzer.RegisterHandler(ctx, &handlers.TagHandler{})
 	return analyzer, nil
 }

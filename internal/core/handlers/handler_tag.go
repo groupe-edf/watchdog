@@ -6,7 +6,6 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/logging"
@@ -15,12 +14,12 @@ import (
 
 // TagHandler handle tags
 type TagHandler struct {
-	core.AbstractHandler
+	AbstractHandler
 }
 
 // GetType return handler type
-func (tagHandler *TagHandler) GetType() core.HandlerType {
-	return core.HandlerTypeRefs
+func (tagHandler *TagHandler) GetType() HandlerType {
+	return HandlerTypeRefs
 }
 
 // Handle checking tags with defined rules

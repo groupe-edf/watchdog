@@ -1,6 +1,9 @@
 package issue
 
-import "bytes"
+import (
+	"bytes"
+	"database/sql/driver"
+)
 
 const (
 	// SeverityLow severity or confidence
@@ -22,6 +25,14 @@ func (score Score) MarshalJSON() ([]byte, error) {
 	return buffer.Bytes(), nil
 }
 
+func (score *Score) Scan(value interface{}) error {
+	if value == nil {
+		return nil
+	}
+	*score = ParseScore(value)
+	return nil
+}
+
 func (score Score) String() string {
 	switch score {
 	case SeverityHigh:
@@ -32,6 +43,10 @@ func (score Score) String() string {
 		return "low"
 	}
 	return "undefined"
+}
+
+func (score *Score) Value() (driver.Value, error) {
+	return score.String(), nil
 }
 
 // UnmarshalJSON unmarshal json to score
@@ -45,7 +60,7 @@ func (score *Score) UnmarshalJSON(raw []byte) error {
 }
 
 // ParseScore parse score from string input
-func ParseScore(score string) Score {
+func ParseScore(score interface{}) Score {
 	switch score {
 	case "high":
 		return SeverityHigh

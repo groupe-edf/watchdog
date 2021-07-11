@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/logging"
@@ -15,12 +14,12 @@ import (
 
 // BranchHandler handle branch naming
 type BranchHandler struct {
-	core.AbstractHandler
+	AbstractHandler
 }
 
 // GetType return handler type
-func (branchHandler *BranchHandler) GetType() core.HandlerType {
-	return core.HandlerTypeRefs
+func (branchHandler *BranchHandler) GetType() HandlerType {
+	return HandlerTypeRefs
 }
 
 // Handle chencking branch naming convention

@@ -17,7 +17,6 @@ import (
 	"github.com/groupe-edf/watchdog/internal/output"
 	"github.com/groupe-edf/watchdog/internal/util"
 	"github.com/groupe-edf/watchdog/internal/version"
-	"github.com/groupe-edf/watchdog/pkg/handlers"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -63,7 +62,7 @@ var (
 				case <-ctx.Done():
 				}
 			}()
-			analyzer, err := core.NewAnalyzer(nil, options)
+			analyzer, err := core.NewAnalyzer(ctx, nil, options)
 			if err != nil {
 				logger.Fatal(err)
 			}
@@ -165,13 +164,7 @@ var (
 			}
 			if hooks != nil {
 				analyzer.SetHooks(hooks)
-				// Register handlers
-				analyzer.RegisterHandler(ctx, &handlers.BranchHandler{})
-				analyzer.RegisterHandler(ctx, &handlers.CommitHandler{})
-				analyzer.RegisterHandler(ctx, &handlers.FileHandler{})
-				analyzer.RegisterHandler(ctx, &handlers.JiraHandler{})
-				analyzer.RegisterHandler(ctx, &handlers.SecurityHandler{})
-				analyzer.RegisterHandler(ctx, &handlers.TagHandler{})
+
 				// Fetching commits
 				commits, err := util.FetchCommits(repository, info, options.HookType)
 				fmt.Println()

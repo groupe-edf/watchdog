@@ -8,12 +8,21 @@ import (
 	"github.com/spf13/viper"
 )
 
+type Database struct {
+	Host     string
+	Name     string
+	Password string
+	Port     int
+	Username string
+}
+
 // Options options data structure
 type Options struct {
-	AuthBasicToken     string               `mapstructure:"auth-basic-token"`
-	Banner             bool                 `mapstructure:"banner"`
-	CacheDirectory     string               `mapstructure:"cache-directory"`
-	Contact            string               `mapstructure:"contact"`
+	AuthBasicToken     string `mapstructure:"auth-basic-token"`
+	Banner             bool   `mapstructure:"banner"`
+	CacheDirectory     string `mapstructure:"cache-directory"`
+	Contact            string `mapstructure:"contact"`
+	Database           Database
 	Handlers           map[string]hook.Rule `mapstructure:"handlers"`
 	DocsLink           string               `mapstructure:"docs-link"`
 	ErrorMessagePrefix string               `mapstructure:"error_message_prefix"`
@@ -31,6 +40,7 @@ type Options struct {
 	OutputFormat     string `mapstructure:"output-format"`
 	PluginsDirectory string `mapstructure:"plugins-directory"`
 	*Security        `mapstructure:"security"`
+	*Server					 `mapstructure:"server"`
 	Verbose          bool   `mapstructure:"verbose"`
 	URI              string `mapstructure:"uri"`
 }
@@ -46,6 +56,22 @@ type Security struct {
 		Severity    string   `mapstructure:"severity"`
 		Tags        []string `mapstructure:"tags"`
 	} `mapstructure:"rules"`
+}
+
+// Server settings
+type Server struct {
+	LDAP struct {
+		BindDN string   `mapstructure:"bind_db"`
+		BindPassword string   `mapstructure:"bind_password"`
+		Host string   `mapstructure:"host"`
+		Port int `mapstructure:"port"`
+		SearchBaseDNS string   `mapstructure:"search_base_dns"`
+		SearchFilter string   `mapstructure:"search_filter"`
+		SSLSkipVerify bool `mapstructure:"ssl_skip_verify"`
+		StartSSL bool `mapstructure:"start_ssl"`
+		UseSSL bool `mapstructure:"use_ssl"`
+	} `mapstructure:"ldap"`
+	ListenAddress string `mapstructure:"listen_address"`
 }
 
 // Validate validate options

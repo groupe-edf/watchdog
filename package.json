@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "react-redux": "^7.2.4",
+    "react-router-redux": "^4.0.8",
+    "redux": "^4.1.0"
+  },
+  "devDependencies": {
+    "redux-devtools-extension": "^2.13.9"
+  }
+}

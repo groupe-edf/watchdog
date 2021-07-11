@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/logging"
@@ -15,19 +14,19 @@ import (
 
 // CommitHandler handle commit messages
 type CommitHandler struct {
-	core.AbstractHandler
+	AbstractHandler
 }
 
 // GetType return handler type
-func (commitHandler *CommitHandler) GetType() core.HandlerType {
-	return core.HandlerTypeCommits
+func (commitHandler *CommitHandler) GetType() HandlerType {
+	return HandlerTypeCommits
 }
 
 // Handle checking commit message with defined rules
 func (commitHandler *CommitHandler) Handle(ctx context.Context, commit *object.Commit, rule *hook.Rule) (issues []issue.Issue, err error) {
 	if rule.Type == hook.TypeCommit {
 		for _, condition := range rule.Conditions {
-			if canSkip := core.CanSkip(commit, rule.Type, condition.Type); canSkip {
+			if canSkip := CanSkip(commit, rule.Type, condition.Type); canSkip {
 				continue
 			}
 			data := issue.Data{

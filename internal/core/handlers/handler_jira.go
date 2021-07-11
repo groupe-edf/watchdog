@@ -6,7 +6,6 @@ import (
 	"regexp"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/logging"
@@ -24,12 +23,12 @@ var (
 
 // JiraHandler handle jira issues
 type JiraHandler struct {
-	core.AbstractHandler
+	AbstractHandler
 }
 
 // GetType return handler type
-func (jiraHandler *JiraHandler) GetType() core.HandlerType {
-	return core.HandlerTypeCommits
+func (jiraHandler *JiraHandler) GetType() HandlerType {
+	return HandlerTypeCommits
 }
 
 // Handle checking files with defined rules

@@ -75,3 +75,5 @@ security:
     regexp: (?im)(?:(?:a(?:ws|ccess|p(?:i|p(?:lication)?)))|private|se(?:nsitive|cret))?[[:space:]_-]?(?:key|token)[[:space:]]{0,20}[=:]{1,2}[[:space:]]{0,20}['\"]?(?P<secret>[a-zA-Z0-9!?$)(.=<>\/%@#*&{}_^+-]{6,45})(?:[[:space:];'\",]|$)
     severity: MAJOR
     tags: ["token"]
+server:
+  listen_address: 0.0.0.0:3001

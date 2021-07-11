@@ -16,7 +16,7 @@ func NewLogrusLogger(options Options) Interface {
 	logger := logrus.New()
 	logLevel, _ := logrus.ParseLevel(options.LogsLevel)
 	logger.SetLevel(logLevel)
-	logger.SetReportCaller(true)
+	logger.SetReportCaller(options.LogsReportCaller)
 	if options.LogsPath != "" {
 		logFile, err := os.OpenFile(filepath.Clean(options.LogsPath), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
 		if err != nil {
@@ -24,7 +24,11 @@ func NewLogrusLogger(options Options) Interface {
 		}
 		logger.SetOutput(logFile)
 	} else {
-		logger.SetOutput(io.Discard)
+		if options.LogsOutput != nil {
+			logger.SetOutput(options.LogsOutput)
+		} else {
+			logger.SetOutput(io.Discard)
+		}
 	}
 	if options.LogsFormat == "json" {
 		logger.SetFormatter(&logrus.JSONFormatter{
