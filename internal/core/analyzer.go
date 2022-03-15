@@ -4,15 +4,13 @@ import (
 	"context"
 	"errors"
 	"reflect"
-	"strings"
 	"sync"
 	"time"
 
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/core/handlers"
 	"github.com/groupe-edf/watchdog/internal/core/loaders"
+	"github.com/groupe-edf/watchdog/internal/git"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/models"
@@ -22,20 +20,20 @@ import (
 
 // Analyzer git commits analyzer
 type Analyzer struct {
-	Handlers   []handlers.Handler
-	Info       *hook.Info
-	Issues     *util.Set
-	Loader     loaders.Loader
-	Logger     logging.Interface
-	Options    *config.Options
-	Policies   []models.Policy
-	Repository *git.Repository
-	Whitelist  models.Whitelist
-	context    context.Context
+	Driver    git.Driver
+	Handlers  []handlers.Handler
+	Info      *hook.Info
+	Issues    *util.Set
+	Loader    loaders.Loader
+	Logger    logging.Interface
+	Options   *config.Options
+	Policies  []models.Policy
+	Whitelist models.Whitelist
+	context   context.Context
 }
 
 // Analyze execute analysis
-func (analyzer *Analyzer) Analyze(commitIter object.CommitIter, analyzeChan chan models.AnalysisResult) error {
+func (analyzer *Analyzer) Analyze(commitIter models.Iterator[models.Commit], analyzeChan chan models.AnalysisResult) error {
 	defer close(analyzeChan)
 	if len(analyzer.Handlers) == 0 {
 		return errors.New("at least one handler must be defined")
@@ -49,22 +47,20 @@ func (analyzer *Analyzer) Analyze(commitIter object.CommitIter, analyzeChan chan
 		var wg sync.WaitGroup
 		// struct{} is the smallest data type available in Go
 		maxWorkers := make(chan struct{}, 4)
-		var currentCommit chan *object.Commit = make(chan *object.Commit)
+		var currentCommit chan *models.Commit = make(chan *models.Commit)
 		totalCommit := 0
-		go func() error {
+		go func() {
 			defer close(currentCommit)
-			err := commitIter.ForEach(func(commit *object.Commit) error {
+			commitIter.ForEach(func(commit *models.Commit) error {
 				totalCommit++
 				currentCommit <- commit
 				return nil
 			})
-			commitIter.Close()
-			return err
 		}()
 		for commit := range currentCommit {
 			wg.Add(1)
 			maxWorkers <- struct{}{}
-			go func(commit *object.Commit) {
+			go func(commit *models.Commit) {
 				defer wg.Done()
 				defer func() { <-maxWorkers }()
 				_ = analyzer.analyze(ctx, commit, analyzeChan)
@@ -107,7 +103,7 @@ func (analyzer *Analyzer) RegisterHandler(handler handlers.Handler) {
 		handler.SetInfo(analyzer.Info)
 	}
 	handler.SetOptions(analyzer.Options)
-	handler.SetRepository(analyzer.Repository)
+	handler.SetDriver(analyzer.Driver)
 	analyzer.Handlers = append(analyzer.Handlers, handler)
 }
 
@@ -126,17 +122,17 @@ func (analyzer *Analyzer) SetPolicies(policies []models.Policy) {
 	analyzer.Policies = policies
 }
 
-// SetRepository set repository
-func (analyzer *Analyzer) SetRepository(repository *git.Repository) {
-	analyzer.Repository = repository
+// SetDriver set repository
+func (analyzer *Analyzer) SetDriver(driver git.Driver) {
+	analyzer.Driver = driver
 }
 
-func (analyzer *Analyzer) analyze(ctx context.Context, commit *object.Commit, analyzeChan chan models.AnalysisResult) error {
+func (analyzer *Analyzer) analyze(ctx context.Context, commit *models.Commit, analyzeChan chan models.AnalysisResult) error {
 	scanTimeStart := time.Now()
 	issues := make([]models.Issue, 0)
 	for _, policy := range analyzer.Policies {
 		analyzer.Logger.WithFields(logging.Fields{
-			"commit":         commit.Hash.String(),
+			"commit":         commit.Hash,
 			"correlation_id": util.GetRequestID(ctx),
 			"rule":           policy.Type,
 			"user_id":        util.GetUserID(ctx),
@@ -159,12 +155,7 @@ func (analyzer *Analyzer) analyze(ctx context.Context, commit *object.Commit, an
 	}
 	elapsed := time.Since(scanTimeStart)
 	analyzeChan <- models.AnalysisResult{
-		Commit: models.Commit{
-			Author:  commit.Author.Name,
-			Email:   commit.Author.Email,
-			Hash:    commit.Hash.String(),
-			Message: strings.TrimSuffix(commit.Message, "\n"),
-		},
+		Commit:      *commit,
 		ElapsedTime: elapsed,
 		Issues:      issues,
 	}

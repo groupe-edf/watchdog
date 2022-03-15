@@ -5,6 +5,7 @@ import (
 
 	"github.com/gookit/color"
 	"github.com/groupe-edf/watchdog/internal/config"
+	"github.com/groupe-edf/watchdog/internal/git"
 	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/server"
 	"github.com/groupe-edf/watchdog/internal/server/authentication"
@@ -32,6 +33,9 @@ var (
 			})
 			di.Set(config.ServiceName, func(c container.Container) container.Service {
 				return options
+			})
+			di.Provide(&git.ServiceProvider{
+				Options: options,
 			})
 			di.Provide(&store.ServiceProvider{
 				Options: options.Database,

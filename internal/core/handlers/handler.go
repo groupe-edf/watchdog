@@ -8,6 +8,7 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/config"
+	driver "github.com/groupe-edf/watchdog/internal/git"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/logging"
@@ -26,17 +27,18 @@ const (
 
 // Handler hook handler interface
 type Handler interface {
-	GetRepository() *git.Repository
+	GetDriver() driver.Driver
 	GetType() HandlerType
-	Handle(ctx context.Context, commit *object.Commit, policy models.Policy, whitelist models.Whitelist) (issues []models.Issue, err error)
+	Handle(ctx context.Context, commit *models.Commit, policy models.Policy, whitelist models.Whitelist) (issues []models.Issue, err error)
+	SetDriver(driver driver.Driver)
 	SetInfo(info *hook.Info)
 	SetLogger(logger logging.Interface)
 	SetOptions(options *config.Options)
-	SetRepository(repository *git.Repository)
 }
 
 // AbstractHandler abstract handler
 type AbstractHandler struct {
+	Driver driver.Driver
 	Handler
 	Info       *hook.Info
 	Logger     logging.Interface
@@ -45,8 +47,8 @@ type AbstractHandler struct {
 }
 
 // GetRepository get git repository
-func (handler *AbstractHandler) GetRepository() *git.Repository {
-	return handler.Repository
+func (handler *AbstractHandler) GetDriver() driver.Driver {
+	return handler.Driver
 }
 
 // SetInfo set info
@@ -65,15 +67,15 @@ func (handler *AbstractHandler) SetOptions(options *config.Options) {
 }
 
 // SetRepository set logger
-func (handler *AbstractHandler) SetRepository(repository *git.Repository) {
-	handler.Repository = repository
+func (handler *AbstractHandler) SetDriver(driver driver.Driver) {
+	handler.Driver = driver
 }
 
 // CanSkip check if we can skip the rule and condition for given commit
-func CanSkip(commit *object.Commit, policyType models.PolicyType, conditionType models.ConditionType) bool {
+func CanSkip(commit *models.Commit, policyType models.PolicyType, conditionType models.ConditionType) bool {
 	var canSkip bool = false
 	skipPattern := fmt.Sprintf(`(?i)\[skip[[:space:]]hooks(?:.%s(?:.%s)?)?\]`, policyType, conditionType)
-	if len(regexp.MustCompile(skipPattern).FindStringIndex(commit.Message)) > 0 {
+	if len(regexp.MustCompile(skipPattern).FindStringIndex(commit.Subject)) > 0 {
 		canSkip = true
 	}
 	return canSkip
@@ -97,9 +99,11 @@ func (defaultHandler *DefaultHandler) Handle(ctx context.Context, commit *object
 			"\nAccess denied, push blocked. Please contact the repository administrator. %s"
 		data := issue.Data{
 			Commit: models.Commit{
-				Author: commit.Author.Name,
-				Email:  commit.Author.Email,
-				Hash:   commit.Hash.String(),
+				Author: &models.Signature{
+					Email: commit.Author.Email,
+					Name:  commit.Author.Name,
+				},
+				Hash: commit.Hash.String(),
 			},
 			Condition: models.Condition{
 				RejectionMessage: rejectionMessage,

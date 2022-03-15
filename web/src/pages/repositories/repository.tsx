@@ -9,6 +9,7 @@ import {
   Button,
   HStack,
   Icon,
+  Image,
   Stack,
   Tab,
   TabList,
@@ -127,6 +128,7 @@ class ShowRepository extends Component<RepositoryProps, { isOpen: boolean }> {
         </TabList>
         <TabPanels background="white" borderBottomRadius="md">
           <TabPanel>
+            <Image src={"http://localhost:3001/api/v1/repositories/" + repository.id + "/badge"} alt="Analyze status" />
             <HStack>
               {repository.visibility === "public" ? (
                 <Icon as={IoGlobeOutline} />

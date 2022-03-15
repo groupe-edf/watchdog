@@ -6,6 +6,8 @@
 
 Watchdog allows to define custom hooks in YAML format. When attached to the official repository, some of these can serve as a way to enforce policy by rejecting certain commits or branches.
 
+![Dashboard](docs/content/en/dashboard.png)
+
 * [Features](#features)
 * [Installation](#installation)
 * [Usage](#usage)

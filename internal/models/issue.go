@@ -1,12 +1,5 @@
 package models
 
-type Commit struct {
-	Author  string `json:"author"`
-	Email   string `json:"email"`
-	Hash    string `json:"hash"`
-	Message string `json:"message"`
-}
-
 // Issue analysis issue
 type Issue struct {
 	ID            string        `json:"id,omitempty"`

@@ -19,8 +19,8 @@ import (
 	"github.com/go-git/go-git/v5/storage"
 	"github.com/go-git/go-git/v5/storage/filesystem"
 	"github.com/go-git/go-git/v5/storage/memory"
-	"github.com/groupe-edf/watchdog/internal/backend"
 	"github.com/groupe-edf/watchdog/internal/config"
+	driver "github.com/groupe-edf/watchdog/internal/git"
 	"github.com/groupe-edf/watchdog/internal/hook"
 )
 
@@ -97,7 +97,7 @@ func ParseGitPushOptions() {
 func RevList(repository *git.Repository, info *hook.Info) (object.CommitIter, error) {
 	fmt.Printf("Running analysis on %s:", Colorize(Green, info.Ref.String()))
 	var err error
-	opts := backend.RevListOptions{}
+	opts := driver.RevListOptions{}
 	if info.OldRev != nil {
 		opts.OldRev = info.OldRev.Hash
 	}

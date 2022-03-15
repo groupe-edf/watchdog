@@ -79,7 +79,7 @@ export class Header extends Component<HeaderProps, {
           <Menu>
             <MenuButton>
               <HStack>
-                <Text>Bonjour</Text>
+                <Text>Welcome</Text>
                 <Text fontWeight="bold">{currentUser.last_name}</Text>
                 <Avatar background="brand.100" name={currentUser.first_name} size="sm" />
               </HStack>

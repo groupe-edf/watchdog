@@ -11,9 +11,11 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/gookit/color"
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/models"
 	"github.com/groupe-edf/watchdog/internal/server/container"
+	"github.com/groupe-edf/watchdog/internal/version"
 )
 
 type Console struct {
@@ -25,12 +27,13 @@ type Console struct {
 const outputTemplate = `
 {{- if .Issues -}}
 {{ range .Issues -}}
-{{- if eq .Severity 2 -}}{{ $.ErrorMessagePrefix }}{{ end -}}severity={{ .Severity }} handler={{ .PolicyType }} condition={{ .ConditionType }} commit={{ printf "%.8s" .Commit.Hash }} message="{{ .Message }}"
+· {{ if eq .Severity 2 -}}{{ $.ErrorMessagePrefix }}{{ end -}}severity={{ .Severity }} handler={{ .PolicyType }} condition={{ .ConditionType }} commit={{ printf "%.8s" .Commit.Hash }} message="{{ .Message }}"
 {{ end -}}
 {{ end -}}
 `
 
 func (output *Console) WriteTo() error {
+	output.printBanner()
 	severity := models.SeverityLow
 	for {
 		if result, ok := <-output.Channel; ok {
@@ -48,7 +51,7 @@ func (output *Console) WriteTo() error {
 					offender, _ := json.Marshal(issue.Offender)
 					writer.Write([]string{
 						issue.Severity.String(),
-						fmt.Sprintf("%.8s", issue.Commit),
+						fmt.Sprintf("%.8s", issue.Commit.Hash),
 						string(issue.PolicyType),
 						issue.Message,
 						string(offender),
@@ -65,6 +68,11 @@ func (output *Console) WriteTo() error {
 					}
 				}
 			case Text:
+				commitHash := color.Green.Sprint(result.Commit.Hash[:8])
+				if len(result.Issues) > 0 {
+					commitHash = color.Red.Sprint(result.Commit.Hash[:8])
+				}
+				content.Write([]byte(fmt.Sprintf("%v · %v · (%v)\n", commitHash, strings.Split(result.Commit.Subject, "\n")[0], result.ElapsedTime)))
 				functionsMap := template.FuncMap{
 					"upper": strings.ToUpper,
 				}
@@ -88,6 +96,20 @@ func (output *Console) WriteTo() error {
 		}
 	}
 	return nil
+}
+
+// printBanner print watchdog banner
+func (output *Console) printBanner() error {
+	options := container.Get(config.ServiceName).(*config.Options)
+	t, err := template.New("watchdog").Parse(config.Banner)
+	if err != nil {
+		return err
+	}
+	data := map[string]interface{}{
+		"Options":   options,
+		"BuildInfo": version.GetBuildInfo(),
+	}
+	return t.Execute(output.writer, data)
 }
 
 func NewConsole(ch chan models.AnalysisResult) *Console {

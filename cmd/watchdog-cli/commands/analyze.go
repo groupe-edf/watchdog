@@ -2,16 +2,14 @@ package commands
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"os/signal"
 
-	"github.com/go-git/go-git/v5"
 	"github.com/gookit/color"
-	"github.com/groupe-edf/watchdog/internal/backend"
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/core/loaders"
+	"github.com/groupe-edf/watchdog/internal/git"
 	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/models"
 	"github.com/groupe-edf/watchdog/internal/output"
@@ -33,16 +31,15 @@ var (
 				os.Exit(0)
 			}
 			di := container.GetContainer()
+			di.Provide(&git.ServiceProvider{
+				Options: options,
+			})
 			di.Provide(&logging.ServiceProvider{
 				Options: options.Logs,
 			})
 			di.Set(config.ServiceName, func(c container.Container) container.Service {
 				return options
 			})
-			if options.Banner {
-				_ = util.PrintBanner(options)
-				fmt.Println()
-			}
 			logger := di.Get(logging.ServiceName).(logging.Interface)
 			ctx, cancel := context.WithCancel(cmd.Context())
 			interruption := make(chan os.Signal, 1)
@@ -58,15 +55,10 @@ var (
 				case <-ctx.Done():
 				}
 			}()
-			client := backend.New(options)
-			err = client.Clone(ctx, &git.CloneOptions{
-				Progress: os.Stderr,
-				URL:      options.URI,
+			driver := di.Get(git.ServiceName).(git.Driver)
+			repository, err := driver.Clone(ctx, git.CloneOptions{
+				URL: options.URI,
 			})
-			if err != nil {
-				logger.Fatal(err)
-			}
-			repository, err := util.LoadRepository(ctx, options)
 			if err != nil {
 				color.Red.Printf("error fetching repository `%v`", err)
 				logger.WithFields(logging.Fields{
@@ -77,18 +69,17 @@ var (
 			logger.WithFields(logging.Fields{
 				"correlation_id": util.GetRequestID(ctx),
 				"user_id":        util.GetUserID(ctx),
-			}).Debugf("repository `%v` successfully fetched", options.URI)
+			}).Debugf("repository `%v` successfully fetched in `%s`", options.URI, repository.Path)
 			loader := loaders.NewAPILoader(options.ServerURL, options.ServerToken)
 			analyzer, err := core.NewAnalyzer(ctx, loader, logger, options, models.Whitelist{})
 			if err != nil {
 				logger.Fatal(err)
 			}
-			analyzer.SetRepository(repository)
-			commitIter, err := client.Commits(ctx, &git.LogOptions{})
+			analyzer.SetDriver(driver)
+			commitIter, err := driver.Commits(ctx, git.LogOptions{})
 			if err != nil {
 				logger.Fatal(err)
 			}
-			defer commitIter.Close()
 			analyzeChan := make(chan models.AnalysisResult)
 			go analyzer.Analyze(commitIter, analyzeChan)
 			writer := output.NewConsole(analyzeChan)

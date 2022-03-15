@@ -30,15 +30,16 @@ type RegexScanner struct {
 }
 
 // Scan scan commit and return list of leaks if found
-func (scanner *RegexScanner) Scan(commit *object.Commit) (leaks []models.Leak, err error) {
-	if len(commit.ParentHashes) == 0 {
+func (scanner *RegexScanner) Scan(commit *models.Commit) (leaks []models.Leak, err error) {
+	commitObject := &object.Commit{}
+	if len(commitObject.ParentHashes) == 0 {
 		return
 	}
-	parent, err := commit.Parent(0)
+	parent, err := commitObject.Parent(0)
 	if err != nil {
 		return
 	}
-	patch, err := parent.Patch(commit)
+	patch, err := parent.Patch(commitObject)
 	if err != nil {
 		return
 	}
@@ -65,15 +66,15 @@ func (scanner *RegexScanner) Scan(commit *object.Commit) (leaks []models.Leak, e
 					}
 					leaks = append(leaks, models.Leak{
 						Author:     commit.Author.Name,
-						CommitHash: commit.Hash.String(),
-						CreatedAt:  commit.Author.When,
+						CommitHash: commit.Hash,
+						CreatedAt:  commitObject.Author.When,
 						File:       to.Path(),
 						Line:       offenders[0].Line,
 						LineNumber: scanner.getLineNumber(offenders[0].Offender, offenders[0].Line, patchContent, to.Path(), lineLookup),
 						Offender:   offenders[0].Offender,
 						Rule:       rule,
 						Tags:       rule.Tags,
-						SecretHash: models.GenerateHash(to.Path(), commit.Hash.String(), offenders[0].Offender),
+						SecretHash: models.GenerateHash(to.Path(), commit.Hash, offenders[0].Offender),
 						Severity:   rule.Severity,
 					})
 				}

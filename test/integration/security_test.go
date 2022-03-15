@@ -1,3 +1,4 @@
+//go:build integration || security
 // +build integration security
 
 package main
@@ -51,7 +52,7 @@ func TestSecretRules(t *testing.T) {
 		{"SECRET_KEY_TOML", "config.toml", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/config.toml")), 2, &Issue{Offender: "1234567890ABCDEF", Rule: "SECRET_KEY"}},
 		{"SECRET_KEY_ENV", ".env", helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/leaks/production.env")), 1, &Issue{Offender: "t&XG+FJ%M@8XYv5a!xaR", Rule: "SECRET_KEY"}},
 	}
-	rejectionMessage := "Secrets, token and passwords are forbidden, `{{ .Object }}:{{ Hide .Value 4 }}`"
+	rejectionMessage := "Secrets, token and passwords are forbidden, `{{ .Object }}:{{ hide .Value 4 }}`"
 	gitHooksFile := helpers.LoadGolden(t, path.Join(RootDirectory, "/test/data/rules/security_secret"))
 	gitHooksFile = fmt.Sprintf(gitHooksFile, Version)
 	for _, test := range tests {

@@ -5,7 +5,6 @@ import (
 	"regexp"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/models"
@@ -27,7 +26,7 @@ func (tagHandler *TagHandler) GetType() HandlerType {
 }
 
 // Handle checking tags with defined rules
-func (tagHandler *TagHandler) Handle(ctx context.Context, commit *object.Commit, policy models.Policy, whitelist models.Whitelist) (issues []models.Issue, err error) {
+func (tagHandler *TagHandler) Handle(ctx context.Context, commit *models.Commit, policy models.Policy, whitelist models.Whitelist) (issues []models.Issue, err error) {
 	// Handler must run only on tag changes
 	// TODO: check only heads refs
 	if policy.Type == models.PolicyTypeTag && tagHandler.Info.Ref.IsTag() {

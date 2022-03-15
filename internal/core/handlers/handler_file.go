@@ -15,9 +15,7 @@ import (
 	"github.com/groupe-edf/watchdog/internal/util"
 )
 
-var (
-	_ Handler = (*FileHandler)(nil)
-)
+var _ Handler = (*FileHandler)(nil)
 
 // FileHandler handle committed files
 type FileHandler struct {
@@ -30,21 +28,22 @@ func (fileHandler *FileHandler) GetType() HandlerType {
 }
 
 // Handle checking files with defined rules
-func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commit, policy models.Policy, whitelist models.Whitelist) (issues []models.Issue, err error) {
+func (fileHandler *FileHandler) Handle(ctx context.Context, commit *models.Commit, policy models.Policy, whitelist models.Whitelist) (issues []models.Issue, err error) {
 	defer func() {
 		if err := recover(); err != nil {
 			return
 		}
 	}()
+	commitObject := &object.Commit{}
 	if policy.Type == models.PolicyTypeFile {
-		if len(commit.ParentHashes) == 0 {
+		if len(commitObject.ParentHashes) == 0 {
 			return
 		}
-		parent, err := commit.Parent(0)
+		parent, err := commitObject.Parent(0)
 		if err != nil {
 			return nil, err
 		}
-		patch, err := parent.Patch(commit)
+		patch, err := parent.Patch(commitObject)
 		if err != nil {
 			return nil, err
 		}
@@ -54,14 +53,16 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 			}
 			data := issue.Data{
 				Commit: models.Commit{
-					Author: commit.Author.Name,
-					Email:  commit.Author.Email,
-					Hash:   commit.Hash.String(),
+					Author: &models.Signature{
+						Email: commit.Author.Email,
+						Name:  commit.Author.Name,
+					},
+					Hash: commit.Hash,
 				},
 				Condition: condition,
 			}
 			fileHandler.Logger.WithFields(logging.Fields{
-				"commit":         commit.Hash.String(),
+				"commit":         commit.Hash,
 				"condition":      condition.Type,
 				"correlation_id": util.GetRequestID(ctx),
 				"rule":           policy.Type,
@@ -97,7 +98,7 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 				for _, filePatch := range patch.FilePatches() {
 					_, to := filePatch.Files()
 					if to != nil {
-						file, _ := commit.File(to.Path())
+						file, _ := commitObject.File(to.Path())
 						var fileSize datasize.ByteSize
 						err = fileSize.UnmarshalText([]byte(strconv.FormatInt(file.Size, 10)))
 						if err != nil {
@@ -114,7 +115,7 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 							}
 						default:
 							fileHandler.Logger.WithFields(logging.Fields{
-								"commit":         commit.Hash.String(),
+								"commit":         commit.Hash,
 								"condition":      condition.Type,
 								"correlation_id": util.GetRequestID(ctx),
 								"rule":           policy.Type,
@@ -125,7 +126,7 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *object.Commi
 				}
 			default:
 				fileHandler.Logger.WithFields(logging.Fields{
-					"commit":         commit.Hash.String(),
+					"commit":         commit.Hash,
 					"condition":      condition.Type,
 					"correlation_id": util.GetRequestID(ctx),
 					"rule":           policy.Type,

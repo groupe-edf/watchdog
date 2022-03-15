@@ -137,6 +137,7 @@ func (api *API) Mount(router *mux.Router) {
 	router.HandleFunc(apiRoot+"/repositories/{repository_id}", wrap(api.GetRepository, protectedRoute)).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/repositories/{repository_id}", wrap(api.DeleteRepository, protectedRoute)).Methods(http.MethodDelete)
 	router.HandleFunc(apiRoot+"/repositories/{repository_id}/analyze", wrap(api.Analyze, protectedRoute)).Methods(http.MethodPost)
+	router.HandleFunc(apiRoot+"/repositories/{repository_id}/badge", wrap(api.GetRepositoryBadge, RequestOptions{})).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/rules", wrap(api.GetRules, protectedRoute)).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/rules/{rule_id}/toggle", wrap(api.ToggleRule, protectedRoute)).Methods(http.MethodPut)
 	router.HandleFunc(apiRoot+"/settings", wrap(api.GetSettings, RequestOptions{})).Methods(http.MethodGet)

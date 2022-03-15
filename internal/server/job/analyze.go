@@ -9,15 +9,13 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
-	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/transport"
-	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/google/uuid"
 	"github.com/gookit/color"
-	"github.com/groupe-edf/watchdog/internal/backend"
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/core/loaders"
+	driver "github.com/groupe-edf/watchdog/internal/git"
 	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/models"
 	"github.com/groupe-edf/watchdog/internal/server/broadcast"
@@ -58,7 +56,7 @@ func (processor *ProcessAnalyze) Handle(job *models.Job) error {
 	}
 	ctx, cancel := context.WithTimeout(processor.Context, time.Duration(time.Second*1240))
 	defer cancel()
-	cloneOptions := &git.CloneOptions{
+	cloneOptions := driver.CloneOptions{
 		URL: options.RepositoryURL,
 	}
 	if options.IntegrationID != 0 {
@@ -70,14 +68,13 @@ func (processor *ProcessAnalyze) Handle(job *models.Job) error {
 		if err != nil {
 			return err
 		}
-		cloneOptions.Auth = &http.BasicAuth{
+		cloneOptions.Authentication = &driver.BasicAuthentication{
 			Username: integration.InstanceName,
 			Password: token,
 		}
 	}
-	globalOptions := container.GetContainer().Get(config.ServiceName).(*config.Options)
-	client := backend.New(globalOptions)
-	err = client.Clone(ctx, cloneOptions)
+	client := container.Get(driver.ServiceName).(driver.Driver)
+	_, err = client.Clone(ctx, cloneOptions)
 	if err != nil && err != git.NoErrAlreadyUpToDate {
 		if err == transport.ErrAuthenticationRequired || err == transport.ErrEmptyRemoteRepository {
 			analysis.State = models.FailedState
@@ -91,21 +88,19 @@ func (processor *ProcessAnalyze) Handle(job *models.Job) error {
 	if err != nil {
 		return err
 	}
-	analysis.LastCommitHash = reference.Hash().String()
+	analysis.LastCommitHash = reference
 	from := plumbing.NewHash(options.From)
-	var commitIter object.CommitIter
+	var commits models.Iterator[models.Commit]
 	if !from.IsZero() {
-		commitIter, err = client.RevList(backend.RevListOptions{
+		commits, err = client.RevList(driver.RevListOptions{
 			OldRev: from,
 		})
 	} else {
-		logOptions := &git.LogOptions{}
-		commitIter, err = client.Commits(ctx, logOptions)
+		commits, err = client.Commits(ctx, driver.LogOptions{})
 	}
 	if err != nil {
 		return err
 	}
-	defer commitIter.Close()
 	analyzer, err := core.NewAnalyzer(
 		processor.Context,
 		loaders.NewStoreLoader(processor.Store),
@@ -127,7 +122,7 @@ func (processor *ProcessAnalyze) Handle(job *models.Job) error {
 	broadcast := container.GetContainer().Get(broadcast.ServiceName).(*broadcast.Broadcast)
 	severity := models.SeverityLow
 	totalIssues := 0
-	go analyzer.Analyze(commitIter, analyzeChan)
+	go analyzer.Analyze(commits, analyzeChan)
 	for {
 		if result, ok := <-analyzeChan; ok {
 			for _, data := range result.Issues {
@@ -150,7 +145,7 @@ func (processor *ProcessAnalyze) Handle(job *models.Job) error {
 			if len(result.Issues) > 0 {
 				commitHash = color.Red.Sprint(result.Commit.Hash[:8])
 			}
-			fmt.Printf("|_ %v · %v · (%v)\n", commitHash, strings.Split(result.Commit.Message, "\n")[0], result.ElapsedTime)
+			fmt.Printf("|_ %v · %v · (%v)\n", commitHash, strings.Split(result.Commit.Subject, "\n")[0], result.ElapsedTime)
 			broadcast.Broadcast(result)
 		} else {
 			break

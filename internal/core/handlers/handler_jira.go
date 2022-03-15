@@ -5,7 +5,6 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/jira"
 	"github.com/groupe-edf/watchdog/internal/logging"
@@ -33,14 +32,16 @@ func (jiraHandler *JiraHandler) GetType() HandlerType {
 }
 
 // Handle checking files with defined rules
-func (jiraHandler *JiraHandler) Handle(ctx context.Context, commit *object.Commit, policy models.Policy, whitelist models.Whitelist) (issues []models.Issue, err error) {
+func (jiraHandler *JiraHandler) Handle(ctx context.Context, commit *models.Commit, policy models.Policy, whitelist models.Whitelist) (issues []models.Issue, err error) {
 	if policy.Type == models.PolicyTypeJira {
 		for _, condition := range policy.Conditions {
 			data := issue.Data{
 				Commit: models.Commit{
-					Author: commit.Author.Name,
-					Email:  commit.Author.Email,
-					Hash:   commit.Hash.String(),
+					Author: &models.Signature{
+						Email: commit.Author.Email,
+						Name:  commit.Author.Name,
+					},
+					Hash: commit.Hash,
 				},
 				Condition: condition,
 			}
@@ -54,10 +55,10 @@ func (jiraHandler *JiraHandler) Handle(ctx context.Context, commit *object.Commi
 			switch condition.Type {
 			case models.ConditionTypeIssue:
 				// Check if commit message contains issue reference
-				matches := regexp.MustCompile(issueReferencePattern).FindStringSubmatch(commit.Message)
+				matches := regexp.MustCompile(issueReferencePattern).FindStringSubmatch(commit.Subject)
 				if len(matches) == 0 {
 					var severity models.Score = models.SeverityHigh
-					if jiraHandler.canSkip(commit.Message, condition) {
+					if jiraHandler.canSkip(commit.Subject, condition) {
 						severity = models.SeverityLow
 					}
 					issues = append(issues, issue.NewIssue(policy, condition.Type, data, severity, "Commit message require JIRA Issue key"))

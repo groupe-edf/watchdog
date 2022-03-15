@@ -125,9 +125,11 @@ type Storage struct {
 
 // Validate validate options
 func (options *Options) Validate() error {
-	if options.URI == "" {
-		directory, _ := os.Getwd()
-		options.URI = directory
+	if options.Logs == nil {
+		options.Logs = &Logs{
+			Format: "text",
+			Level:  "info",
+		}
 	}
 	if options.Concurrent == 0 {
 		options.Concurrent = runtime.NumCPU()
@@ -141,6 +143,10 @@ func (options *Options) Validate() error {
 				rule.Severity = "INFO"
 			}
 		}
+	}
+	if options.URI == "" {
+		directory, _ := os.Getwd()
+		options.URI = directory
 	}
 	return nil
 }

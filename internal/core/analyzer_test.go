@@ -4,10 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/go-git/go-git/v5"
-	"github.com/groupe-edf/watchdog/internal/backend"
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/core/handlers"
+	"github.com/groupe-edf/watchdog/internal/git"
 	"github.com/groupe-edf/watchdog/internal/logging"
 	"github.com/groupe-edf/watchdog/internal/models"
 	"github.com/groupe-edf/watchdog/internal/server/container"
@@ -35,15 +34,15 @@ func BenchmarkTestAnalyze(b *testing.B) {
 	}
 	analyzer.RegisterHandler(&handlers.CommitHandler{})
 	analyzeChan := make(chan models.AnalysisResult)
-	client := backend.New(&config.Options{})
-	err := client.Clone(ctx, &git.CloneOptions{
+	client := git.NewGit(&config.Options{})
+	_, err := client.Clone(ctx, git.CloneOptions{
 		URL: "https://github.com/groupe-edf/watchdog",
 	})
 	if err != nil {
 		b.Fatal(err)
 	}
 	b.StartTimer()
-	commitIter, _ := client.Commits(context.Background(), &git.LogOptions{})
+	commitIter, _ := client.Commits(context.Background(), git.LogOptions{})
 	analyzer.Analyze(commitIter, analyzeChan)
 	b.StopTimer()
 }
