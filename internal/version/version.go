@@ -1,8 +1,11 @@
 package version
 
 import (
+	"context"
 	"encoding/json"
 	"runtime"
+
+	"github.com/groupe-edf/watchdog/internal/git"
 )
 
 // Version is loaded via  LDFLAGS:
@@ -18,12 +21,13 @@ var (
 
 // BuildInfo build informations
 type BuildInfo struct {
-	BuildDate string `json:"build_date"`
-	GitCommit string `json:"git_commit"`
-	GoVersion string `json:"go_version"`
-	Commit    string `json:"commit"`
-	Platform  string `json:"platform"`
-	Version   string `json:"version"`
+	BuildDate  string `json:"build_date"`
+	GitCommit  string `json:"git_commit"`
+	GitVersion string `json:"git_version"`
+	GoVersion  string `json:"go_version"`
+	Commit     string `json:"commit"`
+	Platform   string `json:"platform"`
+	Version    string `json:"version"`
 }
 
 // ToJSON return build info in JSON format
@@ -34,12 +38,14 @@ func (buildInfo *BuildInfo) ToJSON() []byte {
 
 // GetBuildInfo get CLI information
 func GetBuildInfo() *BuildInfo {
+	gitVersion, _ := git.GetGitVersion(context.Background())
 	return &BuildInfo{
-		BuildDate: BuildDate,
-		GitCommit: GitCommit,
-		GoVersion: runtime.Version(),
-		Commit:    Commit,
-		Platform:  runtime.GOOS + "/" + runtime.GOARCH,
-		Version:   Version,
+		BuildDate:  BuildDate,
+		GitCommit:  GitCommit,
+		GitVersion: gitVersion.String(),
+		GoVersion:  runtime.Version(),
+		Commit:     Commit,
+		Platform:   runtime.GOOS + "/" + runtime.GOARCH,
+		Version:    Version,
 	}
 }

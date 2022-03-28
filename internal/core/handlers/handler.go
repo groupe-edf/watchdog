@@ -5,14 +5,13 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/groupe-edf/watchdog/internal/config"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	driver "github.com/groupe-edf/watchdog/internal/git"
 	"github.com/groupe-edf/watchdog/internal/hook"
 	"github.com/groupe-edf/watchdog/internal/issue"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 )
 
 // HandlerType handler type
@@ -30,25 +29,31 @@ type Handler interface {
 	GetDriver() driver.Driver
 	GetType() HandlerType
 	Handle(ctx context.Context, commit *models.Commit, policy models.Policy, whitelist models.Whitelist) (issues []models.Issue, err error)
+	Name() string
 	SetDriver(driver driver.Driver)
 	SetInfo(info *hook.Info)
 	SetLogger(logger logging.Interface)
 	SetOptions(options *config.Options)
+	SetRepository(repository *driver.Repository)
 }
 
 // AbstractHandler abstract handler
 type AbstractHandler struct {
-	Driver driver.Driver
-	Handler
+	Driver     driver.Driver
 	Info       *hook.Info
 	Logger     logging.Interface
 	Options    *config.Options
-	Repository *git.Repository
+	Repository *driver.Repository
 }
 
 // GetRepository get git repository
 func (handler *AbstractHandler) GetDriver() driver.Driver {
 	return handler.Driver
+}
+
+// SetRepository set logger
+func (handler *AbstractHandler) SetDriver(driver driver.Driver) {
+	handler.Driver = driver
 }
 
 // SetInfo set info
@@ -67,8 +72,8 @@ func (handler *AbstractHandler) SetOptions(options *config.Options) {
 }
 
 // SetRepository set logger
-func (handler *AbstractHandler) SetDriver(driver driver.Driver) {
-	handler.Driver = driver
+func (handler *AbstractHandler) SetRepository(repository *driver.Repository) {
+	handler.Repository = repository
 }
 
 // CanSkip check if we can skip the rule and condition for given commit

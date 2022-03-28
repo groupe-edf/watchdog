@@ -1,10 +1,10 @@
 package queue
 
 import (
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
-	"github.com/groupe-edf/watchdog/internal/server/container"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/server/store"
+	"github.com/groupe-edf/watchdog/pkg/container"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 )
 
 const (

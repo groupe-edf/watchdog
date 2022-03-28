@@ -85,6 +85,7 @@ bootstrap: ## Install all development and ci tools
 	$(GO_INSTALL) golang.org/x/tools/cmd/godoc@latest
 	$(GO_INSTALL) golang.org/x/tools/cmd/goimports@latest
 	$(GO_INSTALL) golang.org/x/lint/golint@latest
+	$(GO_INSTALL) golang.org/x/vuln/cmd/govulncheck@latest
 
 build: ## Build watchdog CLI
 	$(GO_BUILD) -o $(BINARY_NAME) -v -o $(BINARY_OUTPUT) -ldflags="$(LDFLAGS)" ./cmd/watchdog-cli
@@ -112,6 +113,12 @@ check: fmt vet lint
 #		npm install -D --save postcss-cli
 docs: ## Generate watchdog documentation
 	@hugo --verbose --source docs --destination ./public
+
+docker-build:
+	docker build \
+		--file build/Dockerfile \
+		--tag ${DOCKER_REGISTRY}/watchdog/watchdog-server \
+		.
 
 docs-serve:
 	@hugo server --watch --source docs
@@ -158,9 +165,9 @@ run: ## Run watchdog locally to analyze repostiory `make run URI="https://github
 	@echo "${GREEN}> Repository successfully analyzed${RESET}"
 
 serve: ## Serve watchdog
+	export BUILD=production
 	$(GO_RUN) -ldflags="$(LDFLAGS)" ./cmd/watchdog-server serve \
 		--config config/config.yml
-	@echo "${GREEN}> Repository successfully analyzed${RESET}"
 
 swagger-generate:
 	export SWAGGER_GENERATE_EXTENSION=false
@@ -179,6 +186,7 @@ test-integration:
 
 test-security:
 	@gosec -exclude=G101,G104,G203,G204,G302,G306,G307 -fmt=json ./...
+	@govulncheck ./...
 
 COVERAGE_PROFILE=$(TARGET)/coverage.txt
 RUN=.

@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/issue"
-	"github.com/groupe-edf/watchdog/internal/models"
 	helpers "github.com/groupe-edf/watchdog/internal/test"
 	"github.com/stretchr/testify/assert"
 )

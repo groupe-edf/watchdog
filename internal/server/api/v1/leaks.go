@@ -7,7 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/groupe-edf/watchdog/internal/server/api/response"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/pkg/query"
 )
 
 func (api *API) GetLeaks(r *http.Request) response.Response {

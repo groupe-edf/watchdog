@@ -1,3 +1,4 @@
+//go:build tag
 // +build tag
 
 package main
@@ -8,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	helpers "github.com/groupe-edf/watchdog/internal/test"
 	"github.com/stretchr/testify/assert"
 )

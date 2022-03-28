@@ -1,3 +1,8 @@
+FROM node:alpine AS build
+WORKDIR /usr/src/app/
+
+
+
 FROM golang:alpine AS builder
 # Install git + SSL ca certificates.
 # Git is required for fetching the dependencies.
@@ -23,7 +28,7 @@ COPY . .
 RUN go mod download
 RUN go mod verify
 # Build the binary.
-RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /go/bin/watchdog
+RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /go/bin/watchdog ./cmd/watchdog-server
 
 
 FROM scratch

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/groupe-edf/watchdog/internal/models"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/internal/core/models"
+	"github.com/groupe-edf/watchdog/pkg/query"
 	bolt "go.etcd.io/bbolt"
 )
 

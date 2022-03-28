@@ -10,11 +10,12 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/groupe-edf/watchdog/internal/config"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
-	"github.com/groupe-edf/watchdog/internal/server/container"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/server/store"
+	"github.com/groupe-edf/watchdog/pkg/authentication"
+	"github.com/groupe-edf/watchdog/pkg/container"
+	"github.com/groupe-edf/watchdog/pkg/logging"
+	"github.com/groupe-edf/watchdog/pkg/query"
 )
 
 var (
@@ -45,6 +46,10 @@ func performRequest(router http.Handler, method, path string, payload []byte) *h
 func setUpAll() {
 	di := container.GetContainer()
 	options := &config.Options{
+		Logs: &config.Logs{
+			Format: "json",
+			Level:  "debug",
+		},
 		Server: &config.Server{
 			Database: &config.Database{
 				Driver: "bolt",
@@ -57,7 +62,10 @@ func setUpAll() {
 	di.Set(config.ServiceName, func(c container.Container) container.Service {
 		return options
 	})
-	di.Provide(&logging.ServiceProvider{})
+	di.Provide(&authentication.ServiceProvider{})
+	di.Provide(&logging.ServiceProvider{
+		Options: options.Logs,
+	})
 	di.Provide(&store.ServiceProvider{
 		Options: options.Database,
 	})

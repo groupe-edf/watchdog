@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	builder "github.com/groupe-edf/watchdog/internal/server/database/query"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/pkg/query"
 )
 
 func (postgres *PostgresStore) FindIssues(q *query.Query) (models.Paginator[models.Issue], error) {
@@ -48,6 +48,7 @@ func (postgres *PostgresStore) FindIssues(q *query.Query) (models.Paginator[mode
 	}
 	defer rows.Close()
 	for rows.Next() {
+		var author models.Signature
 		var commit models.Commit
 		var issue models.Issue
 		var policy models.Policy
@@ -60,10 +61,10 @@ func (postgres *PostgresStore) FindIssues(q *query.Query) (models.Paginator[mode
 		}{}
 		err = rows.Scan(
 			&issue.ID,
-			&commit.Author,
+			&author.Name,
 			&commit.Hash,
 			&issue.ConditionType,
-			&commit.Author.Email,
+			&author.Email,
 			&offender.Object,
 			&offender.Operand,
 			&offender.Operator,
@@ -79,6 +80,7 @@ func (postgres *PostgresStore) FindIssues(q *query.Query) (models.Paginator[mode
 		if err != nil {
 			return paginator, err
 		}
+		commit.Author = &author
 		issue.Commit = commit
 		issue.Offender = &models.Offender{
 			Object:   offender.Object.String,

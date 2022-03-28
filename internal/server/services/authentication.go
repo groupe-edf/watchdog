@@ -1,9 +1,9 @@
 package services
 
 import (
-	"github.com/groupe-edf/watchdog/internal/server/authentication"
-	"github.com/groupe-edf/watchdog/internal/server/authentication/provider"
-	"github.com/groupe-edf/watchdog/internal/server/container"
+	"github.com/groupe-edf/watchdog/pkg/authentication"
+	"github.com/groupe-edf/watchdog/pkg/authentication/provider"
+	"github.com/groupe-edf/watchdog/pkg/container"
 )
 
 func Authenticate(username, password string) (identity *provider.Identity, err error) {

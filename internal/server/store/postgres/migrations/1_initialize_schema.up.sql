@@ -64,6 +64,19 @@ CREATE TABLE public.integrations (
 ALTER TABLE public.integrations OWNER TO watchdog;
 ALTER TABLE public.integrations ADD CONSTRAINT integrations_id_key UNIQUE (id);
 
+CREATE TABLE public.integrations_webhooks (
+  "id" SERIAL NOT NULL,
+  "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "group_id" BIGINT,
+  "integration_id" BIGINT NOT NULL,
+  "token" CHARACTER varying NOT NULL,
+  "url" VARCHAR(255),
+  "webhook_id" BIGINT NOT NULL
+);
+ALTER TABLE public.integrations_webhooks OWNER TO watchdog;
+ALTER TABLE public.integrations_webhooks ADD CONSTRAINT integrations_webhooks_id_key UNIQUE (id);
+ALTER TABLE ONLY public.integrations_webhooks ADD CONSTRAINT integrations_webhooks_foreign_key FOREIGN KEY (integration_id) REFERENCES public.integrations(id) ON DELETE CASCADE;
+
 CREATE TABLE public.jobs (
   "id" SERIAL NOT NULL,
   "args" JSON NOT NULL DEFAULT '[]'::json,
@@ -77,18 +90,18 @@ CREATE TABLE public.jobs (
 ALTER TABLE public.jobs OWNER TO watchdog;
 
 CREATE TABLE public.policies (
-  "id" BIGINT NOT NULL,
+  "id" SERIAL NOT NULL,
   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "created_by" uuid,
   "description" CHARACTER varying(1024),
-  "enabled" BOOLEAN DEFAULT true NOT NULL,
+  "enabled" BOOLEAN DEFAULT false NOT NULL,
   "display_name" VARCHAR(255),
   "name" VARCHAR(255),
-  "type" VARCHAR(255)
+  "severity" VARCHAR(32) NOT NULL,
+  "type" VARCHAR(255) NOT NULL
 );
 ALTER TABLE public.policies OWNER TO watchdog;
-CREATE SEQUENCE policies_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
-ALTER SEQUENCE policies_id_seq OWNED BY policies.id;
+ALTER TABLE public.policies ADD CONSTRAINT policies_id_key UNIQUE (id);
 
 CREATE TABLE public.policies_conditions (
   "id" SERIAL NOT NULL,
@@ -112,6 +125,7 @@ CREATE TABLE public.repositories (
 );
 ALTER TABLE public.repositories OWNER TO watchdog;
 ALTER TABLE public.repositories ADD CONSTRAINT repositories_repository_url_key UNIQUE (repository_url);
+ALTER TABLE ONLY public.repositories ADD CONSTRAINT repositories_integrations_foreign_key FOREIGN KEY (integration_id) REFERENCES public.integrations(id) ON DELETE CASCADE;
 
 CREATE TABLE public.repositories_analyzes (
   "id" uuid NOT NULL,
@@ -154,8 +168,10 @@ ALTER TABLE public.repositories_issues ADD CONSTRAINT repositories_issues_analys
 CREATE TABLE public.repositories_leaks (
   "id" SERIAL NOT NULL,
   "analysis_id" uuid NOT NULL,
-  "author" VARCHAR(255),
+  "author_email" VARCHAR(255),
+  "author_name" VARCHAR(255),
   "commit_hash" VARCHAR(255) NOT NULL,
+  "content" TEXT,
   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "file" VARCHAR(255),
   "line" TEXT,
@@ -168,6 +184,7 @@ CREATE TABLE public.repositories_leaks (
   "severity" VARCHAR(255) NOT NULL
 );
 ALTER TABLE public.repositories_leaks OWNER TO watchdog;
+ALTER TABLE public.repositories_leaks ADD CONSTRAINT secret_hash UNIQUE (secret_hash);
 
 CREATE TABLE public.repositories_statistics (
   "id" BIGINT NOT NULL,
@@ -179,7 +196,7 @@ CREATE TABLE public.repositories_statistics (
 ALTER TABLE public.repositories_statistics OWNER TO watchdog;
 
 CREATE TABLE public.rules (
-  "id" BIGINT NOT NULL,
+  "id" SERIAL NOT NULL,
   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   "created_by" uuid,
   "display_name" CHARACTER varying(128) DEFAULT '',
@@ -192,9 +209,6 @@ CREATE TABLE public.rules (
   "tags" CHARACTER varying(512) DEFAULT ''
 );
 ALTER TABLE public.rules OWNER TO watchdog;
-CREATE SEQUENCE rules_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
-ALTER SEQUENCE rules_id_seq OWNED BY rules.id;
-
 
 CREATE TABLE public.rules_allowed_entries (
   "id" SERIAL NOT NULL,
@@ -336,16 +350,34 @@ INSERT INTO public.categories("id", "lft", "rgt", "level", "title", "value", "ex
   (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Jira', 'jira', 'handler_type'),
   (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Security', 'security', 'handler_type'),
   (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Tag', 'tag', 'handler_type'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Email', 'email', 'condition_type'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Extension', 'extension', 'condition_type'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'IP Address', 'ip', 'condition_type'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Issue', 'issue', 'condition_type'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Length', 'length', 'condition_type'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Pattern', 'pattern', 'condition_type'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Protected', 'protected', 'condition_type'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Secret', 'secret', 'condition_type'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Semver', 'semver', 'condition_type'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Signature', 'signature', 'condition_type'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Size', 'size', 'condition_type'),
   (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Low', '0', 'issue_severity'),
   (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Medium', '1', 'issue_severity'),
-  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'High', '2', 'issue_severity');
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'High', '2', 'issue_severity'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Blocker', 'BLOCKER', 'rule_severity'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Critical', 'CRITICAL', 'rule_severity'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Info', 'INFO', 'rule_severity'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Major', 'MAJOR', 'rule_severity'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Minor', 'MINOR', 'rule_severity'),
+  (NEXTVAL('categories_id_seq'), 1, 2, 0, 'Gitlab', 'gitlab', 'integration_type');
 
 --- Seeding policies
-INSERT INTO public.policies("id", "description", "display_name", "name", "type") VALUES (
+INSERT INTO public.policies("id", "description", "display_name", "name", "severity", "type") VALUES (
   NEXTVAL('policies_id_seq'),
   'Ensure no secrets are committed on your repositories',
   'Secrets detection',
   'secrets',
+  'BLOCKER',
   'security'
 );
 INSERT INTO public.policies_conditions("policy_id", "type") VALUES (
@@ -353,12 +385,12 @@ INSERT INTO public.policies_conditions("policy_id", "type") VALUES (
   'secret'
 );
 ---
-INSERT INTO public.policies("id", "description", "display_name", "enabled", "name", "type") VALUES (
+INSERT INTO public.policies("id", "description", "display_name", "name", "severity", "type") VALUES (
   NEXTVAL('policies_id_seq'),
   'Ensure a .gitignore file is present in your repositories',
   '.gitignore file',
-  'false',
   'gitignore',
+  'CRITICAL',
   'file'
 );
 INSERT INTO public.policies_conditions("policy_id", "type", "pattern") VALUES (
@@ -367,12 +399,27 @@ INSERT INTO public.policies_conditions("policy_id", "type", "pattern") VALUES (
   '.gitignore'
 );
 ---
-INSERT INTO public.policies("id", "description", "display_name", "enabled", "name", "type") VALUES (
+INSERT INTO public.policies("id", "description", "display_name", "name", "severity", "type") VALUES (
+  NEXTVAL('policies_id_seq'),
+  'Enforce branch naming',
+  'Git Flow',
+  'git_flow',
+  'MINOR',
+  'branch'
+);
+INSERT INTO public.policies_conditions("policy_id", "type", "pattern", "rejection_message") VALUES (
+  CURRVAL('policies_id_seq'),
+  'pattern',
+  '(feature|release|hotfix)\/[a-z\d-_.]+',
+  'Branch `{{ .Branch }}` must match Gitflow naming convention'
+);
+---
+INSERT INTO public.policies("id", "description", "display_name", "name", "severity", "type") VALUES (
   NEXTVAL('policies_id_seq'),
   'Ensure that commit messages meet the conventional commit format.',
   'Conventional commit',
-  'false',
   'conventional_commit',
+  'MINOR',
   'commit'
 );
 INSERT INTO public.policies_conditions("policy_id", "type", "pattern", "rejection_message") VALUES (
@@ -382,11 +429,12 @@ INSERT INTO public.policies_conditions("policy_id", "type", "pattern", "rejectio
   'Message must be formatted like type(scope): subject'
 );
 ---
-INSERT INTO public.policies("id", "description", "display_name", "name", "type") VALUES (
+INSERT INTO public.policies("id", "description", "display_name", "name", "severity", "type") VALUES (
   NEXTVAL('policies_id_seq'),
   'Ensure no files with sensitive extensions are commited (ex: .key, .cert)',
   'File Extensions',
   'file_extensions',
+  'MAJOR',
   'file'
 );
 INSERT INTO public.policies_conditions("policy_id", "type", "pattern") VALUES (
@@ -395,17 +443,19 @@ INSERT INTO public.policies_conditions("policy_id", "type", "pattern") VALUES (
   'key'
 );
 ---
-INSERT INTO public.policies("id", "description", "display_name", "name", "type") VALUES (
+INSERT INTO public.policies("id", "description", "display_name", "name", "severity", "type") VALUES (
   NEXTVAL('policies_id_seq'),
   'Ensure no large files are commited',
   'File Size',
   'file_size',
+  'MAJOR',
   'file'
 );
-INSERT INTO public.policies_conditions("policy_id", "type", "pattern") VALUES (
+INSERT INTO public.policies_conditions("policy_id", "type", "pattern", "rejection_message") VALUES (
   CURRVAL('policies_id_seq'),
   'size',
-  'lt 5mb'
+  'lt 1mb',
+  'File {{ .Object }} size {{ .Value }} greater or equal than {{ .Operand }}'
 );
 
 --- Seeding rules

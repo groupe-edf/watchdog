@@ -6,10 +6,10 @@ import (
 
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/core/handlers"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/git"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
-	"github.com/groupe-edf/watchdog/internal/server/container"
+	"github.com/groupe-edf/watchdog/pkg/container"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 )
 
 func BenchmarkTestAnalyze(b *testing.B) {
@@ -35,7 +35,7 @@ func BenchmarkTestAnalyze(b *testing.B) {
 	analyzer.RegisterHandler(&handlers.CommitHandler{})
 	analyzeChan := make(chan models.AnalysisResult)
 	client := git.NewGit(&config.Options{})
-	_, err := client.Clone(ctx, git.CloneOptions{
+	repository, err := client.Clone(ctx, git.CloneOptions{
 		URL: "https://github.com/groupe-edf/watchdog",
 	})
 	if err != nil {
@@ -43,6 +43,6 @@ func BenchmarkTestAnalyze(b *testing.B) {
 	}
 	b.StartTimer()
 	commitIter, _ := client.Commits(context.Background(), git.LogOptions{})
-	analyzer.Analyze(commitIter, analyzeChan)
+	analyzer.Analyze(repository, commitIter, analyzeChan)
 	b.StopTimer()
 }

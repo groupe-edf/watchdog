@@ -1,22 +1,26 @@
-import { API_PATH } from "../constants";
-import { Integration } from "../store/integrations/types";
-import { Query, fetchData } from "./commons";
+import axios from 'axios'
 
 class IntegrationService {
+  async create(data: any) {
+    return axios.post('/integrations', data)
+  }
+  async delete(id: string) {
+    return axios.delete(`/integrations/${id}`)
+  }
   async findAll() {
-    return fetchData<Integration[]>("GET", `${API_PATH}/integrations`);
+    return axios.get('/integrations')
   }
   async findById(id: string) {
-    return fetchData<Integration[]>("GET", `${API_PATH}/integrations/${id}`);
+    return axios.get(`/integrations/${id}`)
   }
-  async getRepositories(id: string) {
-    return fetchData<Integration[]>("PUT", `${API_PATH}/integrations/${id}/repositories`);
+  async getGroups(id: string) {
+    return axios.get(`/integrations/${id}/groups`)
   }
-  async save(data: any) {
-    return fetchData<Integration[]>("POST", `${API_PATH}/integrations`, data);
+  async installWebhook(data: any) {
+    return axios.post(`/integrations/${data.intergration_id}/webhooks`, data)
   }
   async synchronize(id: string) {
-    return fetchData<Integration[]>("GET", `${API_PATH}/integrations/${id}/synchronize`);
+    return axios.get(`/integrations/${id}/synchronize`)
   }
 }
 

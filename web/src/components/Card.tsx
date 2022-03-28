@@ -1,11 +1,9 @@
-import { Box, BoxProps, useColorModeValue } from '@chakra-ui/react'
+import { Box, useColorModeValue, useStyleConfig } from '@chakra-ui/react'
 
-export const Card = (props: BoxProps) => (
-  <Box
-    background={useColorModeValue('white', 'gray.700')}
-    paddingY="8"
-    paddingX={{ base: '4', md: '10' }}
-    shadow="base"
-    rounded={{ sm: 'lg' }}
-    {...props}/>
-)
+export const Card = (props: any) => {
+  const { variant, children, ...rest } = props
+  const styles = useStyleConfig("Card", { variant })
+  return (
+    <Box __css={styles} {...rest}>{children}</Box>
+  )
+}

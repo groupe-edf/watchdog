@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	apiResponse "github.com/groupe-edf/watchdog/internal/server/api/response"
 )
 

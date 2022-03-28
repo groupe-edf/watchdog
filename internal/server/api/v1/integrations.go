@@ -9,11 +9,11 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/server/api/response"
-	"github.com/groupe-edf/watchdog/internal/server/authentication/token"
-	"github.com/groupe-edf/watchdog/internal/server/query"
 	"github.com/groupe-edf/watchdog/internal/util"
+	"github.com/groupe-edf/watchdog/pkg/authentication/token"
+	"github.com/groupe-edf/watchdog/pkg/query"
 	"github.com/xanzy/go-gitlab"
 )
 
@@ -39,6 +39,80 @@ func (api *API) GetIntegration(r *http.Request) response.Response {
 		return response.Error(http.StatusInternalServerError, "", err)
 	}
 	return response.JSON(http.StatusOK, integration)
+}
+
+type IntegrationGroup struct {
+	ID         int    `json:"id"`
+	Installed  bool   `json:"installed"`
+	Name       string `json:"name"`
+	Path       string `json:"path"`
+	WebhookURL string `json:"webhook_url"`
+}
+
+func (api *API) GetIntegrationGroup(r *http.Request) response.Response {
+	vars := mux.Vars(r)
+	integrationID, err := strconv.ParseInt(vars["integration_id"], 10, 64)
+	if err != nil {
+		return response.Error(http.StatusInternalServerError, "", err)
+	}
+	integration, err := api.store.FindIntegrationByID(integrationID)
+	if err != nil {
+		return response.Error(http.StatusInternalServerError, "", err)
+	}
+	token, err := util.Decrypt(integration.APIToken, api.options.Server.Security.MasterKey)
+	if err != nil {
+		return response.Error(http.StatusInternalServerError, "", err)
+	}
+	client, err := gitlab.NewClient(token, gitlab.WithBaseURL(fmt.Sprintf("%s/api/v4", integration.InstanceURL)))
+	if err != nil {
+		return response.Error(http.StatusInternalServerError, "", err)
+	}
+	options := &gitlab.ListGroupsOptions{}
+	groups, _, err := client.Groups.ListGroups(options)
+	if err != nil {
+		return response.Error(http.StatusInternalServerError, "", err)
+	}
+	q := &query.Query{}
+	q.AddCondition(query.Condition{
+		Field:    `"integrations_webhooks"."id"`,
+		Operator: query.Equal,
+		Value:    integration.ID,
+	})
+	webhooks, err := api.store.FindWebhooks(q)
+	if err != nil {
+		return response.Error(http.StatusInternalServerError, "", err)
+	}
+	var integrationGroups []*IntegrationGroup
+	for _, group := range groups {
+		integrationGroup := &IntegrationGroup{
+			ID:   group.ID,
+			Name: group.Name,
+			Path: group.Path,
+		}
+		for _, webhook := range webhooks.Items {
+			if group.ID == webhook.GroupID {
+				integrationGroup.Installed = true
+				integrationGroup.WebhookURL = webhook.URL
+			}
+		}
+		integrationGroups = append(integrationGroups, integrationGroup)
+	}
+	return response.JSON(http.StatusOK, integrationGroups)
+}
+
+func (api *API) DeleteIntegration(r *http.Request) response.Response {
+	vars := mux.Vars(r)
+	integrationID, err := strconv.ParseInt(vars["integration_id"], 10, 64)
+	if err != nil {
+		return response.Error(http.StatusInternalServerError, "", err)
+	}
+	err = api.store.DeleteIntegration(integrationID)
+	if err != nil {
+		return response.Error(http.StatusInternalServerError, "", err)
+	}
+	return response.JSON(http.StatusOK, map[string]string{
+		"message": "integration successfully deleted",
+	})
 }
 
 type AddIntegration struct {
@@ -91,6 +165,7 @@ func (api *API) SynchronizeIntegration(r *http.Request) response.Response {
 	if err != nil {
 		return response.Error(http.StatusInternalServerError, "", err)
 	}
+	fmt.Print(integration.APIToken, api.options.Server.Security.MasterKey)
 	token, err := util.Decrypt(integration.APIToken, api.options.Server.Security.MasterKey)
 	if err != nil {
 		return response.Error(http.StatusInternalServerError, "", err)
@@ -125,7 +200,7 @@ func (api *API) SynchronizeIntegration(r *http.Request) response.Response {
 			ID:            &ID,
 			CreatedAt:     &currentDateTime,
 			CreatedBy:     user.ID,
-			Integration:   *integration,
+			Integration:   integration,
 			RepositoryURL: project.WebURL,
 			Visibility:    visibility,
 		})

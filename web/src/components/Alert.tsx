@@ -1,4 +1,4 @@
-import { Icon } from "@chakra-ui/icons";
+import { Icon } from "@chakra-ui/react";
 import { Flex, useColorModeValue, Box, chakra } from "@chakra-ui/react";
 import { IoAlertCircleOutline } from "react-icons/io5";
 

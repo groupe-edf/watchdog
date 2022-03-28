@@ -1,3 +1,4 @@
+//go:build integration || file
 // +build integration file
 
 package main
@@ -11,8 +12,8 @@ import (
 	"text/template"
 
 	"github.com/c2h5oh/datasize"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/issue"
-	"github.com/groupe-edf/watchdog/internal/models"
 	helpers "github.com/groupe-edf/watchdog/internal/test"
 	"github.com/stretchr/testify/assert"
 )

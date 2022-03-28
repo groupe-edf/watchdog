@@ -34,10 +34,18 @@ export const NavItem = ({ children, icon, onClick, route, size, ...rest }: NavIt
   return (
     <>
     {route != null ? (
-      <Link as={NavLink}
-        exact to={route}
-        style={{ textDecoration: "none" }}
-        activeStyle={{ fontWeight: "bold" }}
+      <Link as={(props: any) => (
+        <NavLink
+          {...props}
+          style={({ isActive }) => {
+            return {
+              fontWeight: isActive ? 700 : 400,
+              textDecoration: "none"
+            }
+          }}
+        />
+      )}
+        to={route}
         width="100%">
         <ItemContent children={children} icon={icon} size={size} {...rest} />
       </Link>

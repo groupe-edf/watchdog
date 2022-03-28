@@ -8,12 +8,12 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/server/api/response"
-	"github.com/groupe-edf/watchdog/internal/server/authentication"
-	"github.com/groupe-edf/watchdog/internal/server/authentication/provider"
-	"github.com/groupe-edf/watchdog/internal/server/authentication/token"
 	"github.com/groupe-edf/watchdog/internal/server/services"
+	"github.com/groupe-edf/watchdog/pkg/authentication"
+	"github.com/groupe-edf/watchdog/pkg/authentication/provider"
+	"github.com/groupe-edf/watchdog/pkg/authentication/token"
 )
 
 type LoginCommand struct {
@@ -28,14 +28,31 @@ type RegisterCommand struct {
 	Password  string `json:"password" validate:"required"`
 }
 
+type ForgotPasswordCommand struct {
+	Email string `json:"email" validate:"required"`
+}
+
+func (api *API) Forgot(r *http.Request) response.Response {
+	var command *ForgotPasswordCommand
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&command); err != nil {
+		return response.Error(http.StatusInternalServerError, "", err)
+	}
+	if err := validator.New().Struct(command); err != nil {
+		return response.Error(http.StatusBadRequest, "", err)
+	}
+	return response.JSON(http.StatusOK, map[string]string{
+		"message": "FORGOT_PASSWORD_EMAIL_SENT",
+	})
+}
+
 func (api *API) Login(r *http.Request) response.Response {
 	var command *LoginCommand
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&command); err != nil {
 		return response.Error(http.StatusInternalServerError, "", err)
 	}
-	err := validator.New().Struct(command)
-	if err != nil {
+	if err := validator.New().Struct(command); err != nil {
 		return response.Error(http.StatusBadRequest, "", err)
 	}
 	authenticator := authentication.NewService(authentication.Options{})
@@ -105,5 +122,11 @@ func (api *API) Register(r *http.Request) response.Response {
 	}
 	return response.JSON(http.StatusOK, map[string]string{
 		"message": "USER_SUCCESSFULLY_SIGNED_UP",
+	})
+}
+
+func (api *API) Reset(r *http.Request) response.Response {
+	return response.JSON(http.StatusOK, map[string]string{
+		"message": "PASSWORD_RESET_SUCCESSFULLY",
 	})
 }

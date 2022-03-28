@@ -12,13 +12,16 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/groupe-edf/watchdog/internal/config"
-	"github.com/groupe-edf/watchdog/internal/logging"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	v1 "github.com/groupe-edf/watchdog/internal/server/api/v1"
 	"github.com/groupe-edf/watchdog/internal/server/broadcast"
-	"github.com/groupe-edf/watchdog/internal/server/container"
 	"github.com/groupe-edf/watchdog/internal/server/database"
 	"github.com/groupe-edf/watchdog/internal/server/metrics"
 	"github.com/groupe-edf/watchdog/internal/server/middleware"
+	"github.com/groupe-edf/watchdog/internal/server/store"
+	"github.com/groupe-edf/watchdog/pkg/container"
+	"github.com/groupe-edf/watchdog/pkg/event"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 	"github.com/groupe-edf/watchdog/web"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
@@ -56,6 +59,22 @@ func (server *Server) Listener() (net.Listener, error) {
 // Quit returns the receive-only quit channel.
 func (server *Server) Quit() <-chan struct{} {
 	return server.quitChan
+}
+
+func (server *Server) RegisterEvents() {
+	bus := container.GetContainer().Get(event.ServiceName).(*event.EventBus)
+	bus.SubscribeCallback("analysis:*", func(topic string, data interface{}) {
+		analysis := data.(*models.Analysis)
+		store := container.GetContainer().Get(store.ServiceName).(models.Store)
+		_, _ = store.SaveAnalysis(analysis)
+		broadcast := container.GetContainer().Get(broadcast.ServiceName).(*broadcast.Broadcast)
+		broadcast.Broadcast(map[string]interface{}{
+			"container_id":   analysis.ID.String(),
+			"container_type": "analysis",
+			"event_type":     topic,
+			"payload":        analysis,
+		})
+	})
 }
 
 func (server *Server) SetupMetrics() {

@@ -2,9 +2,9 @@ package postgres
 
 import (
 	"github.com/google/uuid"
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	builder "github.com/groupe-edf/watchdog/internal/server/database/query"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/pkg/query"
 )
 
 func (postgres *PostgresStore) DeleteAnalysis(id uuid.UUID) error {
@@ -100,7 +100,10 @@ func (postgres *PostgresStore) FindAnalysisByID(id *uuid.UUID) (*models.Analysis
 	if err != nil {
 		return nil, err
 	}
-	analysis := paginator.Items[0]
+	var analysis models.Analysis
+	if len(paginator.Items) > 0 {
+		analysis = paginator.Items[0]
+	}
 	return &analysis, nil
 }
 

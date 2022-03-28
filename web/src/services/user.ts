@@ -1,20 +1,12 @@
-import { API_PATH } from "../constants";
-import { User } from "../store/users/types";
-import { Query, fetchData } from "./commons";
+import axios from 'axios'
+import { User } from '../models'
 
 class UserService {
-  async changePassword(data: {
-    current_password: string,
-    password: string,
-    confirm_password: string
-  }) {
-    return fetchData("PUT", `${API_PATH}/password`, data)
-  }
   async findAll() {
-    return fetchData<User[]>("GET", `${API_PATH}/users`)
+    return axios.get<User[]>('/users')
   }
   async findById(id: number) {
-    return fetchData<User>("GET", `${API_PATH}/users/${id}`)
+    return axios.get<User>(`/users/${id}`)
   }
 }
 

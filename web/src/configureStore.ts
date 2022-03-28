@@ -1,24 +1,17 @@
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import {
-  Store,
-  applyMiddleware,
-  createStore,
-} from 'redux'
-import { composeWithDevTools } from 'redux-devtools-extension'
-import { History } from 'history';
-import { routerMiddleware } from 'connected-react-router'
-import { ApplicationState, createRootReducer } from './store';
+  useSelector as rawUseSelector,
+  TypedUseSelectorHook
+} from 'react-redux'
+import rootReducer from './store'
+import notificationMiddleware from './store/middlewares/notification'
 
-const store = function configureStore(history: History, initialState: ApplicationState): Store<ApplicationState> {
-  const store = createStore(
-    createRootReducer(history),
-    initialState as any,
-    composeWithDevTools(
-      applyMiddleware(
-        routerMiddleware(history)
-      )
-    )
-  );
-  return store
-}
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(notificationMiddleware)
+})
 
-export default store;
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
+export const useSelector: TypedUseSelectorHook<RootState> = rawUseSelector;
+export default store

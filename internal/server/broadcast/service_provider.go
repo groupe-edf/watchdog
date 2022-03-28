@@ -5,7 +5,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/groupe-edf/watchdog/internal/config"
-	"github.com/groupe-edf/watchdog/internal/server/container"
+	"github.com/groupe-edf/watchdog/pkg/container"
 )
 
 const (

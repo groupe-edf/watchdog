@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	routeQuery "github.com/groupe-edf/watchdog/internal/server/query"
+	routeQuery "github.com/groupe-edf/watchdog/pkg/query"
 )
 
 // OperationType sql operation type
@@ -135,6 +135,9 @@ func (query *Query) WithRouteQuery(q *routeQuery.Query) *Query {
 	}
 	if len(q.Sort) > 0 {
 		query.OrderBy(fmt.Sprintf(`"%s" %s`, q.Sort[0].Field, q.Sort[0].Direction))
+	}
+	if q.Limit > 0 {
+		query.Limit(q.Limit, q.Offset)
 	}
 	return query
 }

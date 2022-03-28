@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/issue"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
 	"github.com/groupe-edf/watchdog/internal/util"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 )
 
 var (
@@ -20,6 +20,10 @@ var (
 // CommitHandler handle commit messages
 type CommitHandler struct {
 	AbstractHandler
+}
+
+func (*CommitHandler) Name() string {
+	return "commit"
 }
 
 // GetType return handler type

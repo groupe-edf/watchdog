@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/groupe-edf/watchdog/internal/models"
-	"github.com/groupe-edf/watchdog/internal/server/authentication/encoder"
+	"github.com/groupe-edf/watchdog/internal/core/models"
+	"github.com/groupe-edf/watchdog/pkg/authentication/encoder"
 )
 
 type UserService struct {

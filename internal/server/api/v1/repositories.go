@@ -10,11 +10,11 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/server/api/response"
-	"github.com/groupe-edf/watchdog/internal/server/authentication/token"
 	"github.com/groupe-edf/watchdog/internal/server/job"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/pkg/authentication/token"
+	"github.com/groupe-edf/watchdog/pkg/query"
 )
 
 type AnalyzeRepositoryCommand struct {
@@ -70,7 +70,7 @@ func (api *API) Analyze(r *http.Request) response.Response {
 			return response.Error(http.StatusInternalServerError, "", err)
 		}
 	}
-	if repository.LastAnalysis != nil && repository.LastAnalysis.State == models.InProgressState {
+	if repository.LastAnalysis != nil && !repository.LastAnalysis.Done() {
 		return response.Error(http.StatusInternalServerError, "", errors.New("an analysis is already in execution"))
 	}
 	// Start analysis
@@ -87,7 +87,7 @@ func (api *API) Analyze(r *http.Request) response.Response {
 		RepositoryID:  repository.ID,
 		RepositoryURL: repository.RepositoryURL,
 	}
-	if repository.Integration.ID != 0 {
+	if repository.Integration != nil {
 		options.IntegrationID = repository.Integration.ID
 	}
 	if repository.LastAnalysis != nil {

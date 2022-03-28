@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/server/api/response"
-	"github.com/groupe-edf/watchdog/internal/server/authentication/token"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/pkg/authentication/token"
+	"github.com/groupe-edf/watchdog/pkg/query"
 )
 
 func (api *API) GetAccessTokens(r *http.Request) response.Response {

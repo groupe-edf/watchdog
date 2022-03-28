@@ -2,12 +2,12 @@ import { Button, Flex } from "@chakra-ui/react";
 import { Component, ReactNode } from "react"
 
 interface PaginationProps {
-  currentPage: number,
-  itemsPerPage: number,
-  offset?: number,
-  onChangePage: (props: any) => void,
-  pagesToShow: number,
-  totalItems: number,
+  currentPage: number
+  itemsPerPage: number
+  offset?: number
+  onChangePage: (props: any) => void
+  pagesToShow: number
+  totalItems: number
 }
 
 class Pagination extends Component<PaginationProps, {
@@ -25,15 +25,15 @@ class Pagination extends Component<PaginationProps, {
       offset: 0,
       pagesToShow: 5,
       totalItems: 0
-    };
+    }
   }
   componentDidMount() {
     this.setState({
       currentPage: this.props.currentPage || 1,
       itemsPerPage: this.props.itemsPerPage || 10,
       offset: this.props.offset || 0,
-      totalItems: this.props.totalItems || 0,
-    });
+      totalItems: this.props.totalItems || 0
+    })
   }
   componentWillReceiveProps(nextProps: PaginationProps) {
     this.setState({
@@ -41,23 +41,23 @@ class Pagination extends Component<PaginationProps, {
       offset: nextProps.offset || 0,
       totalItems: nextProps.totalItems || 0,
       pagesToShow: nextProps.pagesToShow || 5
-    });
+    })
   }
   componentDidUpdate(prevProps: PaginationProps, prevState: any) {
     if (
       this.state.itemsPerPage !== prevState.itemsPerPage ||
       this.state.totalItems !== prevState.totalItems
     ) {
-      this.setPage(this.state.currentPage);
+      this.setPage(this.state.currentPage)
     }
   }
   setPage(page: number) {
     let { totalItems, itemsPerPage } = this.state;
     let totalPages = Math.ceil(totalItems / itemsPerPage)
     if (page < 1) {
-      page = 1;
+      page = 1
     } else if (page > totalPages) {
-      page = totalPages;
+      page = totalPages
     }
     this.setState({
       currentPage: page
@@ -71,44 +71,44 @@ class Pagination extends Component<PaginationProps, {
       totalPages,
       totalItems,
       endIndex
-    });
+    })
   }
   getPager() {
     let { currentPage, pagesToShow, totalItems, itemsPerPage } = this.state;
     let totalPages = Math.ceil(totalItems / itemsPerPage)
-    let pages = [];
-    let startFromNumber;
+    let pages = []
+    let startFromNumber
     if (totalPages <= pagesToShow) {
-      startFromNumber = 1;
-      pagesToShow = totalPages;
+      startFromNumber = 1
+      pagesToShow = totalPages
     } else {
       if (currentPage <= Math.ceil(pagesToShow / 2)) {
-        startFromNumber = 1;
+        startFromNumber = 1
       } else if (
         currentPage + Math.floor((pagesToShow - 1) / 2) >=
         totalPages
       ) {
-        startFromNumber = totalPages - (pagesToShow - 1);
+        startFromNumber = totalPages - (pagesToShow - 1)
       } else {
-        startFromNumber = currentPage - Math.floor(pagesToShow / 2);
+        startFromNumber = currentPage - Math.floor(pagesToShow / 2)
       }
     }
     for (let i = 1; i <= pagesToShow; i++) {
-      pages.push(startFromNumber++);
+      pages.push(startFromNumber++)
     }
     return {
       currentPage,
       totalPages,
       pages
-    };
+    }
   }
   render() {
     let pager = this.getPager();
     const PageButton = ({ active, children, disabled, onClick, ...rest }: { active?: boolean, children: ReactNode, disabled?: boolean, onClick?: () => void }) => {
       const activeStyle = {
         background: "brand.100",
-        color: "white",
-      };
+        color: "white"
+      }
       return (
         <Button
           paddingX={4}

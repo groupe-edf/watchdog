@@ -45,8 +45,5 @@ func LoadGitHooksFromRaw(fileContent string) (*GitHooks, error) {
 	if err := yaml.Unmarshal([]byte(fileContent), hooks); err != nil {
 		return nil, fmt.Errorf("unable to decode into struct, %v", err)
 	}
-	if err := hooks.Validate(); err != nil {
-		return nil, err
-	}
 	return hooks, nil
 }

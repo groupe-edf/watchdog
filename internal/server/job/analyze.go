@@ -3,6 +3,7 @@ package job
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -15,12 +16,13 @@ import (
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/core/loaders"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	driver "github.com/groupe-edf/watchdog/internal/git"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
-	"github.com/groupe-edf/watchdog/internal/server/broadcast"
-	"github.com/groupe-edf/watchdog/internal/server/container"
+	"github.com/groupe-edf/watchdog/internal/server/queue"
 	"github.com/groupe-edf/watchdog/internal/util"
+	"github.com/groupe-edf/watchdog/pkg/container"
+	"github.com/groupe-edf/watchdog/pkg/event"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 )
 
 type AnalyzeOptions struct {
@@ -41,6 +43,7 @@ type ProcessAnalyze struct {
 }
 
 func (processor *ProcessAnalyze) Handle(job *models.Job) error {
+	publisher := container.GetContainer().Get(event.ServiceName).(*event.EventBus)
 	var options AnalyzeOptions
 	if err := json.Unmarshal(job.Args, &options); err != nil {
 		return err
@@ -50,10 +53,15 @@ func (processor *ProcessAnalyze) Handle(job *models.Job) error {
 		return err
 	}
 	analysis.Start()
-	_, err = processor.Store.SaveAnalysis(analysis)
-	if err != nil {
-		return err
-	}
+	defer func() {
+		if err := recover(); err != nil {
+			if job.ErrorCount == queue.MaxErroCount {
+				analysis.Failed(errors.New(job.LastError))
+				publisher.PublishAsync("analysis:failed", analysis)
+			}
+		}
+	}()
+	publisher.PublishAsync("analysis:started", analysis)
 	ctx, cancel := context.WithTimeout(processor.Context, time.Duration(time.Second*1240))
 	defer cancel()
 	cloneOptions := driver.CloneOptions{
@@ -74,27 +82,24 @@ func (processor *ProcessAnalyze) Handle(job *models.Job) error {
 		}
 	}
 	client := container.Get(driver.ServiceName).(driver.Driver)
-	_, err = client.Clone(ctx, cloneOptions)
+	repository, err := client.Clone(ctx, cloneOptions)
 	if err != nil && err != git.NoErrAlreadyUpToDate {
 		if err == transport.ErrAuthenticationRequired || err == transport.ErrEmptyRemoteRepository {
-			analysis.State = models.FailedState
-			analysis.StateMessage = err.Error()
-			_, err = processor.Store.SaveAnalysis(analysis)
+			analysis.Failed(err)
+			publisher.PublishAsync("analysis:failed", analysis)
 			return err
 		}
 		return err
 	}
-	reference, err := client.Head()
+	head, err := client.Head()
 	if err != nil {
 		return err
 	}
-	analysis.LastCommitHash = reference
+	analysis.LastCommitHash = head
 	from := plumbing.NewHash(options.From)
 	var commits models.Iterator[models.Commit]
 	if !from.IsZero() {
-		commits, err = client.RevList(driver.RevListOptions{
-			OldRev: from,
-		})
+		commits, err = client.RevList(driver.RevListOptions{})
 	} else {
 		commits, err = client.Commits(ctx, driver.LogOptions{})
 	}
@@ -106,6 +111,7 @@ func (processor *ProcessAnalyze) Handle(job *models.Job) error {
 		loaders.NewStoreLoader(processor.Store),
 		processor.Logger,
 		processor.Options,
+		repository,
 		models.Whitelist{
 			Files: []string{
 				"package-lock.json",
@@ -119,10 +125,9 @@ func (processor *ProcessAnalyze) Handle(job *models.Job) error {
 		return err
 	}
 	analyzeChan := make(chan models.AnalysisResult)
-	broadcast := container.GetContainer().Get(broadcast.ServiceName).(*broadcast.Broadcast)
 	severity := models.SeverityLow
 	totalIssues := 0
-	go analyzer.Analyze(commits, analyzeChan)
+	go analyzer.Analyze(repository, commits, analyzeChan)
 	for {
 		if result, ok := <-analyzeChan; ok {
 			for _, data := range result.Issues {
@@ -141,21 +146,18 @@ func (processor *ProcessAnalyze) Handle(job *models.Job) error {
 					}
 				}
 			}
-			commitHash := color.Green.Sprint(result.Commit.Hash[:8])
-			if len(result.Issues) > 0 {
-				commitHash = color.Red.Sprint(result.Commit.Hash[:8])
+			if result.Commit.Hash != "" {
+				commitHash := color.Green.Sprint(result.Commit.Hash[:8])
+				if len(result.Issues) > 0 {
+					commitHash = color.Red.Sprint(result.Commit.Hash[:8])
+				}
+				fmt.Printf("|_ %v · %v · (%v)\n", commitHash, strings.Split(result.Commit.Subject, "\n")[0], result.ElapsedTime)
 			}
-			fmt.Printf("|_ %v · %v · (%v)\n", commitHash, strings.Split(result.Commit.Subject, "\n")[0], result.ElapsedTime)
-			broadcast.Broadcast(result)
 		} else {
 			break
 		}
 	}
 	analysis.Complete(severity, totalIssues)
-	processor.Store.SaveAnalysis(analysis)
-	broadcast.Broadcast(map[string]string{
-		"event":        "analysis_finished",
-		"container_id": analysis.ID.String(),
-	})
+	publisher.PublishAsync("analysis:finished", analysis)
 	return nil
 }

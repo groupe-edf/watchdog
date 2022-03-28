@@ -2,9 +2,9 @@ package postgres
 
 import (
 	"github.com/google/uuid"
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	builder "github.com/groupe-edf/watchdog/internal/server/database/query"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/pkg/query"
 )
 
 func (postgres *PostgresStore) DeleteUsers(q *query.Query) error {

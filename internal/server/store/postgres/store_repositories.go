@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	builder "github.com/groupe-edf/watchdog/internal/server/database/query"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/pkg/query"
 )
 
 func (postgres *PostgresStore) DeleteRepository(id uuid.UUID) error {
@@ -70,7 +70,6 @@ func (postgres *PostgresStore) FindRepositories(q *query.Query) (models.Paginato
 		var analysisStateMessage sql.NullString
 		var analysisTotalIssues sql.NullInt32
 		var repository models.Repository
-		var integration models.Integration
 		var integrationID sql.NullInt64
 		var integrationInstanceName sql.NullString
 		var integrationInstanceURL sql.NullString
@@ -107,10 +106,11 @@ func (postgres *PostgresStore) FindRepositories(q *query.Query) (models.Paginato
 			repository.LastAnalysis = &analysis
 		}
 		if integrationID.Valid {
-			integration.ID = integrationID.Int64
-			integration.InstanceName = integrationInstanceName.String
-			integration.InstanceURL = integrationInstanceURL.String
-			repository.Integration = integration
+			repository.Integration = &models.Integration{
+				ID:           integrationID.Int64,
+				InstanceName: integrationInstanceName.String,
+				InstanceURL:  integrationInstanceURL.String,
+			}
 		}
 		paginator.Items = append(paginator.Items, repository)
 	}
@@ -139,6 +139,10 @@ func (store *PostgresStore) FindRepositoryByURI(uri string) *models.Repository {
 
 func (store *PostgresStore) SaveRepository(repository *models.Repository) (*models.Repository, error) {
 	var ID uuid.UUID
+	var integrationID *int64
+	if repository.Integration != nil {
+		integrationID = &repository.Integration.ID
+	}
 	statement := `INSERT INTO "repositories" (
 		"id",
 		"created_at",
@@ -158,7 +162,7 @@ func (store *PostgresStore) SaveRepository(repository *models.Repository) (*mode
 		repository.CreatedAt,
 		repository.CreatedBy,
 		repository.EnableMonitoring,
-		repository.Integration.ID,
+		integrationID,
 		repository.RepositoryURL,
 		repository.Visibility,
 	).Scan(&ID)

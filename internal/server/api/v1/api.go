@@ -14,9 +14,10 @@
 // - bearer
 // SecurityDefinitions:
 // bearer:
-//   type: apiKey
-//   name: Authorization
-//   in: header
+//
+//	type: apiKey
+//	name: Authorization
+//	in: header
 //
 // swagger:meta
 // go:generate swagger generate spec
@@ -30,18 +31,18 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/groupe-edf/watchdog/internal/config"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/server/api/response"
-	"github.com/groupe-edf/watchdog/internal/server/authentication"
-	"github.com/groupe-edf/watchdog/internal/server/authentication/token"
 	"github.com/groupe-edf/watchdog/internal/server/broadcast"
-	"github.com/groupe-edf/watchdog/internal/server/container"
 	"github.com/groupe-edf/watchdog/internal/server/job"
 	"github.com/groupe-edf/watchdog/internal/server/middleware"
 	"github.com/groupe-edf/watchdog/internal/server/queue"
 	"github.com/groupe-edf/watchdog/internal/server/store"
 	"github.com/groupe-edf/watchdog/internal/version"
+	"github.com/groupe-edf/watchdog/pkg/authentication"
+	"github.com/groupe-edf/watchdog/pkg/authentication/token"
+	"github.com/groupe-edf/watchdog/pkg/container"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 	"github.com/pkg/errors"
 )
 
@@ -112,26 +113,37 @@ func (api *API) Mount(router *mux.Router) {
 	router.HandleFunc(apiRoot+"/analytics", wrap(api.GetAnalytics, protectedRoute)).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/analyze", wrap(api.Analyze, protectedRoute)).Methods(http.MethodPost)
 	router.HandleFunc(apiRoot+"/analyzes", wrap(api.GetAnalyzes, protectedRoute)).Methods(http.MethodGet)
+	router.HandleFunc(apiRoot+"/analyzes/{analysis_id}", wrap(api.GetAnalysis, protectedRoute)).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/analyzes/{analysis_id}", wrap(api.DeleteAnalysis, protectedRoute)).Methods(http.MethodDelete)
+	router.HandleFunc(apiRoot+"/authentication/forgot", wrap(api.Forgot, RequestOptions{})).Methods(http.MethodPost)
+	router.HandleFunc(apiRoot+"/authentication/login", wrap(api.Login, RequestOptions{})).Methods(http.MethodPost)
+	router.HandleFunc(apiRoot+"/authentication/register", wrap(api.Register, RequestOptions{})).Methods(http.MethodPost)
+	router.HandleFunc(apiRoot+"/authentication/reset", wrap(api.Reset, RequestOptions{})).Methods(http.MethodGet, http.MethodPost)
 	router.HandleFunc(apiRoot+"/categories", wrap(api.GetCategories, RequestOptions{})).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/integrations", wrap(api.GetIntegrations, protectedRoute)).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/integrations", wrap(api.SaveIntegration, protectedRoute)).Methods(http.MethodPost)
-	router.HandleFunc(apiRoot+"/integrations/{integration_id}", wrap(api.GetIntegration, protectedRoute))
+	router.HandleFunc(apiRoot+"/integrations/{integration_id}", wrap(api.GetIntegration, protectedRoute)).Methods(http.MethodGet)
+	router.HandleFunc(apiRoot+"/integrations/{integration_id}", wrap(api.DeleteIntegration, protectedRoute)).Methods(http.MethodDelete)
+	router.HandleFunc(apiRoot+"/integrations/{integration_id}/groups", wrap(api.GetIntegrationGroup, protectedRoute)).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/integrations/{integration_id}/synchronize", wrap(api.SynchronizeIntegration, protectedRoute)).Methods(http.MethodGet)
+	router.HandleFunc(apiRoot+"/integrations/{integration_id}/webhooks", wrap(api.HandleWebhook, protectedRoute)).Methods(http.MethodGet)
+	router.HandleFunc(apiRoot+"/integrations/{integration_id}/webhooks", wrap(api.InstallWebhook, protectedRoute)).Methods(http.MethodPost)
 	router.HandleFunc(apiRoot+"/issues", wrap(api.GetIssues, protectedRoute)).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/jobs", wrap(api.GetJobs, protectedRoute)).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/jobs/{job_id}", wrap(api.GetJobs, protectedRoute)).Methods(http.MethodDelete)
 	router.HandleFunc(apiRoot+"/leaks", wrap(api.GetLeaks, protectedRoute)).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/leaks/{leak_id}", wrap(api.GetLeak, protectedRoute)).Methods(http.MethodGet)
-	router.HandleFunc(apiRoot+"/login", wrap(api.Login, RequestOptions{})).Methods(http.MethodPost)
 	router.HandleFunc(apiRoot+"/pattern", wrap(api.EvaluatePattern, protectedRoute)).Methods(http.MethodPost)
 	router.HandleFunc(apiRoot+"/password", wrap(api.ChangePassword, protectedRoute)).Methods(http.MethodPut)
 	router.HandleFunc(apiRoot+"/profile", wrap(api.GetProfile, protectedRoute)).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/policies", wrap(api.GetPolicies, protectedRoute)).Methods(http.MethodGet)
+	router.HandleFunc(apiRoot+"/policies", wrap(api.NewPolicy, protectedRoute)).Methods(http.MethodPost)
 	router.HandleFunc(apiRoot+"/policies/{policy_id}", wrap(api.GetPolicy, protectedRoute)).Methods(http.MethodGet)
+	router.HandleFunc(apiRoot+"/policies/{policy_id}", wrap(api.DeletePolicy, protectedRoute)).Methods(http.MethodDelete)
 	router.HandleFunc(apiRoot+"/policies/{policy_id}/toggle", wrap(api.TogglePolicy, protectedRoute)).Methods(http.MethodPut)
+	router.HandleFunc(apiRoot+"/policies/{policy_id}/conditions", wrap(api.AddPolicyCondition, protectedRoute)).Methods(http.MethodPost)
+	router.HandleFunc(apiRoot+"/policies/{policy_id}/conditions/{condition_id}", wrap(api.DeletePolicyCondition, protectedRoute)).Methods(http.MethodDelete)
 	router.HandleFunc(apiRoot+"/queues", wrap(api.GetQueues, protectedRoute)).Methods(http.MethodGet)
-	router.HandleFunc(apiRoot+"/register", wrap(api.Register, RequestOptions{})).Methods(http.MethodPost)
 	router.HandleFunc(apiRoot+"/repositories", wrap(api.GetRepositories, protectedRoute)).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/repositories", func(w http.ResponseWriter, r *http.Request) {}).Methods(http.MethodPost)
 	router.HandleFunc(apiRoot+"/repositories/{repository_id}", wrap(api.GetRepository, protectedRoute)).Methods(http.MethodGet)
@@ -139,6 +151,7 @@ func (api *API) Mount(router *mux.Router) {
 	router.HandleFunc(apiRoot+"/repositories/{repository_id}/analyze", wrap(api.Analyze, protectedRoute)).Methods(http.MethodPost)
 	router.HandleFunc(apiRoot+"/repositories/{repository_id}/badge", wrap(api.GetRepositoryBadge, RequestOptions{})).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/rules", wrap(api.GetRules, protectedRoute)).Methods(http.MethodGet)
+	router.HandleFunc(apiRoot+"/rules", wrap(api.NewRule, protectedRoute)).Methods(http.MethodPost)
 	router.HandleFunc(apiRoot+"/rules/{rule_id}/toggle", wrap(api.ToggleRule, protectedRoute)).Methods(http.MethodPut)
 	router.HandleFunc(apiRoot+"/settings", wrap(api.GetSettings, RequestOptions{})).Methods(http.MethodGet)
 	router.HandleFunc(apiRoot+"/settings", wrap(api.SaveSettings, protectedRoute)).Methods(http.MethodPost)

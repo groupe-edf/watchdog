@@ -1,19 +1,10 @@
-import { API_PATH } from "../constants";
-import { Issue } from "../store/issues/types";
-import { Query, fetchData } from "./commons";
-
-
+import axios from 'axios'
+import { Issue } from '../models'
 
 class IssueService {
-  async findAll(query: Query) {
-    let url = `${API_PATH}/issues?limit=${query?.limit ? query.limit : 10}&offset=${query?.offset ? query.offset : 0}`
-    if (query?.conditions.length > 0) {
-      for (let condition of query?.conditions) {
-        url += `&conditions=${condition.field},${condition.operator},${condition.value}`
-      }
-    }
-    return fetchData<Issue[]>("GET", url);
+  async findAll(query?: any) {
+    return axios.get<Issue[]>(`/issues?${new URLSearchParams(query).toString()}`)
   }
 }
 
-export default new IssueService();
+export default new IssueService()

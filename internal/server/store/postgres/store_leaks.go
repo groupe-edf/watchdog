@@ -2,9 +2,9 @@ package postgres
 
 import (
 	"github.com/google/uuid"
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	builder "github.com/groupe-edf/watchdog/internal/server/database/query"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/pkg/query"
 	"github.com/lib/pq"
 )
 
@@ -15,8 +15,10 @@ func (postgres *PostgresStore) FindLeaks(q *query.Query) (models.Paginator[model
 	}
 	queryBuilder := builder.Select([]string{
 		`"repositories_leaks"."id"`,
-		`"repositories_leaks"."author"`,
+		`"repositories_leaks"."author_email"`,
+		`"repositories_leaks"."author_name"`,
 		`"repositories_leaks"."commit_hash"`,
+		`"repositories_leaks"."content"`,
 		`"repositories_leaks"."created_at"`,
 		`"repositories_leaks"."file"`,
 		`"repositories_leaks"."secret_hash"`,
@@ -61,8 +63,10 @@ func (postgres *PostgresStore) FindLeaks(q *query.Query) (models.Paginator[model
 		var rule models.Rule
 		err = rows.Scan(
 			&leak.ID,
-			&leak.Author,
+			&leak.AuthorEmail,
+			&leak.AuthorName,
 			&leak.CommitHash,
+			&leak.Content,
 			&leak.CreatedAt,
 			&leak.File,
 			&leak.SecretHash,
@@ -110,8 +114,10 @@ func (store *PostgresStore) SaveLeaks(repositoryID *uuid.UUID, analysisID *uuid.
 	}
 	statement, err := database.Prepare(pq.CopyIn("repositories_leaks",
 		"analysis_id",
-		"author",
+		"author_email",
+		"author_name",
 		"commit_hash",
+		"content",
 		"created_at",
 		"file",
 		"secret_hash",
@@ -128,8 +134,10 @@ func (store *PostgresStore) SaveLeaks(repositoryID *uuid.UUID, analysisID *uuid.
 	for _, leak := range leaks {
 		_, err = statement.Exec(
 			analysisID,
-			leak.Author,
+			leak.AuthorEmail,
+			leak.AuthorName,
 			leak.CommitHash,
+			leak.Content,
 			leak.CreatedAt,
 			leak.File,
 			leak.SecretHash,

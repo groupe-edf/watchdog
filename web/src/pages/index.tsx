@@ -1,118 +1,48 @@
 import {
   Box,
-  Grid,
-  GridItem,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber
-} from '@chakra-ui/react';
+  Text
+} from '@chakra-ui/react'
 import { Login, Register } from './authentication'
-import { IntegrationsList } from './integrations'
-import { IssuesList } from './issues'
-import { JobsList } from './jobs'
-import { LeaksList } from './leaks'
-import { PoliciesList } from './policies'
-import Profile from './profile'
-import { RepositoriesList } from './repositories'
-import RulesList from './rules/rules'
+import { Repositories } from './repositories'
+import { Dashboard } from './Dashboard'
 import { Settings } from './settings'
-import { UserList } from './users'
-import { API_PATH } from '../constants'
-import { fetchData } from '../services/commons'
-import { Component } from 'react'
-import { Label, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Pie, PieChart, LabelList, Cell, BarChart, Bar } from 'recharts'
-import moment from 'moment'
-import { LastAnalyzes } from '../components/analyzes/LastAnalyzes'
-import { LeaksBySeverity } from '../components/analytics/LeaksBySeverity';
-import { LeaksGraph } from '../components/analytics/LeaksGraph';
-
-export interface DataItem {
-  x: string
-  y: string
-}
-
-class Index extends Component<any, {
-  data: any
-}> {
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      data: [],
-    };
-  }
-  componentDidMount() {
-    fetchData<DataItem[]>("GET", `${API_PATH}/analytics`).then(response => this.setState({
-      data: response.data
-    }))
-  }
-  render() {
-    const { data } = this.state;
-    return (
-      <>
-      <Grid gap={2} templateColumns="repeat(4, 1fr)">
-        <GridItem background="white" padding={2} shadow="md">
-          <Stat>
-            <StatLabel>Repositories</StatLabel>
-            <StatNumber>{data.total_items?.repositories}</StatNumber>
-            <StatHelpText>Feb 12 - Feb 28</StatHelpText>
-          </Stat>
-        </GridItem>
-        <GridItem background="white" padding={2} shadow="md">
-          <Stat>
-            <StatLabel>Analyzes</StatLabel>
-            <StatNumber>{data.total_items?.repositories_analyzes}</StatNumber>
-            <StatHelpText>Feb 12 - Feb 28</StatHelpText>
-          </Stat>
-        </GridItem>
-        <GridItem background="white" padding={2} shadow="md">
-          <Stat>
-            <StatLabel>Issues</StatLabel>
-            <StatNumber>{data.total_items?.repositories_issues}</StatNumber>
-            <StatHelpText>Feb 12 - Feb 28</StatHelpText>
-          </Stat>
-        </GridItem>
-        <GridItem background="white" padding={2} shadow="md">
-          <Stat>
-            <StatLabel>Leaks</StatLabel>
-            <StatNumber>{data.total_items?.repositories_leaks}</StatNumber>
-            <StatHelpText>Feb 12 - Feb 28</StatHelpText>
-          </Stat>
-        </GridItem>
-        <GridItem height="400px" background="white" padding={2} shadow="md" colSpan={2}>
-          <LeaksBySeverity data={data.leak_count_by_severity} />
-        </GridItem>
-        <GridItem height="400px" background="white" padding={2} shadow="md" colSpan={2}>
-          <LeaksGraph data={data.leak_count}/>
-        </GridItem>
-        <GridItem background="white" padding={2} shadow="md" colSpan={2} display="block">
-          <LastAnalyzes width="100%" height="100%"/>
-        </GridItem>
-      </Grid>
-      </>
-    )
-  }
-}
+import { Users } from './users/Users'
+import { Policies } from './policies/Policies'
+import { EditPolicy } from './policies/EditPolicy'
+import { Rules } from './rules/Rules'
+import { Issues } from './issues/Issues'
+import { IntegrationView } from './integrations/IntegrationView'
+import { Integrations } from './integrations/Integrations'
+import RepositoryView from './repositories/RepositoryView'
+import Profile from './authentication/Profile'
+import { Leaks, LeakView } from './leaks'
+import { AnalysisView, Analyzes } from './analyzes'
 
 function NotFound() {
   return (
-    <Box bg="white" borderWidth="1px" borderRadius="lg" p="6"></Box>
+    <Box bg="white" borderWidth="1px" borderRadius="lg" p="6">
+      <Text>There's nothing here: 404!</Text>
+    </Box>
   )
 }
-
 export {
-  Index,
-  IntegrationsList,
-  IssuesList,
-  JobsList,
-  LeaksList,
+  Analyzes,
+  AnalysisView,
+  Dashboard,
+  Integrations,
+  IntegrationView,
+  Issues,
+  Leaks,
+  LeakView,
   Login,
   NotFound,
-  PoliciesList,
+  Policies,
   Profile,
-  RepositoriesList,
+  EditPolicy,
   Register,
-  RulesList,
+  Repositories,
+  RepositoryView,
+  Rules,
   Settings,
-  UserList
+  Users
 }

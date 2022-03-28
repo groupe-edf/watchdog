@@ -6,7 +6,7 @@ import (
 	"text/template"
 	"unicode/utf8"
 
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 )
 
 var (

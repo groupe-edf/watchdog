@@ -5,19 +5,21 @@ import (
 	"regexp"
 
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/issue"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
 	"github.com/groupe-edf/watchdog/internal/util"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 )
 
-var (
-	_ Handler = (*BranchHandler)(nil)
-)
+var _ Handler = (*BranchHandler)(nil)
 
 // BranchHandler handle branch naming
 type BranchHandler struct {
 	AbstractHandler
+}
+
+func (*BranchHandler) Name() string {
+	return "branch"
 }
 
 // GetType return handler type
@@ -27,6 +29,8 @@ func (branchHandler *BranchHandler) GetType() HandlerType {
 
 // Handle chencking branch naming convention
 func (branchHandler *BranchHandler) Handle(ctx context.Context, commit *models.Commit, policy models.Policy, whitelist models.Whitelist) (issues []models.Issue, err error) {
+	//refs, err := git.GetRefsFiltered(commit.Repository.Storage, "")
+	//fmt.Print(refs)
 	// Handler must run only on branch changes
 	if policy.Type == models.PolicyTypeBranch && branchHandler.Info.Ref.IsBranch() {
 		for _, condition := range policy.Conditions {

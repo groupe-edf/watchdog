@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/groupe-edf/watchdog/internal/server/api/response"
-	"github.com/groupe-edf/watchdog/internal/server/authentication/token"
+	"github.com/groupe-edf/watchdog/pkg/authentication/token"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )

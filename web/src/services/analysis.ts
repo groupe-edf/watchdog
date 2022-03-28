@@ -1,27 +1,24 @@
-import { API_PATH } from '../constants';
-import { Analysis } from '../store/repositories/types';
-import { Query, fetchData } from "./commons";
+import axios from 'axios'
+import { Analysis, Query } from '../models'
 
 class AnalysisService {
-  async deleteById(id: string) {
-    return fetchData<Analysis[]>("DELETE", `${API_PATH}/analyzes/${id}`);
-  }
-  async findAll(query: Query) {
-    let url = `${API_PATH}/analyzes?limit=${query?.limit ? query.limit : 10}`
-    url += `&offset=${query?.offset ? query.offset : 0}`
-    if (query?.sort.length > 0) {
+  async findAll(query?: Query) {
+    let url = '/analyzes?'
+    if (query?.conditions && query.conditions.length > 0) {
+      for (let condition of query.conditions) {
+        url += `&conditions=${condition.field},${condition.operator},${condition.value}`
+      }
+    }
+    if (query?.sort && query?.sort.length > 0) {
       for (let sort of query?.sort) {
         url += `&sort=${sort.field},${sort.direction}`
       }
     }
-    return fetchData<Analysis[]>("GET", url);
-  }
-  async findAllByRepository(id: string) {
-    return fetchData<Analysis[]>("GET", `${API_PATH}/analyzes?conditions=repository_id,eq,${id}`);
+    return axios.get<Analysis[]>(url)
   }
   async findById(id: string) {
-    return fetchData<Analysis[]>("GET", `${API_PATH}/analyzes/${id}`);
+    return axios.get<Analysis>(`/analyzes/${id}`)
   }
 }
 
-export default new AnalysisService();
+export default new AnalysisService()

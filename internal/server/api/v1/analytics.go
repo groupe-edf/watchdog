@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/groupe-edf/watchdog/internal/server/api/response"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/pkg/query"
 )
 
 func (api *API) GetAnalytics(r *http.Request) response.Response {

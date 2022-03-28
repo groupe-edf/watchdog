@@ -1,5 +1,3 @@
-import AnalyzesList from "./analyzes";
-import Repository from "./repository";
-import RepositoriesList from "./repositories";
+import Repositories from "./Repositories"
 
-export { AnalyzesList, Repository, RepositoriesList }
+export { Repositories }

@@ -10,30 +10,31 @@ import (
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/core/handlers"
 	"github.com/groupe-edf/watchdog/internal/core/loaders"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/git"
 	"github.com/groupe-edf/watchdog/internal/hook"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
 	"github.com/groupe-edf/watchdog/internal/security"
 	"github.com/groupe-edf/watchdog/internal/util"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 )
 
 // Analyzer git commits analyzer
 type Analyzer struct {
-	Driver    git.Driver
-	Handlers  []handlers.Handler
-	Info      *hook.Info
-	Issues    *util.Set
-	Loader    loaders.Loader
-	Logger    logging.Interface
-	Options   *config.Options
-	Policies  []models.Policy
-	Whitelist models.Whitelist
-	context   context.Context
+	Driver     git.Driver
+	Handlers   []handlers.Handler
+	Info       *hook.Info
+	Issues     *util.Set
+	Loader     loaders.Loader
+	Logger     logging.Interface
+	Options    *config.Options
+	Policies   []models.Policy
+	Whitelist  models.Whitelist
+	context    context.Context
+	repository *git.Repository
 }
 
 // Analyze execute analysis
-func (analyzer *Analyzer) Analyze(commitIter models.Iterator[models.Commit], analyzeChan chan models.AnalysisResult) error {
+func (analyzer *Analyzer) Analyze(repository *git.Repository, commitIter models.Iterator[models.Commit], analyzeChan chan models.AnalysisResult) error {
 	defer close(analyzeChan)
 	if len(analyzer.Handlers) == 0 {
 		return errors.New("at least one handler must be defined")
@@ -44,6 +45,7 @@ func (analyzer *Analyzer) Analyze(commitIter models.Iterator[models.Commit], ana
 	ctx, cancel := context.WithCancel(analyzer.context)
 	defer cancel()
 	if len(analyzer.Policies) > 0 {
+		analyzer.handleRef(ctx, analyzeChan)
 		var wg sync.WaitGroup
 		// struct{} is the smallest data type available in Go
 		maxWorkers := make(chan struct{}, 4)
@@ -51,11 +53,13 @@ func (analyzer *Analyzer) Analyze(commitIter models.Iterator[models.Commit], ana
 		totalCommit := 0
 		go func() {
 			defer close(currentCommit)
-			commitIter.ForEach(func(commit *models.Commit) error {
-				totalCommit++
-				currentCommit <- commit
-				return nil
-			})
+			if commitIter != nil {
+				commitIter.ForEach(func(commit *models.Commit) error {
+					totalCommit++
+					currentCommit <- commit
+					return nil
+				})
+			}
 		}()
 		for commit := range currentCommit {
 			wg.Add(1)
@@ -104,6 +108,7 @@ func (analyzer *Analyzer) RegisterHandler(handler handlers.Handler) {
 	}
 	handler.SetOptions(analyzer.Options)
 	handler.SetDriver(analyzer.Driver)
+	handler.SetRepository(analyzer.repository)
 	analyzer.Handlers = append(analyzer.Handlers, handler)
 }
 
@@ -162,7 +167,8 @@ func (analyzer *Analyzer) analyze(ctx context.Context, commit *models.Commit, an
 	return ctx.Err()
 }
 
-func (analyzer *Analyzer) handleRef(ctx context.Context) {
+func (analyzer *Analyzer) handleRef(ctx context.Context, analyzeChan chan models.AnalysisResult) error {
+	scanTimeStart := time.Now()
 	issues := make([]models.Issue, 0)
 	for _, policy := range analyzer.Policies {
 		analyzer.Logger.WithFields(logging.Fields{
@@ -177,7 +183,12 @@ func (analyzer *Analyzer) handleRef(ctx context.Context) {
 			}
 		}
 	}
-	analyzer.Issues.Add(issues)
+	elapsed := time.Since(scanTimeStart)
+	analyzeChan <- models.AnalysisResult{
+		ElapsedTime: elapsed,
+		Issues:      issues,
+	}
+	return ctx.Err()
 }
 
 // NewAnalyzer instantiate new analyzer
@@ -186,6 +197,7 @@ func NewAnalyzer(
 	loader loaders.Loader,
 	logger logging.Interface,
 	options *config.Options,
+	repository *git.Repository,
 	whitelist models.Whitelist,
 ) (*Analyzer, error) {
 	if ctx == nil {
@@ -196,12 +208,13 @@ func NewAnalyzer(
 		return nil, err
 	}
 	analyzer := &Analyzer{
-		Options:   options,
-		Issues:    util.NewSet(),
-		Logger:    logger,
-		Policies:  policies,
-		Whitelist: whitelist,
-		context:   ctx,
+		Options:    options,
+		Issues:     util.NewSet(),
+		Logger:     logger,
+		Policies:   policies,
+		Whitelist:  whitelist,
+		context:    ctx,
+		repository: repository,
 	}
 	// Register handlers
 	analyzer.RegisterHandler(&handlers.BranchHandler{})

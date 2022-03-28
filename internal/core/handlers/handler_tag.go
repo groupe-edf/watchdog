@@ -5,10 +5,10 @@ import (
 	"regexp"
 
 	"github.com/coreos/go-semver/semver"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/issue"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
 	"github.com/groupe-edf/watchdog/internal/util"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 )
 
 var (
@@ -18,6 +18,10 @@ var (
 // TagHandler handle tags
 type TagHandler struct {
 	AbstractHandler
+}
+
+func (*TagHandler) Name() string {
+	return "tag"
 }
 
 // GetType return handler type

@@ -1,16 +1,16 @@
-import { API_PATH } from "../constants";
-import { Rule } from "../store/rules/types";
-import { Query, fetchData } from "./commons";
+import axios from 'axios'
+import { Rule } from '../models'
 
 class RuleService {
-  async findAll() {
-    return fetchData<Rule[]>("GET", `${API_PATH}/rules`);
+  async add(rule: Rule) {
+    return axios.post<Rule>('/rules', rule)
   }
-  async toggle(id: number, isEnabled: boolean) {
-    return fetchData<Rule[]>("PUT", `${API_PATH}/rules/${id}/toggle`, {
-      enabled: isEnabled
-    });
+  async findAll() {
+    return axios.get<Rule[]>('/rules')
+  }
+  async findById(id: number) {
+    return axios.get<Rule>(`/rules/${id}`)
   }
 }
 
-export default new RuleService();
+export default new RuleService()

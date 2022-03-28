@@ -1,6 +1,8 @@
 package postgres
 
-import "github.com/groupe-edf/watchdog/internal/models"
+import (
+	"github.com/groupe-edf/watchdog/internal/core/models"
+)
 
 func (store *PostgresStore) RefreshAnalytics() error {
 	statement := `SELECT analytics_aggregation()`

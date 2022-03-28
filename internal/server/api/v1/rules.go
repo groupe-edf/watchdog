@@ -8,8 +8,9 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/server/api/response"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/pkg/query"
 )
 
 type ToggleCommand struct {
@@ -17,23 +18,38 @@ type ToggleCommand struct {
 }
 
 type EvaluatePatternCommand struct {
-	Payload string `json:"payload"`
-	Pattern string `json:"pattern"`
+	Payload         string `json:"payload"`
+	Pattern         string `json:"pattern"`
+	FindAllSubmatch bool   `json:"find_all_submatch"`
+}
+
+type MatchResultResponse struct {
+	Matches    [][]string `json:"matches"`
+	GroupsName []string   `json:"groups_name"`
 }
 
 func (api *API) EvaluatePattern(r *http.Request) response.Response {
+	var matches [][]string
 	var command *EvaluatePatternCommand
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&command); err != nil {
 		return response.Error(http.StatusInternalServerError, "", err)
 	}
-	_, err := regexp.Compile(command.Pattern)
+	pattern, err := regexp.Compile(command.Pattern)
 	if err != nil {
 		return response.Error(http.StatusInternalServerError, "", err)
 	}
-	return response.JSON(http.StatusOK, map[string]string{
-		"message": "pattern successfully evaluated",
-	})
+	matchResult := &MatchResultResponse{}
+	if command.FindAllSubmatch {
+		matches = pattern.FindAllStringSubmatch(command.Payload, -1)
+	} else {
+		matches = [][]string{pattern.FindStringSubmatch(command.Payload)}
+	}
+	if len(matches) > 0 {
+		matchResult.Matches = matches
+		matchResult.GroupsName = pattern.SubexpNames()[1:]
+	}
+	return response.JSON(http.StatusOK, matchResult)
 }
 
 func (api *API) GetRules(r *http.Request) response.Response {
@@ -45,6 +61,33 @@ func (api *API) GetRules(r *http.Request) response.Response {
 	return response.JSON(http.StatusOK, paginator.Items).
 		SetHeader("Accept-Ranges", "rules").
 		SetHeader("Content-Range", fmt.Sprintf("rules %d-%d/%d", paginator.Query.Offset, paginator.Query.Limit, paginator.TotalItems))
+}
+
+type AddRuleCommand struct {
+	Description string          `json:"description"`
+	DisplayName string          `json:"display_name"`
+	Enabled     bool            `json:"enabled"`
+	Pattern     string          `json:"pattern"`
+	Severity    models.Severity `json:"severity"`
+}
+
+func (api *API) NewRule(r *http.Request) response.Response {
+	var command *AddRuleCommand
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&command); err != nil {
+		return response.Error(http.StatusInternalServerError, "", err)
+	}
+	rule, err := api.store.SaveRule(&models.Rule{
+		DisplayName: command.DisplayName,
+		Description: command.Description,
+		Enabled:     command.Enabled,
+		Pattern:     command.Pattern,
+		Severity:    command.Severity,
+	})
+	if err != nil {
+		return response.Error(http.StatusInternalServerError, "", err)
+	}
+	return response.JSON(http.StatusOK, rule)
 }
 
 func (api *API) ToggleRule(r *http.Request) response.Response {

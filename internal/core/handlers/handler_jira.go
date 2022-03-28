@@ -5,11 +5,11 @@ import (
 	"os"
 	"regexp"
 
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/issue"
 	"github.com/groupe-edf/watchdog/internal/jira"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
 	"github.com/groupe-edf/watchdog/internal/util"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 )
 
 const (
@@ -24,6 +24,10 @@ var (
 // JiraHandler handle jira issues
 type JiraHandler struct {
 	AbstractHandler
+}
+
+func (*JiraHandler) Name() string {
+	return "jira"
 }
 
 // GetType return handler type

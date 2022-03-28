@@ -5,7 +5,7 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/groupe-edf/watchdog/internal/logging"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 )
 
 // Entry log entry
@@ -40,7 +40,7 @@ func (middleware Logger) Wrap(next http.Handler) http.Handler {
 				w.WriteHeader(http.StatusInternalServerError)
 				middleware.Logger.WithFields(logging.Fields{
 					"error": err,
-					"trace": debug.Stack(),
+					"trace": string(debug.Stack()),
 				}).Error()
 				w.Write(debug.Stack())
 			}

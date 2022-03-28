@@ -13,14 +13,12 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/cache"
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/go-git/go-git/v5/plumbing/revlist"
 	"github.com/go-git/go-git/v5/plumbing/storer"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/go-git/go-git/v5/storage"
 	"github.com/go-git/go-git/v5/storage/filesystem"
 	"github.com/go-git/go-git/v5/storage/memory"
 	"github.com/groupe-edf/watchdog/internal/config"
-	driver "github.com/groupe-edf/watchdog/internal/git"
 	"github.com/groupe-edf/watchdog/internal/hook"
 )
 
@@ -97,27 +95,7 @@ func ParseGitPushOptions() {
 func RevList(repository *git.Repository, info *hook.Info) (object.CommitIter, error) {
 	fmt.Printf("Running analysis on %s:", Colorize(Green, info.Ref.String()))
 	var err error
-	opts := driver.RevListOptions{}
-	if info.OldRev != nil {
-		opts.OldRev = info.OldRev.Hash
-	}
-	if info.NewRev != nil {
-		opts.NewRev = info.NewRev.Hash
-	}
-	oldRevObjects := make([]plumbing.Hash, 0)
 	newRevObjects := make([]plumbing.Hash, 0)
-	if opts.OldRev != plumbing.ZeroHash {
-		oldRevObjects, err = revlist.Objects(repository.Storer, []plumbing.Hash{opts.OldRev}, nil)
-		if err != nil {
-			return nil, err
-		}
-	}
-	if opts.NewRev != plumbing.ZeroHash {
-		newRevObjects, err = revlist.Objects(repository.Storer, []plumbing.Hash{opts.NewRev}, oldRevObjects)
-		if err != nil {
-			return nil, err
-		}
-	}
 	commitIter := object.NewCommitIter(repository.Storer, storer.NewEncodedObjectLookupIter(repository.Storer, plumbing.AnyObject, newRevObjects))
 	return commitIter, err
 }

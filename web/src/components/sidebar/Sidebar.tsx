@@ -1,37 +1,22 @@
-import { Component, useState } from "react"
-import {
-  IoSettingsOutline
-} from "react-icons/io5"
+import { useState } from "react"
 import {
   Box,
   BoxProps,
-  Button,
   Divider,
   Flex,
-  Icon,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Link,
   Text,
-  useColorModeValue,
-  useDisclosure
+  useColorModeValue
 } from "@chakra-ui/react"
-import { ArrowUpDownIcon } from "@chakra-ui/icons"
-import { connect } from "react-redux"
-import { NavLink } from "react-router-dom"
 import { routes } from "../../routes"
+import { NavItem } from "./NavItem"
 import Header from "../Header"
-import { ItemContent, NavItem } from "./NavItem"
-import CurrentUser from "./CurrentUser"
+import { Link } from "react-router-dom"
 
 interface SidebarContentProps extends BoxProps {
-  onClose?: () => void;
+  onClose?: () => void
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
-  const settings = useDisclosure()
   const [size, setSize] = useState("large")
   return (
     <Flex
@@ -50,76 +35,37 @@ const SidebarContent = ({ onClose, ...rest }: SidebarContentProps) => {
         width="100%"
         alignItems={size == "small" ? "center" : "flex-start"}
         as="nav">
-        <Text align="center" width="100%" color="brand.100" fontSize="2xl" fontFamily="monospace">
+        <Text as={Link} to="/" align="center" width="100%" color="brand.100" fontSize="2xl" fontFamily="monospace">
           Watchdog
         </Text>
         <Divider marginY={4} display={size == "small" ? "none" : "flex"} />
         {routes.map((route) => (
-          !route.hide && <NavItem key={route.title} route={route.path} icon={route.icon} size={size}>
+          !route.hide && <NavItem key={route.path} route={route.path} icon={route.icon} size={size}>
             {route.title}
           </NavItem>
         ))}
-        <Menu placement="right">
-          <Link
-            borderRadius={8}
-            _hover={{ background: "brand.100", color: "white" }}
-            style={{ textDecoration: "none" }}
-            width="100%">
-            <MenuButton width="100%">
-              <ItemContent icon={IoSettingsOutline} route="" children="Settings" size="large"></ItemContent>
-            </MenuButton>
-          </Link>
-          <MenuList>
-            <MenuItem as={NavLink} to="/integrations">Integrations</MenuItem>
-            <MenuItem as={NavLink} to="/jobs">Jobs</MenuItem>
-            <MenuItem as={NavLink} to="/users">Users</MenuItem>
-            <MenuItem as={NavLink} to="/workspaces">Workspaces</MenuItem>
-          </MenuList>
-        </Menu>
-      </Flex>
-      <Flex
-        flexDir="column"
-        width="100%"
-        alignItems={size == "small" ? "center" : "flex-start"}>
-        <Menu matchWidth placement="right">
-          <MenuButton as={Button} colorScheme="brand" width="100%">
-            <Flex justifyContent="space-between">
-              <Text>Workspace</Text>
-              <Icon as={ArrowUpDownIcon} />
-            </Flex>
-          </MenuButton>
-          <MenuList>
-            <MenuItem>Default</MenuItem>
-          </MenuList>
-        </Menu>
-        <Divider marginY={4} display={size == "small" ? "none" : "flex"} />
-        <CurrentUser />
       </Flex>
     </Flex>
   )
 }
 
-export class Sidebar extends Component<any> {
-  constructor(props: any) {
-    super(props);
-  }
-  render() {
-    return (
+const Sidebar = (props: any) => {
+  const { children } = props
+  return (
+    <Flex
+      background={useColorModeValue('gray.100', 'gray.900')}
+      width="100%"
+      height="100vh">
+      <SidebarContent display={{ base: 'none', md: 'block' }}/>
       <Flex
+        flexDirection="column"
         width="100%"
-        background="gray.100"
-        height="100vh">
-        <SidebarContent display={{ base: 'none', md: 'block' }}/>
-        <Flex
-          flexDirection="column"
-          width="100%"
-          overflowY="auto">
-          <Header/>
-          <Box padding={4}>{this.props.children}</Box>
-        </Flex>
+        overflowY="auto">
+        <Header/>
+        <Box padding={4}>{children}</Box>
       </Flex>
-    )
-  }
+    </Flex>
+  )
 }
 
-export default connect()(Sidebar);
+export default Sidebar

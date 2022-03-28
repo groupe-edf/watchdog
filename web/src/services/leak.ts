@@ -1,15 +1,13 @@
-import { API_PATH } from "../constants";
-import { Leak } from "../store/leaks/types";
-import { Query, fetchData } from "./commons";
+import axios from 'axios'
+import { Leak } from '../models'
 
 class LeakService {
-  async findAll(query?: Query) {
-    let url = `${API_PATH}/leaks?limit=${query?.limit ? query.limit : 10}&offset=${query?.offset ? query.offset : 0}`
-    return fetchData<Leak[]>("GET", url);
+  async findAll(query?: any) {
+    return axios.get<Leak[]>(`/leaks?${new URLSearchParams(query).toString()}`)
   }
   async findById(id: string) {
-    return fetchData<Leak[]>("GET", `${API_PATH}/leaks/${id}`);
+    return axios.get<Leak>(`/leaks/${id}`)
   }
 }
 
-export default new LeakService();
+export default new LeakService()

@@ -1,0 +1,20 @@
+rules:
+- description: AWS_ACCESS_KEY
+  pattern: (A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}
+  severity: MAJOR
+  tags: ["cloud", "aws"]
+- description: ASYMMETRIC_PRIVATE_KEY
+  pattern: (\-){5}BEGIN[[:blank:]]*?(RSA|OPENSSH|DSA|EC|PGP)?[[:blank:]]*?PRIVATE[[:blank:]]KEY[[:blank:]]*?(BLOCK)?(\-){5}.*
+  severity: MAJOR
+  tags: ["key", "certificates"]
+- description: CONNECTION_STRING
+  pattern: (?i)(?P<scheme>[a-z0-9+-.]{3,30}://)?[0-9a-z-]{3,30}:(?P<secret>[a-zA-Z0-9!?$)(.=<>\/%@#*&{}_^+-]{6,45})@(?P<host>[0-9a-z-.]{1,50})(?::(?P<port>[0-9]{1,5}))?]?
+  severity: MAJOR
+- description: PASSWORD_XML
+  file: (?i)(.*.xml)$
+  pattern: (?i)<(?:(?:pass(?:w(?:or)?d)?)|(?:p(?:s)?w(?:r)?d)|secret)>(?P<secret>.{5,256})</(?:(?:pass(?:w(?:or)?d)?)|(?:p(?:s)?w(?:r)?d)|secret)>
+  severity: MAJOR
+- description: SECRET_KEY
+  pattern: (?im)(?:(?:a(?:ws|ccess|p(?:i|p(?:lication)?)))|private|se(?:nsitive|cret))?[[:space:]_-]?(?:key|token)[[:space:]]{0,20}[=:]{1,2}[[:space:]]{0,20}['\"]?(?P<secret>[a-zA-Z0-9!?$)(.=<>\/%@#*&{}_^+-]{6,45})(?:[[:space:];'\",]|$)
+  severity: MAJOR
+  tags: ["token"]

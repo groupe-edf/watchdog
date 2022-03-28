@@ -1,25 +1,25 @@
 import { Badge, Tooltip } from "@chakra-ui/react"
 
-export const StatusBadge = ({ state, hint }: { state: string, hint?: string }) => {
-  let colorScheme = "secondary"
-  let text = ""
+export const StatusBadge = ({ state, hint, ...rest }: { state: string, hint?: string, rest?: any }) => {
+  let colorScheme = "gray"
+  let text = state.toUpperCase()
   switch (state) {
     case "failed":
       colorScheme = "red"
-      text = "Failed"
+      break
+    case "in_progress":
+      colorScheme = "yellow"
       break
     case "started":
       colorScheme = "orange"
-      text = "Started"
       break
     case "success":
       colorScheme = "green"
-      text = "Success"
       break
   }
   return (
     <Tooltip label={hint}>
-      <Badge colorScheme={colorScheme}>{text}</Badge>
+      <Badge colorScheme={colorScheme} {...rest}>{text}</Badge>
     </Tooltip>
   )
 }

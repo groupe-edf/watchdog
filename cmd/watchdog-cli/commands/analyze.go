@@ -9,12 +9,12 @@ import (
 	"github.com/groupe-edf/watchdog/internal/config"
 	"github.com/groupe-edf/watchdog/internal/core"
 	"github.com/groupe-edf/watchdog/internal/core/loaders"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/git"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
 	"github.com/groupe-edf/watchdog/internal/output"
-	"github.com/groupe-edf/watchdog/internal/server/container"
 	"github.com/groupe-edf/watchdog/internal/util"
+	"github.com/groupe-edf/watchdog/pkg/container"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -69,9 +69,9 @@ var (
 			logger.WithFields(logging.Fields{
 				"correlation_id": util.GetRequestID(ctx),
 				"user_id":        util.GetUserID(ctx),
-			}).Debugf("repository `%v` successfully fetched in `%s`", options.URI, repository.Path)
-			loader := loaders.NewAPILoader(options.ServerURL, options.ServerToken)
-			analyzer, err := core.NewAnalyzer(ctx, loader, logger, options, models.Whitelist{})
+			}).Debugf("repository `%v` successfully fetched in `%s`", options.URI, repository.Path())
+			loader, _ := loaders.GetLoader(options)
+			analyzer, err := core.NewAnalyzer(ctx, loader, logger, options, repository, models.Whitelist{})
 			if err != nil {
 				logger.Fatal(err)
 			}
@@ -81,7 +81,7 @@ var (
 				logger.Fatal(err)
 			}
 			analyzeChan := make(chan models.AnalysisResult)
-			go analyzer.Analyze(commitIter, analyzeChan)
+			go analyzer.Analyze(repository, commitIter, analyzeChan)
 			writer := output.NewConsole(analyzeChan)
 			writer.WriteTo()
 		},

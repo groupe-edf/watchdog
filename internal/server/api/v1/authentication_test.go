@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/groupe-edf/watchdog/internal/models"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/server/services"
+	"github.com/groupe-edf/watchdog/pkg/query"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,11 +20,12 @@ func TestRegister(t *testing.T) {
 		"last_name": "MAALEM",
 		"password": "watchdog"
 	}`)
-	assert := assert.New(t)
-	request, _ := http.NewRequest(http.MethodPost, "/api/v1/register", bytes.NewBuffer(requestPayload))
-	response := httptest.NewRecorder()
-	router.ServeHTTP(response, request)
-	assert.Equal(http.StatusOK, response.Code)
+	t.Run("it returns 200 on /api/v1/authentication/register", func(t *testing.T) {
+		request, _ := http.NewRequest(http.MethodPost, "/api/v1/authentication/register", bytes.NewBuffer(requestPayload))
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
+		assert.Equal(t, http.StatusOK, response.Code)
+	})
 	t.Cleanup(func() {
 		api.store.DeleteUsers(&query.Query{})
 	})
@@ -43,7 +44,7 @@ func TestRegisterExistingUser(t *testing.T) {
 		"last_name": "MAALEM",
 		"password": "watchdog"
 	}`)
-	response := performRequest(router, http.MethodPost, "/api/v1/register", requestPayload)
+	response := performRequest(router, http.MethodPost, "/api/v1/authentication/register", requestPayload)
 	assert.Equal(http.StatusConflict, response.Code)
 	assert.JSONEq(`{"detail":"USER_ALREADY_EXISTS","status":409}`, response.Body.String())
 	t.Cleanup(func() {
@@ -61,7 +62,7 @@ func TestAuthentication(t *testing.T) {
 		"email":"habib.maalem@gmail.com",
 		"password": "watchdog"
 	}`)
-	response := performRequest(router, http.MethodPost, "/api/v1/login", requestPayload)
+	response := performRequest(router, http.MethodPost, "/api/v1/authentication/login", requestPayload)
 	assert.Equal(t, http.StatusOK, response.Code)
 	var responsePayload map[string]interface{}
 	json.Unmarshal(response.Body.Bytes(), &responsePayload)

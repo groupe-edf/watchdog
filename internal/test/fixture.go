@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 )
 
 // CreateDummyFile create a dummy file

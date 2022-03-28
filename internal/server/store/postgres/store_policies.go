@@ -4,12 +4,42 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	builder "github.com/groupe-edf/watchdog/internal/server/database/query"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/pkg/query"
 )
 
-func (postgres *PostgresStore) FindPolicies(q *query.Query) (models.Paginator[models.Policy], error) {
+func (store *PostgresStore) AddPolicyCondition(condition *models.Condition) (*models.Condition, error) {
+	var ID int64
+	statement := `INSERT INTO "policies_conditions" (
+		"pattern",
+		"policy_id",
+		"type"
+	) VALUES ($1, $2, $3)
+	RETURNING "id"`
+	err := store.database.QueryRow(statement,
+		condition.Pattern,
+		condition.PolicyID,
+		condition.Type,
+	).Scan(&ID)
+	if err != nil {
+		return nil, err
+	}
+	condition.ID = ID
+	return condition, nil
+}
+
+func (store *PostgresStore) DeletePolicy(policyID int64) error {
+	_, err := store.database.Exec(`DELETE FROM policies WHERE id = $1`, policyID)
+	return err
+}
+
+func (store *PostgresStore) DeletePolicyCondition(policyID int64, conditionID int64) error {
+	_, err := store.database.Exec(`DELETE FROM policies_conditions WHERE id = $1 AND policy_id = $2`, conditionID, policyID)
+	return err
+}
+
+func (store *PostgresStore) FindPolicies(q *query.Query) (models.Paginator[models.Policy], error) {
 	paginator := models.Paginator[models.Policy]{
 		Items: make([]models.Policy, 0),
 		Query: q,
@@ -20,20 +50,23 @@ func (postgres *PostgresStore) FindPolicies(q *query.Query) (models.Paginator[mo
 		`"policies"."description"`,
 		`"policies"."display_name"`,
 		`"policies"."enabled"`,
-		`"policies"."name"`,
+		`COALESCE("policies"."name", '')`,
+		`"policies"."severity"`,
 		`"policies"."type"`,
+		`"policies_conditions"."id"`,
 		`"policies_conditions"."pattern"`,
 		`"policies_conditions"."type"`,
 		`COUNT(*) OVER() AS total_items`,
 	}...).
 		From("policies").
 		Join("LEFT", "policies_conditions", builder.Expression(`"policies"."id" = "policies_conditions"."policy_id"`)).
+		OrderBy(`"policies"."name" ASC`).
 		WithRouteQuery(q)
 	statement, err := queryBuilder.ToBoundSQL()
 	if err != nil {
 		return paginator, err
 	}
-	rows, err := postgres.database.Query(statement)
+	rows, err := store.database.Query(statement)
 	if err != nil {
 		return paginator, err
 	}
@@ -49,6 +82,8 @@ func (postgres *PostgresStore) FindPolicies(q *query.Query) (models.Paginator[mo
 			Enabled           bool
 			Name              string
 			Type              models.PolicyType
+			Severity          models.Severity
+			ConditionID       sql.NullInt64
 			CondititonPattern sql.NullString
 			ConditionType     sql.NullString
 		}{}
@@ -59,7 +94,9 @@ func (postgres *PostgresStore) FindPolicies(q *query.Query) (models.Paginator[mo
 			&policy.DisplayName,
 			&policy.Enabled,
 			&policy.Name,
+			&policy.Severity,
 			&policy.Type,
+			&policy.ConditionID,
 			&policy.CondititonPattern,
 			&policy.ConditionType,
 			&paginator.TotalItems,
@@ -75,13 +112,17 @@ func (postgres *PostgresStore) FindPolicies(q *query.Query) (models.Paginator[mo
 				DisplayName: policy.DisplayName,
 				Enabled:     policy.Enabled,
 				Name:        policy.Name,
+				Severity:    policy.Severity,
 				Type:        policy.Type,
 			}
 		}
-		policiesMap[policy.ID].Conditions = append(policiesMap[policy.ID].Conditions, models.Condition{
-			Pattern: policy.CondititonPattern.String,
-			Type:    models.ConditionType(policy.ConditionType.String),
-		})
+		if policy.ConditionID.Valid {
+			policiesMap[policy.ID].Conditions = append(policiesMap[policy.ID].Conditions, models.Condition{
+				ID:      policy.ConditionID.Int64,
+				Pattern: policy.CondititonPattern.String,
+				Type:    models.ConditionType(policy.ConditionType.String),
+			})
+		}
 	}
 	for _, value := range policiesMap {
 		paginator.Items = append(paginator.Items, *value)
@@ -89,7 +130,7 @@ func (postgres *PostgresStore) FindPolicies(q *query.Query) (models.Paginator[mo
 	return paginator, nil
 }
 
-func (postgres *PostgresStore) FindPolicyByID(id int64) (policy *models.Policy, err error) {
+func (store *PostgresStore) FindPolicyByID(id int64) (policy *models.Policy, err error) {
 	q := &query.Query{}
 	q.AddCondition(query.Condition{
 		Field:    `"policies"."id"`,
@@ -97,12 +138,32 @@ func (postgres *PostgresStore) FindPolicyByID(id int64) (policy *models.Policy, 
 		Value:    id,
 	})
 	q.Limit = 1
-	paginator, err := postgres.FindPolicies(q)
+	paginator, err := store.FindPolicies(q)
 	if err != nil {
 		return policy, err
 	}
 	policy = &paginator.Items[0]
 	return policy, err
+}
+
+func (store *PostgresStore) SavePolicy(policy *models.Policy) (*models.Policy, error) {
+	var ID int64
+	statement := `INSERT INTO "policies" (
+		"description",
+		"display_name",
+		"type"
+	) VALUES ($1, $2, $3)
+	RETURNING "id"`
+	err := store.database.QueryRow(statement,
+		policy.Description,
+		policy.DisplayName,
+		policy.Type,
+	).Scan(&ID)
+	if err != nil {
+		return nil, err
+	}
+	policy.ID = ID
+	return policy, nil
 }
 
 func (store *PostgresStore) TogglePolicy(policyID int64, enabled bool) error {
@@ -115,4 +176,23 @@ func (store *PostgresStore) TogglePolicy(policyID int64, enabled bool) error {
 		return err
 	}
 	return nil
+}
+
+func (store *PostgresStore) UpdatePolicy(policy *models.Policy) (*models.Policy, error) {
+	statement := `UPDATE "policies"
+	SET
+		"description" = $2,
+		"display_name" = $3,
+		"enabled" = $4
+  WHERE id = $1`
+	_, err := store.database.Exec(statement,
+		policy.ID,
+		policy.Description,
+		policy.DisplayName,
+		policy.Enabled,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return policy, nil
 }

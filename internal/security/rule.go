@@ -1,6 +1,6 @@
 package security
 
-import "github.com/groupe-edf/watchdog/internal/models"
+import "github.com/groupe-edf/watchdog/internal/core/models"
 
 const (
 	// BaiscAuthenticationPattern common pattern for basic authentication URl

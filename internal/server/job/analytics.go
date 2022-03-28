@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/groupe-edf/watchdog/internal/config"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 )
 
 type ProcessAnalytics struct {

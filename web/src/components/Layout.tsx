@@ -1,38 +1,31 @@
-import { Component, ReactNode } from "react"
 import {
   Container,
   Divider
 } from '@chakra-ui/react'
 import Sidebar from "./sidebar/Sidebar"
 import Version from "./Version"
-import { connect } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { getProfile } from "../store/slices/authentication"
+import { AppDispatch, RootState } from "../configureStore"
+import { Outlet } from 'react-router'
 
-type LayoutProps = {
-  children?: ReactNode
-  title?: string
+
+const Layout = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const { currentUser } = useSelector((state: RootState) => state.authentication)
+  let authorizationToken = localStorage.getItem('token')
+  if (!currentUser && authorizationToken) {
+    dispatch(getProfile())
+  }
+  return (
+    <Sidebar>
+      <Outlet/>
+      <Divider marginY={4}/>
+      <Container>
+        <Version />
+      </Container>
+    </Sidebar>
+  )
 }
 
-export class Layout extends Component<LayoutProps> {
-  constructor(props: LayoutProps) {
-    super(props);
-  }
-  render() {
-    const { children } = this.props
-    return (
-      <Sidebar>
-        {children}
-        <Divider marginY={4}/>
-        <Container
-          maxW={'6xl'}
-          direction={{ base: 'column', md: 'row' }}
-          spacing={4}
-          justify={{ md: 'space-between' }}
-          align={{ md: 'center' }}>
-            <Version />
-        </Container>
-      </Sidebar>
-    )
-  }
-}
-
-export default connect()(Layout)
+export { Layout }

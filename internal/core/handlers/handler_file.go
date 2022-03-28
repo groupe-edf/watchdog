@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"path/filepath"
 	"regexp"
-	"strconv"
+	"runtime/trace"
 
-	"github.com/c2h5oh/datasize"
-	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/dustin/go-humanize"
+	"github.com/groupe-edf/watchdog/internal/core/models"
+	"github.com/groupe-edf/watchdog/internal/git"
 	"github.com/groupe-edf/watchdog/internal/issue"
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
 	"github.com/groupe-edf/watchdog/internal/util"
+	"github.com/groupe-edf/watchdog/pkg/logging"
 )
 
 var _ Handler = (*FileHandler)(nil)
@@ -22,6 +22,10 @@ type FileHandler struct {
 	AbstractHandler
 }
 
+func (*FileHandler) Name() string {
+	return "file"
+}
+
 // GetType return handler type
 func (fileHandler *FileHandler) GetType() HandlerType {
 	return HandlerTypeCommits
@@ -29,24 +33,21 @@ func (fileHandler *FileHandler) GetType() HandlerType {
 
 // Handle checking files with defined rules
 func (fileHandler *FileHandler) Handle(ctx context.Context, commit *models.Commit, policy models.Policy, whitelist models.Whitelist) (issues []models.Issue, err error) {
-	defer func() {
-		if err := recover(); err != nil {
-			return
-		}
-	}()
-	commitObject := &object.Commit{}
+	defer trace.StartRegion(ctx, "Scanner.Scan").End()
+	trace.Log(ctx, "file", commit.Hash)
+	var parentCommit string
+	if len(commit.Parents) > 0 {
+		parentCommit = commit.Parents[0]
+	}
+	entries, err := git.GetAffectedFiles(commit.Repository, &git.AffectedFilesOptions{
+		DiffFilter:  "AM",
+		NewCommitID: commit.Hash,
+		OldCommitID: parentCommit,
+	})
+	if err != nil {
+		return nil, err
+	}
 	if policy.Type == models.PolicyTypeFile {
-		if len(commitObject.ParentHashes) == 0 {
-			return
-		}
-		parent, err := commitObject.Parent(0)
-		if err != nil {
-			return nil, err
-		}
-		patch, err := parent.Patch(commitObject)
-		if err != nil {
-			return nil, err
-		}
 		for _, condition := range policy.Conditions {
 			if canSkip := CanSkip(commit, policy.Type, condition.Type); canSkip {
 				continue
@@ -70,58 +71,51 @@ func (fileHandler *FileHandler) Handle(ctx context.Context, commit *models.Commi
 			}).Debug("processing file analysis")
 			switch condition.Type {
 			case models.ConditionTypeExtension:
-				for _, filePatch := range patch.FilePatches() {
-					_, to := filePatch.Files()
-					if to != nil {
-						fileHandler.Logger.Debugf("Checking file %v", to.Path())
-						matches := regexp.MustCompile(fmt.Sprintf(`(.*?)(%s)$`, condition.Pattern)).FindAllString(to.Path(), -1)
-						if len(matches) != 0 {
-							data.Object = to.Path()
-							data.Operand = filepath.Ext(to.Path())
-							if !fileHandler.canSkip(ctx, to.Path(), condition) {
-								issues = append(issues, issue.NewIssue(policy, condition.Type, data, models.SeverityHigh, "{{ .Object }} : *.{{ .Condition.Condition }} files are not allowed"))
-							}
+				for _, entry := range entries {
+					matches := regexp.MustCompile(fmt.Sprintf(`(.*?)(%s)$`, condition.Pattern)).FindAllString(entry.SrcPath, -1)
+					if len(matches) != 0 {
+						data.Object = entry.SrcPath
+						data.Operand = filepath.Ext(entry.SrcPath)
+						if !fileHandler.canSkip(ctx, entry.SrcPath, condition) {
+							issues = append(issues, issue.NewIssue(policy, condition.Type, data, models.SeverityHigh, "{{ .Object }} : *.{{ .Condition.Condition }} files are not allowed"))
 						}
 					}
 				}
 			case models.ConditionTypeSize:
 				matches := regexp.MustCompile(string(`(?i)(lt)\s*([0-9\s*mb|kb]+)`)).FindStringSubmatch(condition.Pattern)
 				if len(matches) < 3 {
-					fileHandler.Logger.Errorf("Invalid file size condition %v", condition.Pattern)
+					fileHandler.Logger.Errorf("invalid file size condition %v", condition.Pattern)
 					continue
 				}
-				var size datasize.ByteSize
-				err := size.UnmarshalText([]byte(matches[2]))
+				threshold, err := humanize.ParseBytes(matches[2])
 				if err != nil {
-					fileHandler.Logger.Errorf("Error parsing file size %v : %v", matches[2], err)
+					fileHandler.Logger.Errorf("error parsing file size %v : %v", matches[2], err)
 				}
-				for _, filePatch := range patch.FilePatches() {
-					_, to := filePatch.Files()
-					if to != nil {
-						file, _ := commitObject.File(to.Path())
-						var fileSize datasize.ByteSize
-						err = fileSize.UnmarshalText([]byte(strconv.FormatInt(file.Size, 10)))
-						if err != nil {
-							fileHandler.Logger.Errorf("Error parsing file size %v : %v", matches[2], err)
+				repository, _ := git.NewRepository(commit.Repository.Storage)
+				tree := git.NewTree(repository, commit.Hash)
+				for _, entry := range entries {
+					blob, err := tree.GetBlobByPath(ctx, entry.SrcPath)
+					if err != nil {
+						fileHandler.Logger.Errorf("error loading commit tree %v : %v", tree.ID, err)
+					}
+					var fileSize = uint64(blob.Size(ctx))
+					data.Object = entry.SrcPath
+					data.Operator = matches[1]
+					data.Operand = humanize.Bytes(threshold)
+					data.Value = humanize.Bytes(fileSize)
+					switch matches[1] {
+					case "lt":
+						if fileSize >= threshold {
+							issues = append(issues, issue.NewIssue(policy, condition.Type, data, models.SeverityHigh, "File {{ .Object }} size {{ .Value }} greater or equal than {{ .Operand }}"))
 						}
-						data.Object = file.Name
-						data.Operator = matches[1]
-						data.Operand = size.HumanReadable()
-						data.Value = fileSize.HumanReadable()
-						switch matches[1] {
-						case "lt":
-							if fileSize.Bytes() >= size.Bytes() {
-								issues = append(issues, issue.NewIssue(policy, condition.Type, data, models.SeverityHigh, "File {{ .Object }} size {{ .Value }} greater or equal than {{ .Operand }}"))
-							}
-						default:
-							fileHandler.Logger.WithFields(logging.Fields{
-								"commit":         commit.Hash,
-								"condition":      condition.Type,
-								"correlation_id": util.GetRequestID(ctx),
-								"rule":           policy.Type,
-								"user_id":        util.GetUserID(ctx),
-							}).Warningf("unknown operation %v for file size condition", matches[1])
-						}
+					default:
+						fileHandler.Logger.WithFields(logging.Fields{
+							"commit":         commit.Hash,
+							"condition":      condition.Type,
+							"correlation_id": util.GetRequestID(ctx),
+							"rule":           policy.Type,
+							"user_id":        util.GetUserID(ctx),
+						}).Warningf("unknown operation %v for file size condition", matches[1])
 					}
 				}
 			default:

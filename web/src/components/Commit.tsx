@@ -20,7 +20,7 @@ class Commit extends Component<any> {
         <Flex alignItems="center">
           <Icon as={IoGitCommitOutline} marginRight={2}/>
           <Link href={repository + "/commit/" + commit.hash} isExternal>
-            {commit.hash.substring(0, 8)}
+            {commit?.hash.substring(0, 8)}
           </Link>
         </Flex>
       </>

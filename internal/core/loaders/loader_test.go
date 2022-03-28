@@ -5,9 +5,8 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"github.com/go-git/go-billy/v5/memfs"
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/storage/memory"
+	"github.com/groupe-edf/watchdog/internal/config"
+	"github.com/groupe-edf/watchdog/internal/git"
 )
 
 func TestAPILoad(t *testing.T) {
@@ -52,11 +51,12 @@ func TestFileLoad(t *testing.T) {
 }
 
 func TestGitFileLoad(t *testing.T) {
-	fileSystem := memfs.New()
-	repository, _ := git.Clone(memory.NewStorage(), fileSystem, &git.CloneOptions{
-		URL: "https://github.com/groupe-edf/watchdog",
+	backend := git.NewGit(&config.Options{})
+	repository, _ := backend.Clone(context.Background(), git.CloneOptions{
+		URL: "/home/maalem/workspaces/github/watchdog",
 	})
 	loader := &GitLoader{
+		backend:    backend,
 		repository: repository,
 	}
 	policies, err := loader.LoadPolicies(context.Background())

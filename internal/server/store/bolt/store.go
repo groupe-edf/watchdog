@@ -8,8 +8,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/groupe-edf/watchdog/internal/config"
-	"github.com/groupe-edf/watchdog/internal/models"
-	"github.com/groupe-edf/watchdog/internal/server/query"
+	"github.com/groupe-edf/watchdog/internal/core/models"
+	"github.com/groupe-edf/watchdog/pkg/query"
 	bolt "go.etcd.io/bbolt"
 )
 
@@ -163,6 +163,12 @@ func (store *BoltStore) UpdateAnalysis(analysis *models.Analysis) (*models.Analy
 }
 
 // Integrations
+func (store *BoltStore) AddWebhook(webhook *models.Webhook) (*models.Webhook, error) {
+	return nil, nil
+}
+func (store *BoltStore) DeleteIntegration(id int64) error {
+	return nil
+}
 func (store *BoltStore) FindIntegrations(q *query.Query) (models.Paginator[models.Integration], error) {
 	paginator := models.Paginator[models.Integration]{
 		Items: make([]models.Integration, 0),

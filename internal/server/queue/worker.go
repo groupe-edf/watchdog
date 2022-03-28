@@ -4,8 +4,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/groupe-edf/watchdog/internal/logging"
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
+	"github.com/groupe-edf/watchdog/pkg/logging"
+)
+
+const (
+	MaxErroCount = 3
 )
 
 type Worker struct {

@@ -3,7 +3,7 @@ package util
 import (
 	"sync"
 
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 )
 
 // Set struct

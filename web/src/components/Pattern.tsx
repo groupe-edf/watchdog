@@ -1,57 +1,70 @@
-import { Editable, EditablePreview, EditableInput, Text, IconButton, HStack, Code } from "@chakra-ui/react";
-import { Component } from "react";
-import { IoFlashOutline, IoTrashOutline } from "react-icons/io5";
-import { API_PATH } from "../constants";
-import { fetchData } from "../services/commons";
+import { Alert, AlertDescription, AlertIcon, Button, Code, Editable, EditablePreview, EditableTextarea, FormControl, FormLabel, HStack, IconButton, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { IoPlayOutline } from "react-icons/io5"
+import { GlobalService } from "../services"
 
-interface PatternProps {
-  editable: boolean,
-  pattern: string
-}
-
-class Pattern extends Component<PatternProps, {
-  isSubmitting: boolean
-}> {
-  constructor(props: PatternProps) {
-    super(props);
-    this.state = {
-      isSubmitting: false
-    }
+const Pattern = (props: any) => {
+  const { children, editable } = props
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [loading, setLoading] = useState(false)
+  const [matches, setMatches] = useState()
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm()
+  const onSubmit = (values: any) => {
+    setLoading(true)
+    GlobalService.evaluatePattern(values)
+      .then((response) => {
+        setLoading(false)
+        setMatches(response.data)
+      })
   }
-  evaluatePattern = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault();
-    this.setState({isSubmitting: true})
-    fetchData("POST", `${API_PATH}/pattern`, {
-      pattern: "fsdfsef§§§§"
-    }).then(response => {
-      this.setState({isSubmitting: false})
-    }).catch(response => {
-      this.setState({isSubmitting: false})
-    })
-  }
-  render () {
-    const {editable, pattern } = this.props
-    const { isSubmitting } = this.state
-    return (
+  return (
+    children &&
       <HStack>
       {editable ? (
-        <Editable defaultValue="">
-          <EditablePreview />
-          <EditableInput />
-        </Editable>
+        <Editable defaultValue={children}>
+        <EditablePreview />
+        <EditableTextarea />
+      </Editable>
       ) : (
-        <Code>{pattern}</Code>
+        <Code>{children}</Code>
       )}
       <IconButton
         aria-label="Test"
-        isLoading={isSubmitting}
         size="sm"
         variant="outline"
-        onClick={this.evaluatePattern}
-        icon={<IoFlashOutline />}/>
-      </HStack>
-    )
-  }
+        onClick={onOpen}
+        title="Test"
+        icon={<IoPlayOutline />}/>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <form  onSubmit={handleSubmit(onSubmit)}>
+            <ModalHeader>Test a content against your pattern</ModalHeader>
+            <ModalBody>
+              <Code>{children}</Code>
+              <FormControl isRequired>
+                <FormLabel htmlFor="payload">Payload</FormLabel>
+                <Input type="text" {...register('payload', {
+                  required: 'Payload is required'
+                })} />
+              </FormControl>
+              <Input type="hidden" value={children} {...register('pattern')} />
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                type="submit"
+                isLoading={loading}
+                loadingText="Evaluating.."
+                colorScheme="brand">
+                Evaluate
+              </Button>
+            </ModalFooter>
+          </form>
+        </ModalContent>
+      </Modal>
+    </HStack>
+  )
 }
 
 export { Pattern }

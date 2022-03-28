@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/groupe-edf/watchdog/internal/config"
-	"github.com/groupe-edf/watchdog/internal/server/container"
 	"github.com/groupe-edf/watchdog/internal/server/store/bolt"
 	"github.com/groupe-edf/watchdog/internal/server/store/postgres"
+	"github.com/groupe-edf/watchdog/pkg/container"
 )
 
 const (

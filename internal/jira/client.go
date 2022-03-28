@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/groupe-edf/watchdog/internal/util"
 	"github.com/google/go-querystring/query"
+	"github.com/groupe-edf/watchdog/internal/util"
 )
 
 // Jira an http client to consume Jira restful API

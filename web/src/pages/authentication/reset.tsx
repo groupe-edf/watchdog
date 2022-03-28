@@ -6,7 +6,7 @@ import {
   Text
 } from "@chakra-ui/react";
 import { Component } from "react";
-import { Link as RouterLink, RouteComponentProps } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { connect } from "react-redux";
 import { Card } from "../../components/Card";
 

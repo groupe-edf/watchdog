@@ -13,9 +13,9 @@ import (
 
 	"github.com/gookit/color"
 	"github.com/groupe-edf/watchdog/internal/config"
-	"github.com/groupe-edf/watchdog/internal/models"
-	"github.com/groupe-edf/watchdog/internal/server/container"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 	"github.com/groupe-edf/watchdog/internal/version"
+	"github.com/groupe-edf/watchdog/pkg/container"
 )
 
 type Console struct {

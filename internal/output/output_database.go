@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/groupe-edf/watchdog/internal/models"
+	"github.com/groupe-edf/watchdog/internal/core/models"
 )
 
 type Database struct {
